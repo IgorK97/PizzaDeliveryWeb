@@ -1,0 +1,11 @@
+PizzaWebAPI/bin/
+PizzaWebAPI/obj/
+PizzaWebAPI/appsettings.json
+PizzaDeliveryWeb.Infrastructure/bin/
+PizzaDeliveryWeb.Infrastructure/obj/
+PizzaDeliveryWeb.Domain/bin/
+PizzaDeliveryWeb.Domain/obj/
+PizzaDeliveryWeb.Application/bin/
+PizzaDeliveryWeb.Application/obj/
+PizzaDeliveryProject.Tests/bin/
+PizzaDeliveryProject.Tests/obj/
