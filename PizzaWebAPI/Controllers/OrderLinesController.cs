@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PizzaDeliveryWeb.Application.DTOs;
+using PizzaDeliveryWeb.Application.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,96 @@ namespace PizzaDeliveryWeb.API.Controllers
     [ApiController]
     public class OrderLinesController : ControllerBase
     {
-        // GET: api/<OrderLinesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly OrderLineService _orderLineService;
+        public OrderLinesController(OrderLineService orderLineService)
         {
-            return new string[] { "value1", "value2" };
+            _orderLineService = orderLineService;
+        }
+
+        // GET: api/<OrderLinesController>
+        // Получить все строки заказа по ID заказа
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<IEnumerable<OrderLineDto>>> GetOrderLinesByOrderIdAsync(int orderId)
+        {
+            try
+            {
+                var result = await _orderLineService.GetOrderLinesByOrderIdAsync(orderId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error getting order lines: {ex.Message}");
+            }
         }
 
         // GET api/<OrderLinesController>/5
+        // Получить строку заказа по ID
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<OrderLineDto>> GetOrderLineByIdAsync(int id)
         {
-            return "value";
+            try
+            {
+                var result = await _orderLineService.GetOrderLineByIdAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return NotFound($"Error getting order line with ID {id}: {ex.Message}");
+            }
         }
 
         // POST api/<OrderLinesController>
+        // Создать новую строку заказа
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<ActionResult<OrderLineDto>> CreateOrderLineAsync([FromBody] CreateOrderLineDto orderLineDto)
         {
+            try
+            {
+                // Вызываем сервис для создания строки заказа
+                await _orderLineService.AddOrderLineAsync(orderLineDto);
+                return Ok();
+                //return CreatedAtAction(nameof(GetOrderLineByIdAsync), new { id = createdOrderLine.Id }, createdOrderLine);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error creating order line: {ex.Message}");
+            }
         }
 
         // PUT api/<OrderLinesController>/5
+        // Обновить строку заказа
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<ActionResult> UpdateOrderLineAsync(int id, [FromBody] CreateOrderLineDto orderLineDto)
         {
+            try
+            {
+                if (id != orderLineDto.Id)
+                {
+                    return BadRequest("ID в URL и в теле запроса не совпадают");
+                }
+
+                await _orderLineService.UpdateOrderLineAsync(orderLineDto);
+                return NoContent(); // Возвращает 204 статус - успешно обновлено
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error updating order line: {ex.Message}");
+            }
         }
 
         // DELETE api/<OrderLinesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> DeleteOrderLineAsync(int id)
         {
+            try
+            {
+                await _orderLineService.DeleteOrderLineAsync(id);
+                return NoContent(); // Возвращает 204 статус - успешно удалено
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error deleting order line: {ex.Message}");
+            }
         }
     }
 }
