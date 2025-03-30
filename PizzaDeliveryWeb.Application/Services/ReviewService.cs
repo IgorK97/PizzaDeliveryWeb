@@ -51,7 +51,6 @@ namespace PizzaDeliveryWeb.Application.Services
 
         public async Task AddReviewAsync(int orderId, string customerId, string content, int rating)
         {
-            // Здесь могут быть дополнительные проверки (например, что заказ завершен и пользователь может оставить отзыв)
             var review = new Review
             {
                 Id = 0,
@@ -69,7 +68,7 @@ namespace PizzaDeliveryWeb.Application.Services
         {
             var review = await _reviewRepository.GetReviewByIdAsync(reviewId);
             if (review == null)
-                throw new Exception("Review not found.");
+                throw new Exception("Отзыв не найден");
 
             review.Content = content;
             review.Rating = rating;

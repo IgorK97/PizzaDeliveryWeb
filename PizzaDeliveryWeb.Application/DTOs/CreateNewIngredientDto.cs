@@ -8,15 +8,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace PizzaDeliveryWeb.Application.DTOs
 {
-    public class CreatePizzaDto
+    //При создании ингредиента
+    public class CreateNewIngredientDto
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public decimal Small { get; set; }
+        public decimal Medium { get; set; }
+        public decimal Big { get; set; }
+        public decimal PricePerGram { get; set; }
         public bool IsAvailable { get; set; }
-        public string Image { get; set; }
-        //public IFormFile Image { get; set; }
-        public List<int> Ingredients { get; set; } = new List<int>();
+        public IFormFile Image { get; set; }
 
     }
 }

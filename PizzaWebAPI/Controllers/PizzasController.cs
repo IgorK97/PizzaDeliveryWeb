@@ -49,7 +49,7 @@ namespace PizzaWebAPI.Controllers
         {
             var ingredients = await _pizzaService.GetIngredintsForPizzaAsync(id);
             if (ingredients == null || !ingredients.Any())
-                return NotFound($"No ingredients found for pizza with ID {id}.");
+                return NotFound($"Не найдено ингредиентов для такой пиццы с ID {id}.");
             return Ok(ingredients);
         }
         // POST api/<PizzasController>

@@ -60,11 +60,40 @@ namespace PizzaDeliveryWeb.API.Controllers
         // POST api/<IngredientsController>
         //[Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<ActionResult<IngredientDto>> CreateIngredient(IngredientDto ingrDto)
+        public async Task<ActionResult<IngredientDto>> CreateIngredient([FromForm] CreateNewIngredientDto ingredientDto)
         {
-            await _ingredientService.AddIngredientAsync(ingrDto);
+
+            string? imagePath = null;
+            if (ingredientDto.Image != null)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ingredientDto.Image.FileName);
+                var path = Path.Combine("wwwroot", "images", "pizzas", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await ingredientDto.Image.CopyToAsync(stream);
+                }
+                imagePath = $"/images/pizzas/{fileName}";
+            }
+            IngredientDto iDto = new IngredientDto
+            {
+                Id = 0,
+                Name = ingredientDto.Name,
+                Description = ingredientDto.Description,
+                IsAvailable = ingredientDto.IsAvailable/*=="true"?true:false*/,
+                Image = imagePath,
+                Big=ingredientDto.Big,
+                Medium=ingredientDto.Medium,
+                PricePerGram=ingredientDto.PricePerGram,
+                Small=ingredientDto.Small
+            };
+            //pizzaDto.ImageUrl = imagePath;
+            await _ingredientService.AddIngredientAsync(iDto);
             return CreatedAtAction(nameof(GetIngredientById),
-                new { id = ingrDto.Id }, ingrDto);
+                new { id = iDto.Id }, iDto);
+
+            //await _ingredientService.AddIngredientAsync(ingrDto);
+            //return CreatedAtAction(nameof(GetIngredientById),
+            //    new { id = iDto.Id }, iDto);
         }
 
         // PUT api/<IngredientsController>/5

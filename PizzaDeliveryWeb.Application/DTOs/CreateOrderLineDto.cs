@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PizzaDeliveryWeb.Application.DTOs
 {
+    //При создании строки заказа
     public class CreateOrderLineDto
     {
         public int Id { get; set; }

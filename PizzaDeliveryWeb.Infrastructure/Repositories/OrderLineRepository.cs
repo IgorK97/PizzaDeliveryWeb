@@ -21,7 +21,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
         public async Task<OrderLine> GetOrderLineByIdAsync(int id)
         {
-            return await _context.OrderLines.Include(t => t.Pizza).ThenInclude(p=>p.Ingredients).FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.OrderLines.Include(ol=>ol.PizzaSize).Include(t => t.Pizza).ThenInclude(p=>p.Ingredients).Include(ol=>ol.Order).FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<IEnumerable<OrderLine>> GetOrderLinesAsync()
@@ -34,7 +34,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
         public async Task<IEnumerable<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId)
         {
             return await _context.OrderLines
-                .Where(t => t.OrderId == orderId)
+                .Where(t => t.OrderId == orderId).Include(ol=>ol.PizzaSize)
                 .Include(t => t.Pizza).ThenInclude(p => p.Ingredients)
                 .ToListAsync();
         }
@@ -48,7 +48,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
             if (!orderExists)
             {
-                throw new ArgumentException($"Order with ID {oline.OrderId} does not exist.");
+                throw new ArgumentException($"Заказ с ID {oline.OrderId} не существует.");
             }
 
             _context.OrderLines.Add(oline);
@@ -61,7 +61,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
             if (!orderExists)
             {
-                throw new ArgumentException($"Order with ID {oline.OrderId} does not exist.");
+                throw new ArgumentException($"Заказ с ID {oline.OrderId} не существует.");
             }
 
             _context.Entry(oline).State = EntityState.Modified;

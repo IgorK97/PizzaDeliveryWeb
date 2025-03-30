@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PizzaDeliveryWeb.API.Models;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Application.Services;
+using PizzaDeliveryWeb.Domain.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,9 +14,12 @@ namespace PizzaDeliveryWeb.API.Controllers
     public class ReviewsController : ControllerBase
     {
         public readonly ReviewService _reviewService;
-        public ReviewsController(ReviewService reviewService)
+        private readonly UserManager<User> _userManager;
+
+        public ReviewsController(UserManager<User> userManager, ReviewService reviewService)
         {
             _reviewService = reviewService;
+            _userManager = userManager;
         }
 
         // GET: api/<ReviewsController>
@@ -41,7 +46,9 @@ namespace PizzaDeliveryWeb.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddReview([FromBody]AddReviewModel model)
         {
-            await _reviewService.AddReviewAsync(model.OrderId, model.ClientId, model.Content, model.Rating);
+            User usr = await _userManager.GetUserAsync(HttpContext.User);
+
+            await _reviewService.AddReviewAsync(model.OrderId, usr.Id, model.Content, model.Rating);
             return Ok();
         }
 

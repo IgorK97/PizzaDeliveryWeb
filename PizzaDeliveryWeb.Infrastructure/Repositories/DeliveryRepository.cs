@@ -46,8 +46,8 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
         public async Task<Delivery> GetDeliveryByIdAsync(int id)
         {
-            //Возврат доставки вместе с заказом (а в заказе строки заказа, в каждой строке заказа - 
-            //дополнительные ингредиенты и пицца, а для каждой пиццы - уже ее собственные ингредиенты
+            //Возврат доставки вместе с заказом (а в заказе строке заказа, в каждой строке заказа - 
+            //дополнительные ингредиенты и пицца, а для каждой пиццы - уже ее собственные ингредиенты)
             return await _context.Deliveries.Include(d=>d.Order).ThenInclude(o=>o.OrderLines).
                 ThenInclude(ol=>ol.Pizza).ThenInclude(p=>p.Ingredients).Include(d=>d.Order).
                 ThenInclude(o=>o.OrderLines).ThenInclude(ol=>ol.Ingredients).FirstOrDefaultAsync(p => p.Id == id);

@@ -22,7 +22,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
         public async Task<Order> GetOrderByIdAsync(int id)
         {
             return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients)
-                .Include(o=>o.Deliveries)
+                .Include(o => o.Deliveries).Include(o => o.DelStatus).Include(o =>o.Client).Include(o=>o.Manager)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
@@ -40,9 +40,11 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             //    ol.Order.Status == OrderStatus.Pending &&
             //    ol.Ingredients.Any(oli => oli.IngredientId == ingredientId))
             //.ToListAsync();
-            return await _context.OrderLines.Include(ol => ol.Order).Where(ol => 
-            ol.Order.DelStatusId == (int)OrderStatusEnum.NotPlaced &&
-            ol.Ingredients.Any(oli=>oli.Id==ingredientId)).ToListAsync();
+            var result = await _context.OrderLines.Include(ol => ol.Order).ToListAsync();
+            var necOrders = result.Where(ol => 
+                ol.Order.DelStatusId == (int)OrderStatusEnum.NotPlaced &&
+                ol.Ingredients.Any(oli=>oli.Id==ingredientId));
+            return necOrders;
         }
 
 
@@ -81,7 +83,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             {
                 if (order.OrderLines.Any())
                 {
-                    throw new InvalidOperationException("Order cannot be deleted because it has related order lines.");
+                    throw new InvalidOperationException("Заказ не может быть удален, потому что он связан со строками.");
                 }
 
                 _context.Orders.Remove(order);

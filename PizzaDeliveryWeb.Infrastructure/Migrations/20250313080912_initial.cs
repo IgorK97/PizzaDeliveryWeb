@@ -326,7 +326,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
-                column: "UserId");
+                column: "UserId");//?
         }
 
         /// <inheritdoc />

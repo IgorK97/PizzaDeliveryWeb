@@ -37,7 +37,8 @@ namespace PizzaDeliveryWeb.Application.Services
                 Small = t.Small,
                 Medium = t.Medium,
                 Big = t.Big,
-                PricePerGram = t.PricePerGram
+                PricePerGram = t.PricePerGram,
+                Image=t.Image
             });
         }
 
@@ -53,7 +54,8 @@ namespace PizzaDeliveryWeb.Application.Services
                 Small = t.Small,
                 Medium = t.Medium,
                 Big = t.Big,
-                PricePerGram = t.PricePerGram
+                PricePerGram = t.PricePerGram,
+                Image=t.Image
             };
         }
            
@@ -66,9 +68,11 @@ namespace PizzaDeliveryWeb.Application.Services
                 Small = ingrDto.Small,
                 Medium = ingrDto.Medium,
                 Big = ingrDto.Big,
-                PricePerGram = ingrDto.PricePerGram
+                PricePerGram = ingrDto.PricePerGram,
+                Image=ingrDto.Image
             };
             await _ingrRepository.AddIngredientAsync(t);
+            ingrDto.Id = t.Id;
         }
 
         public async Task UpdateIngredientAsync(IngredientDto ingrDto)
@@ -82,6 +86,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 res.Medium = ingrDto.Medium;
                 res.Big = ingrDto.Big;
                 res.PricePerGram = ingrDto.PricePerGram;
+                res.Image = ingrDto.Image;
                 await _ingrRepository.UpdateIngredientAsync(res);
 
 
@@ -112,11 +117,9 @@ namespace PizzaDeliveryWeb.Application.Services
 
         private async Task RecalculateOrderLinePriceAsync(OrderLine orderLine, Ingredient ingr)
         {
-            // Получаем все ингредиенты строки заказа с актуальными ценами
             //var ingredientsInLine = await _orderRepository
             //    .GetOrderLineIngredientsAsync(orderLine.Id);
 
-            // Пересчитываем общий вес и стоимость
             List<PizzaSize> ps = await _pizzaSizeRepository.GetPizzaSizesAsync();
             //Order order = await _orderRepository.GetOrderByIdAsync(orderLine.Id);
             //double totalWeight = orderLine.Pizza.BaseWeight; // Вес пиццы без ингредиентов
@@ -128,7 +131,6 @@ namespace PizzaDeliveryWeb.Application.Services
             //order.Weight -= oldWeight;
             foreach (var oli in orderLine.Ingredients)
             {
-                // Если ингредиент был изменен, берем новые значения
                 //if (oli.Id == ingr.Id)
                 //{
                 //var currentIngredient = await _ingrRepository
@@ -153,7 +155,6 @@ namespace PizzaDeliveryWeb.Application.Services
             }
             elementPrice *= orderLine.Quantity;
             elementWeight *= orderLine.Quantity;
-            // Обновляем строку заказа
             orderLine.Weight = elementWeight;
             orderLine.Price = elementPrice;
             //order.Price += elementPrice;

@@ -28,7 +28,7 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error getting order lines: {ex.Message}");
+                return BadRequest($"Ошибка при получении строк заказов: {ex.Message}");
             }
         }
 
@@ -44,7 +44,7 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound($"Error getting order line with ID {id}: {ex.Message}");
+                return NotFound($"Ошибка при получении строки заказа с ID {id}: {ex.Message}");
             }
         }
 
@@ -55,14 +55,13 @@ namespace PizzaDeliveryWeb.API.Controllers
         {
             try
             {
-                // Вызываем сервис для создания строки заказа
                 await _orderLineService.AddOrderLineAsync(orderLineDto);
                 return Ok();
                 //return CreatedAtAction(nameof(GetOrderLineByIdAsync), new { id = createdOrderLine.Id }, createdOrderLine);
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error creating order line: {ex.Message}");
+                return BadRequest($"Ошибка при создании строки заказа: {ex.Message}");
             }
         }
 
@@ -79,11 +78,11 @@ namespace PizzaDeliveryWeb.API.Controllers
                 }
 
                 await _orderLineService.UpdateOrderLineAsync(orderLineDto);
-                return NoContent(); // Возвращает 204 статус - успешно обновлено
+                return NoContent(); 
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error updating order line: {ex.Message}");
+                return BadRequest($"Ошибка при обновлении строки заказа: {ex.Message}");
             }
         }
 
@@ -94,11 +93,11 @@ namespace PizzaDeliveryWeb.API.Controllers
             try
             {
                 await _orderLineService.DeleteOrderLineAsync(id);
-                return NoContent(); // Возвращает 204 статус - успешно удалено
+                return NoContent(); 
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error deleting order line: {ex.Message}");
+                return BadRequest($"Ошибка при удалении строки заказа: {ex.Message}");
             }
         }
     }

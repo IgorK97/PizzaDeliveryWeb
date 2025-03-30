@@ -28,6 +28,7 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
         /// <summary>
         /// Получить список заказов (по роли пользователя)
+        /// для клиента только ИСТОРИЯ ЗАКАЗОВ (пока что)
         /// </summary>
         /// <returns></returns>
         // GET: api/<OrdersController>
@@ -40,9 +41,11 @@ namespace PizzaDeliveryWeb.API.Controllers
                 return Unauthorized(new { message = "Вы Гость. Пожалуйста, выполните вход" });
             }
             var roles = User.Claims
-                .Where(c => c.Type == "SelectedRole")
+                .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value)
                 .ToList();
+        //    var myr = User.Claims
+        //.FirstOrDefault(c => c.Type == "SelectedRole")?.Value;
             IEnumerable<OrderDto> orders;
             if (roles.Contains("client"))
             {

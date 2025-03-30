@@ -319,8 +319,8 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    //b.Property<string>("UserId")
+                    //    .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Weight")
                         .HasColumnType("decimal(10,2)");
@@ -335,7 +335,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
 
                     b.HasIndex("OrderTime");
 
-                    b.HasIndex("UserId");
+                    //b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
