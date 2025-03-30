@@ -122,7 +122,7 @@ namespace PizzaDeliveryWeb.Application.Services
             }
         }
 
-        public async Task UpdatePizzaAsync(CreatePizzaDto pizzaDto)
+        public async Task UpdatePizzaAsync(PizzaDto pizzaDto)
         {
             var pizza = await _pizzaRepository.GetPizzaByIdAsync(pizzaDto.Id);
             if (pizza != null)

@@ -85,31 +85,46 @@ namespace PizzaWebAPI.Controllers
         // PUT api/<PizzasController>/5
         //[Authorize(Roles ="admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePizza(int id, [FromForm] CreatePizzaDto pizzaDto, IFormFile? file)
+        public async Task<IActionResult> UpdatePizza(int id, [FromForm] CreateNewPizzaDto pizzaDto)
         {
             var pizza = await _pizzaService.GetPizzaByIdAsync(id);
             if (pizza == null)
             {
                 return NotFound();
             }
-            if (file != null)
+            //pizza.Name = pizzaDto.Name;
+            //pizza.Description = pizzaDto.Description;
+            //pizza.IsAvailable = pizzaDto.IsAvailable;
+            PizzaDto pDto = new PizzaDto
+            {
+                Id=id,
+                Name = pizzaDto.Name,
+                Description = pizzaDto.Description,
+                IsAvailable = pizzaDto.IsAvailable,
+                Image=pizza.Image
+            };
+            if (pizzaDto.Image != null)
             {
                 var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pizza.Image.TrimStart('/'));
                 if (System.IO.File.Exists(oldImagePath))
                 {
                     System.IO.File.Delete(oldImagePath);
                 }
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(pizzaDto.Image.FileName);
                 var newImagePath = Path.Combine("wwwroot", "images", "pizzas", fileName);
                 using (var stream = new FileStream(newImagePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                    await pizzaDto.Image.CopyToAsync(stream);
                 }
-                pizza.Image = $"/images/pizzas/{fileName}";
+                pDto.Image = $"/images/pizzas/{fileName}";
             }
-            pizzaDto.Image = pizza.Image;
-            await _pizzaService.UpdatePizzaAsync(pizzaDto);
-            return NoContent();
+            //pDto.Image = pizza.Image;
+            await _pizzaService.UpdatePizzaAsync(pDto);
+
+            return Ok(pDto);
+            //return CreatedAtAction(nameof(GetPizza), new { id = pizzaDto.Id }, pizzaDto);
+            //return NoContent();
+
             //if (id != pizzaDto.Id) return BadRequest();
             //await _pizzaService.UpdatePizzaAsync(pizzaDto);
             //return NoContent();
@@ -117,7 +132,7 @@ namespace PizzaWebAPI.Controllers
 
 
         // DELETE api/<PizzasController>/5
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePizza(int id)
         {

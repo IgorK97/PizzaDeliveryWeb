@@ -54,7 +54,7 @@ namespace ProjectManagement.Infrastructure.Data
                     Image = "/images/pizzas/hawaii.png"},
                 new Pizza { Name = "Пепперони", IsAvailable = true, Description = "Пикантная пепперони, моцарелла, свежие томаты, фирменный томатный соус" , Image = "/images/pizzas/pepperoni.png"},
                 new Pizza { Name = "Лососевая", IsAvailable = true, 
-                    Description = "Моцарелла, лосось, креветки, томаты, красный лук, брокколи, базилик" , Image = "/images/pizzas/salmon.ong"},
+                    Description = "Моцарелла, лосось, креветки, томаты, красный лук, брокколи, базилик" , Image = "/images/pizzas/salmon.png"},
                 new Pizza { Name = "Вегетарианская", IsAvailable = true, Description = "Шампиньоны, томаты, перец, красный лук, брынза, моцарелла, томатный соус, итальянские травы" , 
                     Image = "/images/pizzas/vegetarian.png"},
                 new Pizza { Name = "Пользовательская", IsAvailable = true, Description = "Не нашли пиццу, которую хотели? Тогда создайте свою!" , Image = "/images/pizzas/user.png"}
