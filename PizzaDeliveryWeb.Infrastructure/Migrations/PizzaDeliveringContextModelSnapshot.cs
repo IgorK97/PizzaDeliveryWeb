@@ -319,9 +319,6 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    //b.Property<string>("UserId")
-                    //    .HasColumnType("nvarchar(450)");
-
                     b.Property<decimal>("Weight")
                         .HasColumnType("decimal(10,2)");
 
@@ -334,8 +331,6 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
                     b.HasIndex("ManagerId");
 
                     b.HasIndex("OrderTime");
-
-                    //b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -653,7 +648,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
             modelBuilder.Entity("PizzaDeliveryWeb.Domain.Entities.Order", b =>
                 {
                     b.HasOne("PizzaDeliveryWeb.Domain.Entities.User", "Client")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -668,10 +663,6 @@ namespace PizzaDeliveryWeb.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("PizzaDeliveryWeb.Domain.Entities.User", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Client");
 

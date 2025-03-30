@@ -18,7 +18,7 @@ using ProjectManagement.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PizzaDeliveringContext>
-    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaDeliveringWeb3003")));
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaDeliveringWebNewDb")));
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<PizzaDeliveringContext>()
     .AddDefaultTokenProviders();

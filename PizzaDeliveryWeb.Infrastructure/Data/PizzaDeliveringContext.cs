@@ -65,7 +65,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Data
 
             builder.Entity<Order>()
                 .HasOne(t => t.Client)
-                .WithMany()
+                .WithMany(c=>c.Orders)
                 .HasForeignKey(t => t.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 

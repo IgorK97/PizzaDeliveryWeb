@@ -53,7 +53,8 @@ namespace ProjectManagement.Api.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, 
+                model.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
@@ -71,7 +72,7 @@ namespace ProjectManagement.Api.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return Ok(new { Message = "User logged out successfully" });
+            return Ok(new { Message = "Пользователь успешно вышел" });
         }
 
         [HttpGet("validate")]
