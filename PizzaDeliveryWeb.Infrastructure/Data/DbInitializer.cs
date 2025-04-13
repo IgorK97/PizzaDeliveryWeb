@@ -20,8 +20,10 @@ namespace ProjectManagement.Infrastructure.Data
                 await roleManager.CreateAsync(new IdentityRole("admin"));
                 await roleManager.CreateAsync(new IdentityRole("client"));
                 await roleManager.CreateAsync(new IdentityRole("courier"));
+                await roleManager.CreateAsync(new IdentityRole("manager"));
+                await roleManager.CreateAsync(new IdentityRole("moderator"));
             }
-
+            
             // Проверяем наличие пользователей
             if (!userManager.Users.Any())
             {

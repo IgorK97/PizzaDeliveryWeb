@@ -43,8 +43,13 @@ namespace ProjectManagement.Api.Controllers
             if (result.Succeeded)
             {
                 //await _userManager.AddToRoleAsync(user, model.Role);
-                await _userManager.AddToRoleAsync(user, "client");
-                return Ok(new { Message = "ѕользователь успешно зарегистрировалс€" });
+                var roleResult = await _userManager.AddToRoleAsync(user, "client");
+                if (!roleResult.Succeeded)
+                    return BadRequest(roleResult.Errors);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                var token = GenerateJwtToken(user);
+                return Ok(new { Token = token, userName = user.UserName, userRole = "client" });
+                //return Ok(new { Message = "ѕользователь успешно зарегистрировалс€" });
             }
             return BadRequest(result.Errors);
         }
