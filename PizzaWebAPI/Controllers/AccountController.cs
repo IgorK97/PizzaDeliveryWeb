@@ -44,7 +44,7 @@ namespace ProjectManagement.Api.Controllers
             {
                 //await _userManager.AddToRoleAsync(user, model.Role);
                 await _userManager.AddToRoleAsync(user, "client");
-                return Ok(new { Message = "User registered successfully" });
+                return Ok(new { Message = "Пользователь успешно зарегистрировался" });
             }
             return BadRequest(result.Errors);
         }
@@ -58,11 +58,13 @@ namespace ProjectManagement.Api.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
-                var roles = await _userManager.GetRolesAsync(user);
-                if (!roles.Contains(model.SelectedRole))
-                    return BadRequest("Выбранная роль указана неверно");
-                var token = GenerateJwtToken(user, model.SelectedRole);
-                return Ok(new { Token = token });
+                var token = GenerateJwtToken(user);
+                IList<string> roles = await _userManager.GetRolesAsync(user);
+                string userRole = roles.FirstOrDefault();
+                //var roles = await _userManager.GetRolesAsync(user);
+                //if (!roles.Contains(model.SelectedRole))
+                //    return BadRequest("Выбранная роль указана неверно");
+                return Ok(new { Token = token, userName = user.UserName, userRole });
             }
             return Unauthorized();
         }
@@ -89,14 +91,13 @@ namespace ProjectManagement.Api.Controllers
 
         }
 
-        private string GenerateJwtToken(User user, string selectedRole)
+        private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim("SelectedRole", selectedRole.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var roles = _userManager.GetRolesAsync(user).Result;
@@ -116,6 +117,34 @@ namespace ProjectManagement.Api.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        //private string GenerateJwtToken(User user, string selectedRole)
+        //{
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+        //        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //        new Claim("SelectedRole", selectedRole.ToString())
+        //    };
+
+        //    var roles = _userManager.GetRolesAsync(user).Result;
+        //    claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+
+        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //    var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
+
+        //    var token = new JwtSecurityToken(
+        //        issuer: _configuration["Jwt:Issuer"],
+        //        audience: _configuration["Jwt:Audience"],
+        //        claims: claims,
+        //        expires: expires,
+        //        signingCredentials: creds
+        //    );
+
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
     }
 
 }

@@ -22,7 +22,7 @@ namespace PizzaDeliveryWeb.Application.Services
         {
             var review = await _reviewRepository.GetReviewByIdAsync(id);
             if (review == null)
-                throw new Exception("Review not found.");
+                throw new Exception("Такого отзыва нет.");
 
             return new ReviewDto
             {

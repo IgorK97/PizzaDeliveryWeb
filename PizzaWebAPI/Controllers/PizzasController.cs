@@ -39,8 +39,8 @@ namespace PizzaWebAPI.Controllers
             {
                 return NotFound();
             }
-            var baseUrl = $"{Request.Scheme}://{Request.Host}";
-            pizza.Image = pizza.Image != "" ? $"{baseUrl}{pizza.Image}" : "";
+            //var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            //pizza.Image = pizza.Image != "" ? $"{baseUrl}{pizza.Image}" : "";
             return Ok(pizza);
         }
         [HttpGet("{id}/ingredients")]
@@ -55,26 +55,27 @@ namespace PizzaWebAPI.Controllers
         // POST api/<PizzasController>
         //[Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<ActionResult<PizzaDto>> CreatePizza([FromForm]CreateNewPizzaDto pizzaDto)
+        public async Task<ActionResult<PizzaDto>> CreatePizza(/*[FromForm]*/ [FromBody]CreateNewPizzaDto pizzaDto)
         {
-            string? imagePath = null;
-            if (pizzaDto.Image != null)
+            
+            string fileName;
+            if (string.IsNullOrEmpty(pizzaDto.Image))
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(pizzaDto.Image.FileName);
-                var path = Path.Combine("wwwroot", "images", "pizzas", fileName);
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await pizzaDto.Image.CopyToAsync(stream);
-                }
-                imagePath = $"/images/pizzas/{fileName}";
+                return BadRequest("Изображение не передано");
             }
+            var imageBytes = Convert.FromBase64String(pizzaDto.Image.Split(',')[1]);
+            var uploadsFolder = Path.Combine("wwwroot", "images", "pizzas");
+            Directory.CreateDirectory(uploadsFolder);
+            fileName = $"{Guid.NewGuid()}.png";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
             CreatePizzaDto pDto = new CreatePizzaDto
             {
                 Id = 0,
                 Name = pizzaDto.Name,
                 Description=pizzaDto.Description,
                 IsAvailable=pizzaDto.IsAvailable/*=="true"?true:false*/,
-                Image=imagePath
+                Image=$"/images/pizzas/{fileName}"
             };
             //pizzaDto.ImageUrl = imagePath;
             await _pizzaService.AddPizzaAsync(pDto);
@@ -85,16 +86,13 @@ namespace PizzaWebAPI.Controllers
         // PUT api/<PizzasController>/5
         //[Authorize(Roles ="admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePizza(int id, [FromForm] CreateNewPizzaDto pizzaDto)
+        public async Task<IActionResult> UpdatePizza(int id, /*[FromForm]*/ CreateNewPizzaDto pizzaDto)
         {
             var pizza = await _pizzaService.GetPizzaByIdAsync(id);
             if (pizza == null)
             {
                 return NotFound();
             }
-            //pizza.Name = pizzaDto.Name;
-            //pizza.Description = pizzaDto.Description;
-            //pizza.IsAvailable = pizzaDto.IsAvailable;
             PizzaDto pDto = new PizzaDto
             {
                 Id=id,
@@ -103,20 +101,25 @@ namespace PizzaWebAPI.Controllers
                 IsAvailable = pizzaDto.IsAvailable,
                 Image=pizza.Image
             };
-            if (pizzaDto.Image != null)
+            if (!string.IsNullOrEmpty(pizzaDto.Image))
             {
+                
                 var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pizza.Image.TrimStart('/'));
                 if (System.IO.File.Exists(oldImagePath))
                 {
                     System.IO.File.Delete(oldImagePath);
                 }
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(pizzaDto.Image.FileName);
-                var newImagePath = Path.Combine("wwwroot", "images", "pizzas", fileName);
-                using (var stream = new FileStream(newImagePath, FileMode.Create))
-                {
-                    await pizzaDto.Image.CopyToAsync(stream);
-                }
+                var uploadsFolder = Path.Combine("wwwroot","images","pizzas");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}.png";
                 pDto.Image = $"/images/pizzas/{fileName}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                var imageBytes = Convert.FromBase64String(pizzaDto.Image.Split(',')[1]);
+                await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+               
+                //pDto.Image = $"/images/pizzas/{fileName}";
             }
             //pDto.Image = pizza.Image;
             await _pizzaService.UpdatePizzaAsync(pDto);
@@ -161,98 +164,5 @@ namespace PizzaWebAPI.Controllers
             //    return Conflict(new { message = ex.Message });
             //}
         }
-        //[Authorize (Roles = "admin")]
-        //[HttpGet("pizzas/{id}/image")]
-        //public async Task<ActionResult<PizzaDto>> GetPizzaImage(int id)
-        //{
-        //    var pizza = await _pizzaService.GetPizzaByIdAsync(id);
-
-        //    if (pizza == null || string.IsNullOrEmpty(pizza.Image))
-        //        return NotFound();
-
-        //    // Локальный файл
-        //    var filePath = Path.Combine(_env.WebRootPath, pizza.Image.TrimStart('/'));
-        //    if (!System.IO.File.Exists(filePath))
-        //        return NotFound();
-
-        //    return PhysicalFile(filePath, "image/jpeg"); // или другой MIME-тип
-        //}
-        //[Authorize (Roles = "admin")]
-        //[HttpPost("pizzas/{id}/upload-image")]
-        //public async Task<IActionResult> UploadImage(int id, IFormFile file)
-        //{
-        //    // Валидация файла
-        //    if (file == null || file.Length == 0)
-        //        return BadRequest("Файл не выбран.");
-
-        //    if (file.Length > 5 * 1024 * 1024) // Ограничение: 5 МБ
-        //        return BadRequest("Файл слишком большой.");
-
-        //    var allowedMimeTypes = new[] { "image/jpeg", "image/png" };
-        //    if (!allowedMimeTypes.Contains(file.ContentType))
-        //        return BadRequest("Недопустимый формат файла.");
-
-        //    // Поиск пиццы
-        //    var pizza = await _pizzaService.GetPizzaByIdAsync(id);
-        //    if (pizza == null)
-        //        return NotFound("Пицца не найдена.");
-
-        //    // Генерация уникального имени файла
-        //    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        //    var folderPath = Path.Combine(_env.WebRootPath, "images/pizzas");
-        //    Directory.CreateDirectory(folderPath); // Создать папку, если её нет
-        //    var filePath = Path.Combine(folderPath, fileName);
-
-        //    // Сохранение файла
-        //    using (var stream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await file.CopyToAsync(stream);
-        //    }
-
-        //    // Обновление записи в БД
-        //    pizza.Image = $"/images/pizzas/{fileName}";
-        //    List<int> ingrs = new List<int>();
-        //    foreach (IngredientDto i in pizza.Ingredients)
-        //        ingrs.Add(i.Id);
-        //    CreatePizzaDto updatedPizza = new CreatePizzaDto
-        //    {
-        //        Id=pizza.Id,
-        //        Name = pizza.Name,
-        //        Description = pizza.Description,
-        //        Image = pizza.Image,
-        //        Ingredients = ingrs
-        //    };
-        //    await _pizzaService.UpdatePizzaAsync(updatedPizza);
-
-        //    return Ok(new { ImageUrl = pizza.Image });
-        //}
-        //[Authorize(Roles = "admin")]
-        //[HttpDelete("pizzas/{id}/image")]
-        //public async Task<IActionResult> DeleteImage(int id)
-        //{
-        //    var pizza = await _pizzaService.GetPizzaByIdAsync(id);
-        //    if (pizza == null || string.IsNullOrEmpty(pizza.Image))
-        //        return NotFound();
-
-        //    var filePath = Path.Combine(_env.WebRootPath, pizza.Image.TrimStart('/'));
-        //    if (System.IO.File.Exists(filePath))
-        //        System.IO.File.Delete(filePath);
-
-        //    pizza.Image = "";
-        //    List<int> ingrs = new List<int>();
-        //    foreach (IngredientDto i in pizza.Ingredients)
-        //        ingrs.Add(i.Id);
-        //    CreatePizzaDto updatedPizza = new CreatePizzaDto
-        //    {
-        //        Id = pizza.Id,
-        //        Name = pizza.Name,
-        //        Description = pizza.Description,
-        //        Image = pizza.Image,
-        //        Ingredients = ingrs
-        //    };
-        //    await _pizzaService.UpdatePizzaAsync(updatedPizza);
-
-        //    return NoContent();
-        //}
     }
 }

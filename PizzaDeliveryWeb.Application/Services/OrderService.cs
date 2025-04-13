@@ -574,8 +574,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
         public async Task<OrderDto> SubmitOrderAsync(ShortOrderDto orderDto)
         {
-            //try
-            //{
+            
                 var order = await _orderRepository.GetOrderByIdAsync(orderDto.Id);
                 if (order == null)
                     throw new KeyNotFoundException("Заказ не найден");

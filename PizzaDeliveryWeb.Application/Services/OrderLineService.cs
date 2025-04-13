@@ -294,7 +294,7 @@ namespace PizzaDeliveryWeb.Application.Services
             catch (InvalidOperationException ex)
             {
 
-                throw new ApplicationException($"Error deleting orderLine: {ex.Message}", ex);
+                throw new ApplicationException($"Ошибка при удалении строки: {ex.Message}", ex);
             }
         }
     }

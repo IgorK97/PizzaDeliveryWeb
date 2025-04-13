@@ -118,7 +118,7 @@ namespace PizzaDeliveryWeb.Application.Services
             }
             catch(Exception ex)
             {
-                throw new ApplicationException($"Error adding pizza: {ex.Message}", ex);
+                throw new ApplicationException($"Ошибка при добавлении пиццы: {ex.Message}", ex);
             }
         }
 
@@ -145,7 +145,7 @@ namespace PizzaDeliveryWeb.Application.Services
             catch (InvalidOperationException ex)
             {
                
-                throw new ApplicationException($"Error deleting pizza: {ex.Message}", ex);
+                throw new ApplicationException($"Ошибка при удалении пиццы: {ex.Message}", ex);
             }
         }
     }

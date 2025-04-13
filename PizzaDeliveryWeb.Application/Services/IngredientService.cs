@@ -93,14 +93,12 @@ namespace PizzaDeliveryWeb.Application.Services
                 var affectedOrderLines = await _orderRepository
             .GetNotPlacedOrderLinesWithIngredientAsync(ingrDto.Id);
 
-                // Пересчитываем стоимость для каждой строки заказа
                 foreach (var orderLine in affectedOrderLines)
                 {
                     await RecalculateOrderLinePriceAsync(orderLine, res);
                     
                 }
 
-                // Обновляем общую сумму заказов
                 var affectedOrders = affectedOrderLines
                     .Select(ol => ol.Order)
                     .Distinct()

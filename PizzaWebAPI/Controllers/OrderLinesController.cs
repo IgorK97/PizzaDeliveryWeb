@@ -53,16 +53,10 @@ namespace PizzaDeliveryWeb.API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrderLineDto>> CreateOrderLineAsync([FromBody] CreateOrderLineDto orderLineDto)
         {
-            try
-            {
-                await _orderLineService.AddOrderLineAsync(orderLineDto);
-                return Ok();
-                //return CreatedAtAction(nameof(GetOrderLineByIdAsync), new { id = createdOrderLine.Id }, createdOrderLine);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Ошибка при создании строки заказа: {ex.Message}");
-            }
+            await _orderLineService.AddOrderLineAsync(orderLineDto);
+            return Ok();
+            //return CreatedAtAction(nameof(GetOrderLineByIdAsync), new { id = createdOrderLine.Id }, createdOrderLine);
+          
         }
 
         // PUT api/<OrderLinesController>/5
@@ -90,15 +84,9 @@ namespace PizzaDeliveryWeb.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrderLineAsync(int id)
         {
-            try
-            {
-                await _orderLineService.DeleteOrderLineAsync(id);
-                return NoContent(); 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Ошибка при удалении строки заказа: {ex.Message}");
-            }
+            await _orderLineService.DeleteOrderLineAsync(id);
+            return NoContent();
+
         }
     }
 }
