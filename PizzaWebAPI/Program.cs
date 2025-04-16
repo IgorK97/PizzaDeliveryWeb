@@ -68,6 +68,7 @@ builder.Services.AddScoped<IPizzaSizeRepository, PizzaSizeRepository>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<PizzaService>();
 builder.Services.AddScoped<IngredientService>();
 builder.Services.AddScoped<OrderService>();

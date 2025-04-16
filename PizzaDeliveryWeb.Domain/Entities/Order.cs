@@ -17,7 +17,7 @@ namespace PizzaDeliveryWeb.Domain.Entities
         IsBeingPrepared,
         IsBeingTransferred,
         HasBeenTransferred,
-        IsCanceled,
+        IsCancelled,
         IsDelivered,
         IsNotDelivered
     }

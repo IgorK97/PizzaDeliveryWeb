@@ -37,6 +37,7 @@ namespace PizzaDeliveryWeb.Domain.Entities
         public bool IsAvailable { get; set; }
         [Required]
         public string Image { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public ICollection<Pizza> Pizzas { get; set; } = new List<Pizza>();
         public ICollection<OrderLine> OrderLines { get; set; }=new List<OrderLine>();

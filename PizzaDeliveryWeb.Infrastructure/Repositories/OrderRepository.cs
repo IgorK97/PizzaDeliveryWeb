@@ -21,15 +21,19 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
         public async Task<Order> GetOrderByIdAsync(int id)
         {
-            return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients)
-                .Include(o => o.Deliveries).Include(o => o.DelStatus).Include(o =>o.Client).Include(o=>o.Manager)
+            return await _context.Orders
+                .Include(p => p.OrderLines)
+                    .ThenInclude(ol => ol.Pizza)
+                    .ThenInclude(p => p.Ingredients)
+                .Include(o => o.Deliveries)
+                .Include(o => o.DelStatus)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId)
-        {
-            return await _context.OrderLines.Where(t => t.OrderId == orderId).ToListAsync();
-        }
+        //public async Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId)
+        //{
+        //    return await _context.OrderLines.Where(t => t.OrderId == orderId).ToListAsync();
+        //}
         public async Task<IEnumerable<OrderLine>> GetNotPlacedOrderLinesWithIngredientAsync(int ingredientId)
         {
             //    return await _context.OrderLines
@@ -40,34 +44,75 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             //    ol.Order.Status == OrderStatus.Pending &&
             //    ol.Ingredients.Any(oli => oli.IngredientId == ingredientId))
             //.ToListAsync();
-            var result = await _context.OrderLines.Include(ol => ol.Order).ToListAsync();
-            var necOrders = result.Where(ol => 
-                ol.Order.DelStatusId == (int)OrderStatusEnum.NotPlaced &&
-                ol.Ingredients.Any(oli=>oli.Id==ingredientId));
-            return necOrders;
+            return await _context.OrderLines
+                .AsNoTracking()
+                .Include(ol => ol.Order)
+                .Include(ol=>ol.Pizza)
+                    .ThenInclude(p=>p.Ingredients)
+                    .Where(ol=>ol.Order.DelStatusId==(int)OrderStatusEnum.NotPlaced &&
+                    ol.Pizza.Ingredients.Any(i=>i.Id==ingredientId))
+                .ToListAsync();
+
+            //var necOrders = result.Where(ol => 
+            //    ol.Order.DelStatusId == (int)OrderStatusEnum.NotPlaced &&
+            //    ol.Ingredients.Any(oli=>oli.Id==ingredientId));
+            //return necOrders;
         }
 
 
-        public async Task<List<Delivery>> GetDeliveriesByOrderIdAsync(int orderId)
-        {
-            return await _context.Deliveries.Where(t => t.OrderId == orderId).ToListAsync();
-        }
+        //public async Task<List<Delivery>> GetDeliveriesByOrderIdAsync(int orderId)
+        //{
+        //    return await _context.Deliveries.Where(t => t.OrderId == orderId).ToListAsync();
+        //}
 
-        public async Task<IEnumerable<Order>> GetOrdersAsync()
+        public async Task<IEnumerable<Order>> GetOrdersAsync(int ?lastId = null,
+            int pageSize=10)
         {
-            return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients).
-                Include(o=>o.Deliveries).ToListAsync();
+            var query = _context.Orders.AsNoTracking()
+                .OrderBy(o => o.Id)
+                .Take(pageSize);
+            if (lastId.HasValue)
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+            return await query.ToListAsync();
+
+            //return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients).
+            //    Include(o=>o.Deliveries).ToListAsync();
         }
-        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId,
+            int? lastId=null, int pageSize=10)
         {
-            return await _context.Orders.Where(o => o.ClientId == userId).Include(p=>p.OrderLines)
-                .ThenInclude(ol=>ol.Pizza).ThenInclude(p=>p.Ingredients).Include(o=>o.Deliveries).ToListAsync();
+            var query = _context.Orders.AsNoTracking()
+                .Where(o => o.ClientId == userId)
+                .OrderBy(o => o.Id)
+                .Take(pageSize);
+
+            if (lastId.HasValue)
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+
+            return await query.ToListAsync();
+
+            //return await _context.Orders.Where(o => o.ClientId == userId).Include(p=>p.OrderLines)
+            //    .ThenInclude(ol=>ol.Pizza).ThenInclude(p=>p.Ingredients).Include(o=>o.Deliveries).ToListAsync();
         }
 
         public async Task AddOrderAsync(Order order)
         {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch(Exception ex)
+            {
+                await transaction.RollbackAsync();
+                
+            }
         }
 
         public async Task UpdateOrderAsync(Order order)
@@ -76,17 +121,19 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteOrderAsync(int id)
+        public async Task CancelOrderAsync(int id)
         {
-            var order = await _context.Orders.Include(p => p.OrderLines).FirstOrDefaultAsync(p => p.Id == id);
+            var order = await _context.Orders.FindAsync(id);
             if (order != null)
             {
-                if (order.OrderLines.Any())
-                {
-                    throw new InvalidOperationException("Заказ не может быть удален, потому что он связан со строками.");
-                }
+                //if (order.OrderLines.Any())
+                //{
+                //    throw new InvalidOperationException("Заказ не может быть удален, потому что он связан со строками.");
+                //}
 
-                _context.Orders.Remove(order);
+                //_context.Orders.Remove(order);
+
+                order.DelStatusId = (int)OrderStatusEnum.IsCancelled;
                 await _context.SaveChangesAsync();
             }
         }

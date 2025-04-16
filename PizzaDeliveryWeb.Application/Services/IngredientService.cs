@@ -34,6 +34,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 Id = t.Id,
                 Name = t.Name,
                 Description = t.Description,
+                IsAvailable=t.IsAvailable,
                 Small = t.Small,
                 Medium = t.Medium,
                 Big = t.Big,

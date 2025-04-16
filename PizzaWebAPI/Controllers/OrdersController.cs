@@ -33,7 +33,9 @@ namespace PizzaDeliveryWeb.API.Controllers
         /// <returns></returns>
         // GET: api/<OrdersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders(
+            [FromQuery] int? lastId = null,
+            [FromQuery] int pageSize=10)
         {
             User usr = await _userManager.GetUserAsync(HttpContext.User);
             if (usr == null)

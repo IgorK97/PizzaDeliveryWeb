@@ -10,13 +10,14 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
     public interface IOrderRepository
     {
         Task<Order> GetOrderByIdAsync(int id);
-        Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId);
-        Task<List<Delivery>> GetDeliveriesByOrderIdAsync(int orderId);
-        Task<IEnumerable<Order>> GetOrdersAsync();
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
+        //Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId);
+        //Task<List<Delivery>> GetDeliveriesByOrderIdAsync(int orderId);
+        Task<IEnumerable<Order>> GetOrdersAsync(int? lastId=null, int pageSize=10);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId,
+            int? lastId = null, int pageSize=10);
         Task AddOrderAsync(Order order);
         Task UpdateOrderAsync(Order order);
-        Task DeleteOrderAsync(int id);
+        Task CancelOrderAsync(int id);
         Task<IEnumerable<OrderLine>> GetNotPlacedOrderLinesWithIngredientAsync(int ingredientId);
 
     }

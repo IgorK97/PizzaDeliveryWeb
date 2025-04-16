@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Interfaces;
+using PizzaWebAPI.Controllers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,29 +15,57 @@ namespace PizzaDeliveryWeb.API.Controllers
     public class IngredientsController : ControllerBase
     {
         private readonly IngredientService _ingredientService;
-        
-        
-        public IngredientsController(IngredientService ingredientService)
+        private readonly ILogger<IngredientsController> _logger;
+
+
+
+        public IngredientsController(IngredientService ingredientService, ILogger<IngredientsController> logger)
         {
             _ingredientService = ingredientService;
+            _logger = logger;
         }
         
         
         // GET: api/<IngredientsController>
         [HttpGet]
-        public async Task<IEnumerable<IngredientDto>> GetIngredientsAsync()
+        public async Task<ActionResult<IEnumerable<IngredientDto>>> GetIngredientsAsync()
         {
-            var ingredients = await _ingredientService.GetIngredientsAsync();
-            return ingredients.Select(i => new IngredientDto
+
+
+            try
             {
-                Id = i.Id,
-                Name = i.Name,
-                Description = i.Description,
-                Small = i.Small,
-                Medium = i.Medium,
-                Big = i.Big,
-                PricePerGram = i.PricePerGram
-            });
+                _logger.LogInformation("Запрос списка ингредиентов");
+                var ingredients = await _ingredientService.GetIngredientsAsync();
+                //var hasMore = pizzas.Any() && pizzas.Last().Id > lastId;
+                //return Ok(new
+                //{
+                //    Items = pizzas,
+                //    LastId = pizzas.LastOrDefault()?.Id ?? lastId,
+                //    HasMore = hasMore
+                //});
+                return Ok(ingredients);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении ингредиентов");
+                return StatusCode(500, "Ошибка сервера: ошибка при получении ингредиентов :-(");
+            }
+
+
+
+
+
+            //var ingredients = await _ingredientService.GetIngredientsAsync();
+            //return ingredients.Select(i => new IngredientDto
+            //{
+            //    Id = i.Id,
+            //    Name = i.Name,
+            //    Description = i.Description,
+            //    Small = i.Small,
+            //    Medium = i.Medium,
+            //    Big = i.Big,
+            //    PricePerGram = i.PricePerGram
+            //});
         }
 
         // GET api/<IngredientsController>/5
