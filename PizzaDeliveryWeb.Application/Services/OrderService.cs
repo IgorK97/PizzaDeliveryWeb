@@ -433,7 +433,7 @@ namespace PizzaDeliveryWeb.Application.Services
             decimal totalWeight = 0;
             bool needsUpdate = false;
             List<OrderLineDto> oLinesDto = new List<OrderLineDto>();
-            List<PizzaSize> pizzaSizes = await _pizzaSizeRepository.GetPizzaSizesAsync();
+            List<Domain.Entities.PizzaSize> pizzaSizes = await _pizzaSizeRepository.GetPizzaSizesAsync();
             foreach (OrderLine ol in order.OrderLines)
             {
                 var ps = pizzaSizes.FirstOrDefault(ps => ps.Id == ol.PizzaSizeId);

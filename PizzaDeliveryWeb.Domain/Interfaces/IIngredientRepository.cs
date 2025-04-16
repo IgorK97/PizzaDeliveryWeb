@@ -11,6 +11,8 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
     {
         Task<Ingredient> GetIngredientByIdAsync(int id);
         Task<IEnumerable<Ingredient>> GetIngredientsAsync();
+
+        Task<List<Ingredient>> GetIngredientsByIdsAsync(IEnumerable<int> ids);
         Task AddIngredientAsync(Ingredient ingredient);
         Task UpdateIngredientAsync(Ingredient ingredient);
         Task DeleteIngredientAsync(int id);

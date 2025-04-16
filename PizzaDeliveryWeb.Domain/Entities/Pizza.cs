@@ -22,6 +22,7 @@ namespace PizzaDeliveryWeb.Domain.Entities
         public bool IsAvailable { get; set; }
         [Required]
         public string Image { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
         public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();

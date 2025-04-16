@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,18 @@ using ProjectManagement.Infrastructure.Data;
 
 
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.AddEventSourceLogger();
+
+builder.Logging.AddFilter("Microsoft", LogLevel.Warning)
+    .AddFilter("System", LogLevel.Warning)
+    .AddFilter("PizzaDelivery", LogLevel.Debug);
+
 builder.Services.AddDbContext<PizzaDeliveringContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaDeliveringWebNewDb")));
 builder.Services.AddIdentity<User, IdentityRole>()
@@ -63,7 +75,12 @@ builder.Services.AddScoped<OrderLineService>();
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<ReviewService>();
 
-builder.Services.AddControllers();
+//builder.Services.AddAutoMapper(typeof(PizzaProfile));
+
+builder.Services.AddControllers().AddJsonOptions(options=>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

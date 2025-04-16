@@ -118,7 +118,7 @@ namespace PizzaDeliveryWeb.Application.Services
             //var ingredientsInLine = await _orderRepository
             //    .GetOrderLineIngredientsAsync(orderLine.Id);
 
-            List<PizzaSize> ps = await _pizzaSizeRepository.GetPizzaSizesAsync();
+            List<Domain.Entities.PizzaSize> ps = await _pizzaSizeRepository.GetPizzaSizesAsync();
             //Order order = await _orderRepository.GetOrderByIdAsync(orderLine.Id);
             //double totalWeight = orderLine.Pizza.BaseWeight; // Вес пиццы без ингредиентов
             //decimal totalPrice = orderLine.Pizza.BasePrice;  // Базовая цена пиццы

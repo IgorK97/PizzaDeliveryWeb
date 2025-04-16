@@ -14,13 +14,16 @@ namespace PizzaDeliveryProject.Tests.ApplicationTests
     {
         private readonly Mock<IPizzaRepository> _mockPizzaRepository;
         private readonly Mock<IIngredientRepository> _mockIngredientRepository;
+        private readonly Mock<IPizzaSizeRepository> _mockPizzaSizeRepository;
         private readonly PizzaService _pizzaService;
 
         public PizzaServiceTests()
         {
             _mockPizzaRepository = new Mock<IPizzaRepository>();
             _mockIngredientRepository = new Mock<IIngredientRepository>();
-            _pizzaService = new PizzaService(_mockPizzaRepository.Object, _mockIngredientRepository.Object);
+            _mockPizzaSizeRepository = new Mock<IPizzaSizeRepository>();
+            _pizzaService = new PizzaService(_mockPizzaRepository.Object, _mockIngredientRepository.Object,
+                _mockPizzaSizeRepository.Object);
         }
 
         [Fact]
@@ -33,7 +36,7 @@ namespace PizzaDeliveryProject.Tests.ApplicationTests
                 new Pizza { Id = 2, Name = "Pizza 2", Description = "Description 2" }
             };
 
-            _mockPizzaRepository.Setup(repo => repo.GetPizzasAsync()).ReturnsAsync(pizzas);
+            _mockPizzaRepository.Setup(repo => repo.GetPizzasAsync(0, 10, null)).ReturnsAsync(pizzas);
 
             // Act
             var result = await _pizzaService.GetPizzasAsync();

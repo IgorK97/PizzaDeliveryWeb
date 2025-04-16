@@ -30,6 +30,13 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Ingredient>> GetIngredientsByIdsAsync(IEnumerable<int> ids)
+        {
+            return await _context.Ingredients
+                .Where(i => ids.Contains(i.Id))
+                .ToListAsync();
+        }
+
         public async Task AddIngredientAsync(Ingredient ingredient)
         {
 

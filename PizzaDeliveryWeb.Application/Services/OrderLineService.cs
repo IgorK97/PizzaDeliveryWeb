@@ -185,7 +185,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 innerWeight = pizza.Ingredients.Sum(i => i.Big);
             }
 
-            PizzaSize ps = await _pizzaSizeRepository.GetPizzaSizeByIdAsync(oline.PizzaSizeId);
+            Domain.Entities.PizzaSize ps = await _pizzaSizeRepository.GetPizzaSizeByIdAsync(oline.PizzaSizeId);
             basePrice = ps.Price;
             baseWeight = ps.Weight;
 
@@ -262,7 +262,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 innerWeight = pizza.Ingredients.Sum(i => i.Big);
             }
 
-            PizzaSize ps = await _pizzaSizeRepository.GetPizzaSizeByIdAsync(oline.PizzaSizeId);
+            Domain.Entities.PizzaSize ps = await _pizzaSizeRepository.GetPizzaSizeByIdAsync(oline.PizzaSizeId);
             basePrice = ps.Price;
             baseWeight = ps.Weight;
 

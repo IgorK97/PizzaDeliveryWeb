@@ -22,10 +22,39 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
         {
             return await _context.Pizzas.Include(t => t.Ingredients).FirstOrDefaultAsync(t => t.Id == id);
         }
-        public async Task<IEnumerable<Pizza>> GetPizzasAsync()
+        public async Task<IEnumerable<Pizza>> GetPizzasAsync(int lastId=0, int pageSize=10,
+            bool? isAvailable = null)
         {
-            return await _context.Pizzas
-                .Include(p => p.Ingredients)
+
+            var query = _context.Pizzas.Include(t => t.Ingredients).Where(p=>!p.IsDeleted).AsQueryable();
+
+            if (isAvailable.HasValue)
+                query = query.Where(p => p.IsAvailable == isAvailable.Value);
+
+            return await query.OrderBy(p => p.Id)
+                .Where(p => p.Id > lastId)
+                .Take(pageSize)
+                .ToListAsync();
+
+            //return await _context.Pizzas
+            //    .Include(p => p.Ingredients)
+            //    .ToListAsync();
+
+
+
+            //return await _context.Pizzas.
+            //    AsNoTracking().
+            //    Include(p => p.Ingredients).
+            //    OrderBy(p => p.Id).
+            //    Where(p => p.Id > lastId).
+            //    Take(pageSize).
+            //    ToListAsync();
+        }
+
+        public async Task<IEnumerable<Pizza>> GetAllPizzasIncludingDeletedAsync()
+        {
+            return await _context.Pizzas.Include(p => p.Ingredients)
+                .OrderBy(p => p.Id)
                 .ToListAsync();
         }
         public async Task AddPizzaAsync(Pizza pizza)
@@ -39,12 +68,34 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             _context.Entry(pizza).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+        public async Task SetPizzaAvailabilityAsync(int id, bool isAvailable)
+        {
+            var pizza = await _context.Pizzas.FindAsync(id);
+            if(pizza!=null && !pizza.IsDeleted)
+            {
+                pizza.IsAvailable = isAvailable;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task DeletePizzaAsync(int id)
         {
             var pizza = await _context.Pizzas.FindAsync(id);
             if (pizza != null)
             {
-                _context.Pizzas.Remove(pizza);
+                //_context.Pizzas.Remove(pizza);
+                pizza.IsDeleted = true;
+                pizza.IsAvailable = false;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RestorePizzaAsync(int id)
+        {
+            var pizza = await _context.Pizzas.FindAsync(id);
+            if (pizza != null)
+            {
+                pizza.IsAvailable = false;
                 await _context.SaveChangesAsync();
             }
         }

@@ -38,7 +38,9 @@ namespace ProjectManagement.Api.Controllers
             FirstName=model.FirstName,
             LastName=model.Lastname,
             Surname=model.Surname,
-            Address=model.Address};
+            Address=model.Address,
+            Email=model.EmailAddress,
+            PhoneNumber=model.PhoneNumber};
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
