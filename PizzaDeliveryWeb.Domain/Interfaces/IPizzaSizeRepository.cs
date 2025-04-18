@@ -13,6 +13,6 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
         Task<PizzaSize> GetPizzaSizeByIdAsync(int id);
         Task<List<PizzaSize>> GetPizzaSizesAsync();
 
-        
+        Task<PizzaSize> GetPizzaSizeByNameAsync(string name);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,43 +15,137 @@ namespace PizzaDeliveryWeb.Application.Services
     
     public class OrderService
     {
-        //private readonly IPizzaRepository _pizzaRepository;
-        //private readonly IIngredientRepository _ingrRepository;
-        //private readonly IOrderRepository _orderRepository;
-        //private readonly IOrderLineRepository _orderLineRepository;
-        //private readonly IStatusRepository _statusRepository;
-        //private readonly IPizzaSizeRepository _pizzaSizeRepository;
+       
         private readonly IUnitOfWork _uow;
         public OrderService(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
+        // В OrderService
+        public async Task CompleteDeliveryAsync(int orderId, string courierId)
+        {
+            var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
+
+            // Проверяем существование хотя бы одной доставки
+            //if (!order.Deliveries.Any())
+            //    throw new InvalidOperationException("Для заказа не созданы доставки");
+
+            //// Берем последнюю доставку (предполагаем что статусы меняются в хронологическом порядке)
+            //var lastDelivery = order.Deliveries
+            //    .OrderByDescending(d => d.AcceptanceTime)
+            //    .FirstOrDefault();
+
+            // Проверяем назначение на курьера
+            //if (lastDelivery.CourierId != courierId)
+            //    throw new SecurityException("Текущий курьер не назначен на эту доставку");
+
+            //if (lastDelivery.IsSuccessful != null)
+            //    throw new InvalidOperationException("Доставка не в активном статуе");
+
+            //// Обновление статусов
+            //order.DelStatusId = (int)OrderStatusEnum.IsDelivered;
+            //lastDelivery.IsSuccessful = true;
+            //lastDelivery.DeliveryTime = DateTime.UtcNow;
+            //order.CompletionTime = lastDelivery.DeliveryTime;
+
+            await _uow.Save();
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(
+        OrderStatusEnum status,
+        int? lastId,
+        int pageSize)
+        {
+            var orders = await _uow.Orders.GetOrdersByStatusAsync((int)status, lastId, pageSize);
+            return orders.Select(MapToOrderDto);
+        }
+
+        public async Task StartDeliveryAsync(int orderId)
+        {
+            var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
+
+            if (order.DelStatusId != (int)OrderStatusEnum.IsBeingPrepared)
+                throw new InvalidOperationException("Невозможно начать доставку");
+
+            order.DelStatusId = (int)OrderStatusEnum.IsBeingTransferred;
+
+            // Создаем запись доставки
+            var delivery = new Delivery
+            {
+                OrderId = orderId,
+                AcceptanceTime = DateTime.UtcNow
+            };
+
+            await _uow.Deliveries.AddDeliveryAsync(delivery);
+            await _uow.Save();
+        }
+
+        private async Task<Order> ValidateOrderForAcceptance(int orderId)
+        {
+            var order = await _uow.Orders.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+                throw new ArgumentException("Заказ не найден");
+
+            if (order.DelStatusId != (int)OrderStatusEnum.NotPlaced)
+                throw new InvalidOperationException("Невозможно принять заказ в текущем статусе");
+
+            return order;
+        }
+
+        public async Task AcceptOrderAsync(int orderId, string managerId)
+        {
+            await _uow.BeginTransactionAsync();
+            try
+            {
+                var order = await ValidateOrderForAcceptance(orderId);
+                order.ManagerId = managerId;
+                order.DelStatusId = (int)OrderStatusEnum.IsBeingPrepared;
+
+                await _uow.Save();
+                await _uow.CommitTransactionAsync();
+            }
+            catch
+            {
+                await _uow.RollbackTransactionAsync();
+                throw;
+            }
+        }
+
         private OrderDto MapToOrderDto(Order order)
         {
             return new OrderDto
             {
-
+                Id = order.Id,
+                ClientName = FormatClientName(order.Client),
+                FinalPrice = order.Price,
+                Status = ((OrderStatusEnum)order.DelStatusId).ToString(),
+                OrderTime = order.OrderTime,
+                Address = order.Address,
+                AcceptedTime = order.AcceptedTime,
+                CancellationTime = order.CancellationTime,
+                CompletionTime = order.CompletionTime,
+                ClientId = order.ClientId,
+                Weight = order.Weight,
+                OrderLines = order.OrderLines?
+               .Select(ol => new OrderLineShortDto
+               {
+                   Id = ol.Id,
+                   PizzaId = ol.PizzaId,
+                   PizzaName = ol.Pizza.Name,
+                   Size = ol.PizzaSize.Name,
+                   Quantity = ol.Quantity,
+                   Price = ol.Price,
+                   AddedIngredients = ol.Ingredients?
+                   .Select(ai => ai.Name)
+                   .ToList() ?? new List<string>()
+               })
+               .ToList() ?? new List<OrderLineShortDto>()
             };
         }
 
-        private OrderLineDto MapToOrderLineDto(OrderLine orderLine)
-        {
-            return new OrderLineDto
-            {
-            };
-        }
-        private PizzaDto MapToPizzaDto(Pizza pizza)
-        {
-            return new PizzaDto
-            {
-            };
-        }
 
-        private IngredientDto MapToIngredientDto(Ingredient ingredient)
-        {
-            return new IngredientDto { };
-        }
 
         private string FormatClientName(User client)
         {
@@ -67,31 +162,9 @@ namespace PizzaDeliveryWeb.Application.Services
             return orders.Where(filter).Select(MapToOrderDto);
         }
 
-        public async Task<OrderDto> GetOrCreateCartAsync(string userId)
-        {
-            var cart = (await _uow.Orders.GetOrdersByUserIdAsync(userId))
-                .FirstOrDefault(o => o.DelStatusId == (int)OrderStatusEnum.NotPlaced);
+        
 
-            if (cart == null)
-            {
-                cart = await CreateNewCart(userId);
-            }
-
-            return MapToOrderDto(cart);
-        }
-
-        private async Task<Order> CreateNewCart(string userId)
-        {
-            var newCart = new Order
-            {
-                ClientId = userId,
-                DelStatusId = (int)OrderStatusEnum.NotPlaced,
-                // Инициализация остальных полей
-            };
-
-            await _uow.Orders.AddOrderAsync(newCart);
-            return newCart;
-        }
+        
 
         public async Task<IEnumerable<OrderDto>> GetClientOrderHistoryAsync(string userId)
         {
@@ -101,12 +174,20 @@ namespace PizzaDeliveryWeb.Application.Services
         }
 
         // Методы для курьера
+        //public async Task<IEnumerable<OrderDto>> GetCourierActiveOrdersAsync(string courierId)
+        //{
+
+        //    //return await GetOrdersByFilterAsync(
+        //    //    o => o.Deliveries.Any(d => d.CourierId == courierId) &&
+        //    //         o.DelStatusId == (int)OrderStatusEnum.IsBeingTransferred);
+        //}
+
         public async Task<IEnumerable<OrderDto>> GetCourierActiveOrdersAsync(string courierId)
         {
-            return await GetOrdersByFilterAsync(
-                o => o.Deliveries.Any(d => d.CourierId == courierId) &&
-                     o.DelStatusId == (int)OrderStatusEnum.IsBeingTransferred);
+            var orders =  await _uow.Orders.GetOrdersAsync();
+            return orders.Where(o => o.Delivery.CourierId == courierId).Select(MapToOrderDto);
         }
+
 
         // Методы для менеджера
         public async Task<IEnumerable<OrderDto>> GetAllActiveOrdersAsync()
@@ -116,8 +197,14 @@ namespace PizzaDeliveryWeb.Application.Services
                      o.DelStatusId != (int)OrderStatusEnum.IsCancelled);
         }
 
+        public async Task<OrderDto> GetOrderByIdAsync(int id)
+        {
+            var order = await _uow.Orders.GetOrderByIdAsync(id);
+            return MapToOrderDto(order);
+        }
 
-        public async Task SubmitOrderAsync(int orderId)
+
+        public async Task<OrderDto> SubmitOrderAsync(int orderId)
         {
 
 
@@ -128,8 +215,9 @@ namespace PizzaDeliveryWeb.Application.Services
                 var order = await _uow.Orders.GetOrderByIdAsync(orderId);
                 order.DelStatusId = (int)OrderStatusEnum.IsBeingPrepared;
 
-                await _uow.CommitAsync();
+                await _uow.Save();
                 await _uow.CommitTransactionAsync();
+                return MapToOrderDto(order);
             }
             catch
             {
@@ -178,7 +266,7 @@ namespace PizzaDeliveryWeb.Application.Services
         }
 
         // Отмена заказа
-        public async Task CancelOrderAsync(int orderId)
+        public async Task<OrderDto> CancelOrderAsync(int orderId)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(orderId);
             if (!IsCancellable(order))
@@ -188,6 +276,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
             order.DelStatusId = (int)OrderStatusEnum.IsCancelled;
             await _uow.Orders.UpdateOrderAsync(order);
+            return MapToOrderDto(order);
         }
 
         private bool IsCancellable(Order order)

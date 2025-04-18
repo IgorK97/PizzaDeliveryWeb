@@ -41,6 +41,7 @@ namespace PizzaDeliveryWeb.Domain.Entities
         [Required]
         public int DelStatusId { get; set; }
         public string? ManagerId { get; set; }
+        //public int? DeliveryId { get; set; } = null;
         
         
         public DateTime? OrderTime { get; set; }
@@ -53,7 +54,8 @@ namespace PizzaDeliveryWeb.Domain.Entities
 
         public virtual DelStatus DelStatus { get; set; }
         public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
-        public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
+        //public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
+        public virtual Delivery Delivery { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }

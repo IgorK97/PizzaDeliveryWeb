@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,20 +20,47 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             _context = context;
             Orders = new OrderRepository(context);
             OrderLines = new OrderLineRepository(context);
+            Deliveries = new DeliveryRepository(context);
+            PizzaSizes = new PizzaSizeRepository(context);
+            Ingredients = new IngredientRepository(context);
+            Pizzas = new PizzaRepository(context);
         }
 
         public IOrderRepository Orders { get; }
         public IOrderLineRepository OrderLines { get; }
+        public IDeliveryRepository Deliveries { get; }
+        public IPizzaSizeRepository PizzaSizes { get; }
+        public IIngredientRepository Ingredients { get; }
+        public IPizzaRepository Pizzas { get; }
 
-        public async Task<int> CommitAsync() => await _context.SaveChangesAsync();
+        public async Task<int> Save()
+        {
+            return await _context.SaveChangesAsync();
+        }
 
         public async Task BeginTransactionAsync()
-            => _transaction = await _context.Database.BeginTransactionAsync();
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+            //return transaction as IDbTransaction;
+        }
 
         public async Task CommitTransactionAsync()
         {
+            await Save();
             await _transaction.CommitAsync();
             await _transaction.DisposeAsync();
+        }
+        private bool disposed = false;
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+                this.disposed = true;
+            }
         }
 
         public async Task RollbackTransactionAsync()
@@ -41,6 +69,11 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             await _transaction.DisposeAsync();
         }
 
-        public void Dispose() => _context?.Dispose();
+        public void Dispose()
+        {
+            //_context?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

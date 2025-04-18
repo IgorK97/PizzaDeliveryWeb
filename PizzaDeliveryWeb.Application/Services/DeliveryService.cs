@@ -19,139 +19,71 @@ namespace PizzaDeliveryWeb.Application.Services
             _orderRepository = orderRepository;
         }
 
+        private DeliveryDto MapToDeliveryDto(Delivery delivery)
+        {
+            return new DeliveryDto
+            {
+                Id = delivery.Id,
+                AcceptanceTime = delivery.AcceptanceTime,
+                DeliveryTime = delivery.DeliveryTime,
+                Comment = delivery.Comment,
+                CourierName = FormatName(delivery.Courier),
+                IsSuccessful = delivery.IsSuccessful,
+                Order = MapToOrderDto(delivery.Order)
+            };
+        }
+
+        private OrderDto MapToOrderDto(Order order)
+        {
+            return new OrderDto
+            {
+                Id = order.Id,
+                ClientName = FormatName(order.Client),
+                FinalPrice = order.Price,
+                Status = ((OrderStatusEnum)order.DelStatusId).ToString(),
+                OrderTime = order.OrderTime,
+                Address = order.Address,
+                AcceptedTime = order.AcceptedTime,
+                CancellationTime = order.CancellationTime,
+                CompletionTime = order.CompletionTime,
+                ClientId = order.ClientId,
+                Weight = order.Weight,
+                OrderLines = order.OrderLines?
+               .Select(ol => new OrderLineShortDto
+               {
+                   Id = ol.Id,
+                   PizzaId = ol.PizzaId,
+                   PizzaName = ol.Pizza.Name,
+                   Size = ol.PizzaSize.Name,
+                   Quantity = ol.Quantity,
+                   Price = ol.Price,
+                   AddedIngredients = ol.Ingredients?
+                   .Select(ai => ai.Name)
+                   .ToList() ?? new List<string>()
+               })
+               .ToList() ?? new List<OrderLineShortDto>()
+            };
+        }
+
+        private string FormatName(User client)
+        {
+            return $"{client.FirstName} {client.LastName}" +
+                (!string.IsNullOrEmpty(client.Surname) ? $"{client.Surname}" : "");
+        }
+
+
+
+
         public async Task<IEnumerable<DeliveryDto>> GetDeliveriesAsync()
         {
             var deliveries = await _deliveryRepository.GetDeliveriesAsync();
-            return deliveries.Select(d =>
-            {
-
-                List<OrderLineDto> oLinesDto = new List<OrderLineDto>();
-                foreach (OrderLine ol in d.Order.OrderLines)
-                {
-                    List<IngredientDto> ingrs = new List<IngredientDto>();
-                    foreach (Ingredient i in ol.Pizza.Ingredients)
-                        ingrs.Add(new IngredientDto
-                        {
-                            Id = i.Id,
-                            Big = i.Big,
-                            Description = i.Description,
-                            Medium = i.Medium,
-                            Name = i.Name,
-                            PricePerGram = i.PricePerGram,
-                            Small = i.Small
-                        });
-                    oLinesDto.Add(new OrderLineDto
-                    {
-                        Id = ol.Id,
-                        Price = ol.Price,
-                        Quantity = ol.Quantity,
-                        Weight = ol.Weight,
-                        Size = ol.PizzaSize.Name,
-                        Pizza = new PizzaDto
-                        {
-                            Id = ol.PizzaId,
-                            Description = ol.Pizza.Description,
-                            Image = ol.Pizza.Image,
-                            IsAvailable = ol.Pizza.IsAvailable,
-                            Name = ol.Pizza.Name,
-                            Ingredients = ingrs
-                        }
-                    });
-                }
-                return new DeliveryDto
-                {
-
-                    Id = d.Id,
-                    AcceptanceTime = d.AcceptanceTime,
-                    DeliveryTime=d.DeliveryTime,
-                    Comment=d.Comment,
-                    CourierName=d.Courier.FirstName+d.Courier.LastName+(String.IsNullOrEmpty(d.Courier.Surname)?
-                    "":d.Courier.Surname),
-                    IsSuccessful=d.IsSuccessful,
-                    Order=new OrderDto
-                    {
-                        Id=d.Order.Id,
-                        Address=d.Order.Address,
-                        AcceptedTime=d.Order.AcceptedTime,
-                        CancellationTime=d.Order.CancellationTime,
-                        ClientName=d.Order.Client.FirstName+d.Order.Client.LastName+
-                        (String.IsNullOrEmpty(d.Order.Client.Surname)?"":d.Order.Client.Surname),
-                        CompletionTime=d.Order.CompletionTime,
-                        FinalPrice=d.Order.Price,
-                        OrderTime=d.Order.OrderTime,
-                        UserId=d.Order.ClientId,
-                        Status=d.Order.DelStatus.Description,
-                        Weight=d.Order.Weight,
-                        OrderLines=oLinesDto
-                    }
-                };
-            });
+            return deliveries.Select(i=>MapToDeliveryDto(i));
         }
 
         public async Task<DeliveryDto> GetDeliveryByIdAsync(int deliveryId)
         {
             var delivery = await _deliveryRepository.GetDeliveryByIdAsync(deliveryId);
-
-            List<OrderLineDto> oLinesDto = new List<OrderLineDto>();
-            foreach (OrderLine ol in delivery.Order.OrderLines)
-            {
-                List<IngredientDto> ingrs = new List<IngredientDto>();
-                foreach (Ingredient i in ol.Pizza.Ingredients)
-                    ingrs.Add(new IngredientDto
-                    {
-                        Id = i.Id,
-                        Big = i.Big,
-                        Description = i.Description,
-                        Medium = i.Medium,
-                        Name = i.Name,
-                        PricePerGram = i.PricePerGram,
-                        Small = i.Small
-                    });
-                oLinesDto.Add(new OrderLineDto
-                {
-                    Id = ol.Id,
-                    Price = ol.Price,
-                    Quantity = ol.Quantity,
-                    Weight = ol.Weight,
-                    Size = ol.PizzaSize.Name,
-                    Pizza = new PizzaDto
-                    {
-                        Id = ol.PizzaId,
-                        Description = ol.Pizza.Description,
-                        Image = ol.Pizza.Image,
-                        IsAvailable = ol.Pizza.IsAvailable,
-                        Name = ol.Pizza.Name,
-                        Ingredients = ingrs
-                    }
-                });
-            }
-            return new DeliveryDto
-            {
-
-                Id = delivery.Id,
-                AcceptanceTime = delivery.AcceptanceTime,
-                DeliveryTime = delivery.DeliveryTime,
-                Comment = delivery.Comment,
-                CourierName = delivery.Courier.FirstName + delivery.Courier.LastName + (String.IsNullOrEmpty(delivery.Courier.Surname) ?
-                "" : delivery.Courier.Surname),
-                IsSuccessful = delivery.IsSuccessful,
-                Order = new OrderDto
-                {
-                    Id = delivery.Order.Id,
-                    Address = delivery.Order.Address,
-                    AcceptedTime = delivery.Order.AcceptedTime,
-                    CancellationTime = delivery.Order.CancellationTime,
-                    ClientName = delivery.Order.Client.FirstName + delivery.Order.Client.LastName +
-                    (String.IsNullOrEmpty(delivery.Order.Client.Surname) ? "" : delivery.Order.Client.Surname),
-                    CompletionTime = delivery.Order.CompletionTime,
-                    FinalPrice = delivery.Order.Price,
-                    OrderTime = delivery.Order.OrderTime,
-                    UserId = delivery.Order.ClientId,
-                    Status = delivery.Order.DelStatus.Description,
-                    Weight = delivery.Order.Weight,
-                    OrderLines = oLinesDto
-                }
-            };
+            return MapToDeliveryDto(delivery);
 
         }
         //Хотя для одного заказа нужна всего одна доставка, может произойти непредвиденная ситуация,
@@ -159,70 +91,7 @@ namespace PizzaDeliveryWeb.Application.Services
         public async Task<IEnumerable<DeliveryDto>> GetDeliveriesByOrderIdAsync(int orderId)
         {
             var deliveries = await _deliveryRepository.GetDeliveriesByOrderIdAsync(orderId);
-            return deliveries.Select(d =>
-            {
-
-                List<OrderLineDto> oLinesDto = new List<OrderLineDto>();
-                foreach (OrderLine ol in d.Order.OrderLines)
-                {
-                    List<IngredientDto> ingrs = new List<IngredientDto>();
-                    foreach (Ingredient i in ol.Pizza.Ingredients)
-                        ingrs.Add(new IngredientDto
-                        {
-                            Id = i.Id,
-                            Big = i.Big,
-                            Description = i.Description,
-                            Medium = i.Medium,
-                            Name = i.Name,
-                            PricePerGram = i.PricePerGram,
-                            Small = i.Small
-                        });
-                    oLinesDto.Add(new OrderLineDto
-                    {
-                        Id = ol.Id,
-                        Price = ol.Price,
-                        Quantity = ol.Quantity,
-                        Weight = ol.Weight,
-                        Size = ol.PizzaSize.Name,
-                        Pizza = new PizzaDto
-                        {
-                            Id = ol.PizzaId,
-                            Description = ol.Pizza.Description,
-                            Image = ol.Pizza.Image,
-                            IsAvailable = ol.Pizza.IsAvailable,
-                            Name = ol.Pizza.Name,
-                            Ingredients = ingrs
-                        }
-                    });
-                }
-                return new DeliveryDto
-                {
-
-                    Id = d.Id,
-                    AcceptanceTime = d.AcceptanceTime,
-                    DeliveryTime = d.DeliveryTime,
-                    Comment = d.Comment,
-                    CourierName = d.Courier.FirstName + d.Courier.LastName + (String.IsNullOrEmpty(d.Courier.Surname) ?
-                    "" : d.Courier.Surname),
-                    IsSuccessful = d.IsSuccessful,
-                    Order = new OrderDto
-                    {
-                        Id = d.Order.Id,
-                        Address = d.Order.Address,
-                        AcceptedTime = d.Order.AcceptedTime,
-                        CancellationTime = d.Order.CancellationTime,
-                        ClientName = d.Order.Client.FirstName + d.Order.Client.LastName +
-                        (String.IsNullOrEmpty(d.Order.Client.Surname) ? "" : d.Order.Client.Surname),
-                        CompletionTime = d.Order.CompletionTime,
-                        FinalPrice = d.Order.Price,
-                        OrderTime = d.Order.OrderTime,
-                        UserId = d.Order.ClientId,
-                        Status = d.Order.DelStatus.Description,
-                        Weight = d.Order.Weight,
-                        OrderLines = oLinesDto
-                    }
-                };
-            });
+            return deliveries.Select(i => MapToDeliveryDto(i));
         }
 
         public async Task AddDeliveryAsync(CreateDeliveryDto createDeliveryDto)
@@ -254,14 +123,6 @@ namespace PizzaDeliveryWeb.Application.Services
             await _deliveryRepository.UpdateDeliveryAsync(delivery);
         }
 
-        //public async Task DeliverOrderAsync(int id)
-        //{
-
-        //}
-
-        //public async Task BotchDeliveryAsync(int id)
-        //{
-
-        //}
+      
     }
 }

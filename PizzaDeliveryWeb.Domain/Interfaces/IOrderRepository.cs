@@ -20,5 +20,14 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
         Task CancelOrderAsync(int id);
         Task<IEnumerable<OrderLine>> GetNotPlacedOrderLinesWithIngredientAsync(int ingredientId);
 
+        Task<Order> GetOrderWithDeliveryAsync(int id);
+
+        Task<IEnumerable<Order>> GetOrdersByStatusAsync(
+            int statusId,
+            int? lastId,
+            int pageSize);
+
+        Task<Order> GetCartAsync(string clientId);
+        //Task<Order> UpdateCartAsync(Order order);
     }
 }

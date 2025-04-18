@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,11 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
     {
         IOrderRepository Orders { get; }
         IOrderLineRepository OrderLines { get; }
-        Task<int> CommitAsync();
+        IDeliveryRepository Deliveries { get; }
+        IPizzaSizeRepository PizzaSizes { get; }
+        IIngredientRepository Ingredients { get; }
+        IPizzaRepository Pizzas { get; }
+        Task<int> Save();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();

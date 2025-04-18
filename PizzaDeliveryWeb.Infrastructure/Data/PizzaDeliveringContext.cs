@@ -82,13 +82,19 @@ namespace PizzaDeliveryWeb.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Order>()
+                .HasOne(o => o.Delivery)
+                .WithOne(d => d.Order)
+                .HasForeignKey<Delivery>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Order>()
                 .HasIndex(o => o.OrderTime);
 
-            builder.Entity<Delivery>()
-                .HasOne(d => d.Order)
-                .WithMany(o => o.Deliveries)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.Entity<Delivery>()
+            //    .HasOne(d => d.Order)
+            //    .WithOne(o => o.Delivery)
+            //    .HasForeignKey(d=> d.DeliveryId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Delivery>()
                 .HasOne(d => d.Courier)

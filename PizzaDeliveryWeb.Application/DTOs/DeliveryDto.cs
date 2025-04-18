@@ -10,6 +10,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
     public class DeliveryDto
     {
         public int Id { get; set; }
+        public string CourierId { get; set; }
         public string CourierName { get; set; }
         public DateTime? AcceptanceTime { get; set; }
         public DateTime? DeliveryTime { get; set; }

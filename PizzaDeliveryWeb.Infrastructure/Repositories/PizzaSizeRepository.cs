@@ -24,6 +24,11 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             var status = await _context.PizzaSizes.Where(ps => ps.Id == id).FirstOrDefaultAsync();
             return status;
         }
+        public async Task<PizzaSize> GetPizzaSizeByNameAsync(string name)
+        {
+            var size = await _context.PizzaSizes.Where(ps => ps.Name == name).FirstOrDefaultAsync();
+            return size;
+        }
         public async Task<List<PizzaSize>> GetPizzaSizesAsync()
         {
             return await _context.PizzaSizes.ToListAsync();

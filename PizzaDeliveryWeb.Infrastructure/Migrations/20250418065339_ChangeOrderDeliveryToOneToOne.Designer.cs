@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaDeliveryWeb.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using PizzaDeliveryWeb.Infrastructure.Data;
 namespace PizzaDeliveryWeb.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveringContext))]
-    partial class PizzaDeliveringContextModelSnapshot : ModelSnapshot
+    [Migration("20250418065339_ChangeOrderDeliveryToOneToOne")]
+    partial class ChangeOrderDeliveryToOneToOne
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

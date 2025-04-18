@@ -25,7 +25,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .Include(p => p.OrderLines)
                     .ThenInclude(ol => ol.Pizza)
                     .ThenInclude(p => p.Ingredients)
-                .Include(o => o.Deliveries)
+                .Include(o => o.Delivery)
                 .Include(o => o.DelStatus)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -99,20 +99,33 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             //    .ThenInclude(ol=>ol.Pizza).ThenInclude(p=>p.Ingredients).Include(o=>o.Deliveries).ToListAsync();
         }
 
+        public async Task<Order?> GetCartAsync(string clientId)
+        {
+            var query = _context.Orders
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Pizza)
+                    .ThenInclude(p => p.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Ingredients)
+                .Where(o => o.ClientId == clientId && o.DelStatusId == (int)OrderStatusEnum.NotPlaced).FirstOrDefault();
+            return query;
+
+        }
+
         public async Task AddOrderAsync(Order order)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
+            //using var transaction = await _context.Database.BeginTransactionAsync();
+            //try
+            //{
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-            }
-            catch(Exception ex)
-            {
-                await transaction.RollbackAsync();
+                //await transaction.CommitAsync();
+            //}
+            //catch(Exception ex)
+            //{
+            //    await transaction.RollbackAsync();
                 
-            }
+            //}
         }
 
         public async Task UpdateOrderAsync(Order order)
@@ -120,6 +133,8 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             _context.Entry(order).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        
 
         public async Task CancelOrderAsync(int id)
         {
@@ -137,5 +152,32 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Order> GetOrderWithDeliveryAsync(int id)
+        {
+            return await _context.Orders
+                .Include(o => o.Delivery)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByStatusAsync(
+            int statusId,
+            int? lastId,
+            int pageSize)
+        {
+            var query = _context.Orders
+                .Where(o => o.DelStatusId == statusId)
+                .OrderByDescending(o => o.Id).AsQueryable();
+
+            if (lastId.HasValue)
+                query = query.Where(o => o.Id < lastId.Value);
+
+            return await query.Take(pageSize)
+                .ToListAsync();
+        }
+
+
     }
+
+
 }
