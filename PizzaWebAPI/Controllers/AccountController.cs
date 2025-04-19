@@ -54,7 +54,7 @@ namespace ProjectManagement.Api.Controllers
                 var token = GenerateJwtToken(user);
                 int cartId = await _cartService.GetOrCreateCartIdAsync(user.Id);
 
-                return Ok(new { Token = token, userName = user.UserName, userRole = "client", cartId });
+                return Ok(new { Token = token, userName = user.UserName, userRole = "client", cartId, Address=user.Address });
                 //return Ok(new { Message = "ѕользователь успешно зарегистрировалс€" });
             }
             return BadRequest(result.Errors);
@@ -75,7 +75,7 @@ namespace ProjectManagement.Api.Controllers
                 if (userRole == "client")
                 {
                     int cartId = await _cartService.GetOrCreateCartIdAsync(user.Id);
-                    return Ok(new { Token = token, userName = user.UserName, userRole, cartId });
+                    return Ok(new { Token = token, userName = user.UserName, userRole, cartId, Address=user.Address });
                 }
                 //var roles = await _userManager.GetRolesAsync(user);
                 //if (!roles.Contains(model.SelectedRole))

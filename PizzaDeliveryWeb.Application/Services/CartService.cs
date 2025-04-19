@@ -157,13 +157,7 @@ namespace PizzaDeliveryWeb.Application.Services
         // Вспомогательные методы для расчетов
         private decimal CalculatePrice(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
         {
-            //decimal sizePrice = size.Id switch
-            //{
-            //    (int)PizzaSizeEnum.Small => pizza.Prices[PizzaSizeEnum.Small],
-            //    (int)PizzaSizeEnum.Medium => pizza.Prices[PizzaSizeEnum.Medium],
-            //    (int)PizzaSizeEnum.Big => pizza.Prices[PizzaSizeEnum.Big],
-            //    _ => throw new ArgumentException("Недопустимый размер пиццы")
-            //};
+           
 
             decimal ingredientsPrice = ingredients.Sum(i =>
                 i.PricePerGram * GetSizeValue(i, size.Id)
@@ -175,13 +169,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
         private decimal CalculateWeight(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
         {
-            //decimal sizeWeight = size.Id switch
-            //{
-            //    (int)PizzaSizeEnum.Small => pizza.Weights[PizzaSizeEnum.Small],
-            //    (int)PizzaSizeEnum.Medium => pizza.Weights[PizzaSizeEnum.Medium],
-            //    (int)PizzaSizeEnum.Big => pizza.Weights[PizzaSizeEnum.Big],
-            //    _ => throw new ArgumentException("Недопустимый размер пиццы")
-            //};
+            
 
             decimal ingredientsWeight = ingredients.Sum(i =>
                 GetSizeValue(i, size.Id)
@@ -240,7 +228,7 @@ namespace PizzaDeliveryWeb.Application.Services
             return MapToCartDto(order);
         }
 
-        public async Task SubmitCartAsync(string clientId)
+        public async Task SubmitCartAsync(string clientId, decimal price, string address)
         {
             _logger.LogInformation("Начало оформления корзины для пользователя {ClientId}, c;ientId");
 
@@ -253,11 +241,17 @@ namespace PizzaDeliveryWeb.Application.Services
                     _logger.LogWarning("Корзина для пользователя {ClientId} не найдена", clientId);
                     throw new Exception("Корзина не найдена");
                 }
-                if (string.IsNullOrWhiteSpace(cart.Address))
+
+                if(cart.Price!=price)
                 {
-                    _logger.LogWarning("Корзина для пользователя {ClientId}, адрес при заказе не указан", clientId);
-                    throw new Exception("Адрес доставки не указан");
+                    _logger.LogWarning("Корзина клиента устарела");
+                    throw new Exception("Корзина клиента устарела");
                 }
+                //if (string.IsNullOrWhiteSpace(cart.Address))
+                //{
+                //    _logger.LogWarning("Корзина для пользователя {ClientId}, адрес при заказе не указан", clientId);
+                //    throw new Exception("Адрес доставки не указан");
+                //}
                 if (!cart.OrderLines.Any())
                 {
                     _logger.LogWarning("Попытка оформления пустой корзины");
@@ -266,7 +260,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
                 cart.DelStatusId = (int)OrderStatusEnum.IsBeingFormed;
                 cart.OrderTime = DateTime.UtcNow;
-
+                cart.Address = address;
                 await _uow.Save();
                 await _uow.CommitTransactionAsync();
 
@@ -278,6 +272,69 @@ namespace PizzaDeliveryWeb.Application.Services
                 await _uow.RollbackTransactionAsync();
                 throw new Exception(ex.Message);
             }
+        }
+
+
+        public async Task<CartDto> RemoveItemFromCartAsync(int itemId)
+        {
+            var orderLine = await _uow.OrderLines.GetOrderLineByIdAsync(itemId);
+            if (orderLine == null)
+                throw new Exception("Такой позиции заказа нет");
+            decimal price = orderLine.Price;
+            decimal weight = orderLine.Weight;
+            int quantity = orderLine.Quantity;
+            var order = await _uow.Orders.GetOrderByIdAsync(orderLine.OrderId);
+            await _uow.OrderLines.DeleteOrderLineAsync(orderLine.Id);
+
+            order.Price -= price * quantity;
+            order.Weight -= weight * quantity;
+            await _uow.Save();
+            order = await _uow.Orders.GetOrderByIdAsync(order.Id);
+            return MapToCartDto(order);
+            
+        }
+
+        public async Task<CartDto> UpdateItemFromcartAsync(NewCartItemDto itemDto)
+        {
+            var order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
+
+            var orderLine = order.OrderLines.Where(ol => ol.Id == itemDto.Id).FirstOrDefault();
+            if (orderLine == null)
+                throw new Exception("Такой позиции заказа нет");
+            decimal price = orderLine.Price;
+            decimal weight = orderLine.Weight;
+            int quantity = orderLine.Quantity;
+            
+            //await _uow.OrderLines.DeleteOrderLineAsync(orderLine.Id);
+
+            var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
+            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+
+            var ingredients = new List<Ingredient>();
+            foreach(var ingredientId in itemDto.AddedIngredientIds)
+            {
+                var ingredient = await _uow.Ingredients.GetIngredientByIdAsync(ingredientId);
+                ingredients.Add(ingredient);
+            }
+
+
+
+            order.Price -= price * quantity;
+            order.Weight -= weight * quantity;
+
+            orderLine.PizzaId = itemDto.PizzaId;
+            orderLine.PizzaSizeId = pizzaSize.Id;
+            orderLine.Ingredients = ingredients;
+            orderLine.Quantity = itemDto.Quantity;
+            orderLine.Price = CalculatePrice(pizza, pizzaSize, ingredients);
+            orderLine.Weight = CalculateWeight(pizza, pizzaSize, ingredients);
+
+            order.Price += orderLine.Price * orderLine.Quantity;
+            order.Weight += orderLine.Price * orderLine.Quantity;
+
+            await _uow.Save();
+            order = await _uow.Orders.GetOrderByIdAsync(order.Id);
+            return MapToCartDto(order);
         }
     
 

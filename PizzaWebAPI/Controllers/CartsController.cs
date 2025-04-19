@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PizzaDeliveryWeb.API.Models;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
@@ -65,6 +66,7 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
         [HttpPost("items")]
+        [Authorize]
         public async Task<ActionResult<CartDto>> AddItemToCart([FromBody] NewCartItemDto itemDto)
         {
             if (!ModelState.IsValid)
@@ -74,7 +76,8 @@ namespace PizzaDeliveryWeb.API.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null) return Unauthorized();
+                if (user == null) 
+                    return Unauthorized();
                 var cart = await _cartService.AddNewItemToCartAsync(itemDto);
                 return Ok(cart);
             }
@@ -86,25 +89,38 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPost("submit")]
         [Authorize]
-        public async Task<ActionResult<OrderDto>> SubmitCart()
+        public async Task<ActionResult<OrderDto>> SubmitCart([FromBody] SubmitOrderModel newOrder)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
             try
             {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return Unauthorized();
-                }
+                
 
-                await _cartService.SubmitCartAsync(user.Id);
+                await _cartService.SubmitCartAsync(user.Id, newOrder.Price, newOrder.Address);
 
                 var cart = await _cartService.GetOrCreateCartAsync(user.Id);
 
-                return Ok(cart);
+                return Ok(new CartSubmitResult
+                {
+                    Success=true,
+                    Message="Заказ успешно оформлен!",
+                    UpdatedCart=cart
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+
+                var currentCart = await _cartService.GetOrCreateCartAsync(user.Id);
+                return Conflict(new CartSubmitResult
+                {
+                    Success=false,
+                    Message = "Оформить заказ не удалось. Корзина обновлена. Проверьте ее еще раз",
+                    UpdatedCart = currentCart
+                });
             }
             
         }
