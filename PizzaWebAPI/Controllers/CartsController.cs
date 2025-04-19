@@ -18,12 +18,14 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         private readonly UserManager<User> _userManager;
         private readonly CartService _cartService;
+        private readonly ILogger<CartsController> _logger;
 
 
-        public CartsController(UserManager<User> userManager, CartService cartService)
+        public CartsController(UserManager<User> userManager, CartService cartService, ILogger<CartsController> logger)
         {
             _userManager = userManager;
             _cartService = cartService;
+            _logger = logger;
         }
 
 
@@ -37,7 +39,7 @@ namespace PizzaDeliveryWeb.API.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
             var cart = await _cartService.GetOrCreateCartAsync(user.Id);
-           
+            _logger.LogInformation("Возвращение корзины");
             return Ok(cart);
             //return new string[] { "value1", "value2" };
         }
@@ -59,6 +61,26 @@ namespace PizzaDeliveryWeb.API.Controllers
             catch(ValidationException ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("items")]
+        public async Task<ActionResult<CartDto>> AddItemToCart([FromBody] NewCartItemDto itemDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+                var cart = await _cartService.AddNewItemToCartAsync(itemDto);
+                return Ok(cart);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Ошибка сервера: {ex.Message}");
             }
         }
 

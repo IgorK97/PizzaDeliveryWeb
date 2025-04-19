@@ -19,7 +19,7 @@ namespace PizzaDeliveryWeb.Application.Services
             _uow = uow;
             _logger = logger;
         }
-        public async Task<CartDto?> GetOrCreateCartAsync(string clientId)
+        public async Task<CartDto> GetOrCreateCartAsync(string clientId)
         {
 
             var order = await _uow.Orders.GetCartAsync(clientId);
@@ -37,22 +37,17 @@ namespace PizzaDeliveryWeb.Application.Services
                 };
                 await _uow.Orders.AddOrderAsync(order);
                 await _uow.Save();
+                order = await _uow.Orders.GetCartAsync(clientId);
+
             }
             return MapToCartDto(order);
         }
 
-        //public async Task<OrderDto> GetOrCreateCartAsync(string userId)
-        //{
-        //    var cart = (await _uow.Orders.GetOrdersByUserIdAsync(userId))
-        //        .FirstOrDefault(o => o.DelStatusId == (int)OrderStatusEnum.NotPlaced);
-
-        //    if (cart == null)
-        //    {
-        //        cart = await CreateNewCart(userId);
-        //    }
-
-        //    return MapToOrderDto(cart);
-        //}
+        public async Task<int> GetOrCreateCartIdAsync(string clientId)
+        {
+            var cart = await GetOrCreateCartAsync(clientId);
+            return cart.Id;
+        }
 
         public async Task<CartDto> UpdateCartAsync(CartDto cartDto)
         {
@@ -154,9 +149,95 @@ namespace PizzaDeliveryWeb.Application.Services
                     DefaultIngredientIds = ol.Pizza.Ingredients.Select(i=>i.Id).ToList(),
                     AddedIngredientIds = ol.Ingredients.Select(i=>i.Id).ToList()
                 }).ToList();
-
+            cart.Items = items;
             return cart;
 
+        }
+
+        // Вспомогательные методы для расчетов
+        private decimal CalculatePrice(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
+        {
+            //decimal sizePrice = size.Id switch
+            //{
+            //    (int)PizzaSizeEnum.Small => pizza.Prices[PizzaSizeEnum.Small],
+            //    (int)PizzaSizeEnum.Medium => pizza.Prices[PizzaSizeEnum.Medium],
+            //    (int)PizzaSizeEnum.Big => pizza.Prices[PizzaSizeEnum.Big],
+            //    _ => throw new ArgumentException("Недопустимый размер пиццы")
+            //};
+
+            decimal ingredientsPrice = ingredients.Sum(i =>
+                i.PricePerGram * GetSizeValue(i, size.Id)
+            ) + pizza.Ingredients.Sum(i =>
+            i.PricePerGram * GetSizeValue(i, size.Id));
+
+            return size.Price + ingredientsPrice;
+        }
+
+        private decimal CalculateWeight(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
+        {
+            //decimal sizeWeight = size.Id switch
+            //{
+            //    (int)PizzaSizeEnum.Small => pizza.Weights[PizzaSizeEnum.Small],
+            //    (int)PizzaSizeEnum.Medium => pizza.Weights[PizzaSizeEnum.Medium],
+            //    (int)PizzaSizeEnum.Big => pizza.Weights[PizzaSizeEnum.Big],
+            //    _ => throw new ArgumentException("Недопустимый размер пиццы")
+            //};
+
+            decimal ingredientsWeight = ingredients.Sum(i =>
+                GetSizeValue(i, size.Id)
+            ) + pizza.Ingredients.Sum(i => GetSizeValue(i, size.Id));
+
+            return size.Weight + ingredientsWeight;
+        }
+
+        private decimal GetSizeValue(Ingredient ingredient, int sizeId)
+        {
+            return sizeId switch
+            {
+                (int)PizzaSizeEnum.Small => ingredient.Small,
+                (int)PizzaSizeEnum.Medium => ingredient.Medium,
+                (int)PizzaSizeEnum.Big => ingredient.Big,
+                _ => 0
+            };
+        }
+
+        public async Task<CartDto> AddNewItemToCartAsync(NewCartItemDto itemDto)
+        {
+            var order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
+
+            var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
+            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+
+            var ingredients = new List<Ingredient>();
+            foreach(var ingredientId in itemDto.AddedIngredientIds)
+            {
+                var ingredient = await _uow.Ingredients.GetIngredientByIdAsync(ingredientId);
+                ingredients.Add(ingredient);
+            }
+
+            var orderLine = new OrderLine
+            {
+                Id = 0,
+                PizzaId = itemDto.PizzaId,
+                PizzaSizeId = pizzaSize.Id,
+                Quantity = itemDto.Quantity,
+                Ingredients = ingredients,
+                Price = CalculatePrice(pizza, pizzaSize, ingredients),
+                Weight = CalculateWeight(pizza, pizzaSize, ingredients),
+                Custom=ingredients.Count()>0
+            };
+            order.OrderLines.Add(orderLine);
+            order.Price += orderLine.Price * orderLine.Quantity;
+            order.Weight += orderLine.Weight * orderLine.Quantity;
+
+            await _uow.Save();
+
+            _logger.LogInformation("Добавлена новая позиция в корзину {CartId}", itemDto.CartId);
+
+            order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
+
+
+            return MapToCartDto(order);
         }
 
         public async Task SubmitCartAsync(string clientId)

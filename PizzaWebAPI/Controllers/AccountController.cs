@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,13 @@ namespace ProjectManagement.Api.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        private readonly CartService _cartService;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, CartService cartService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _cartService = cartService;
         }
 
         [HttpPost("register")]
@@ -50,7 +52,9 @@ namespace ProjectManagement.Api.Controllers
                     return BadRequest(roleResult.Errors);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 var token = GenerateJwtToken(user);
-                return Ok(new { Token = token, userName = user.UserName, userRole = "client" });
+                int cartId = await _cartService.GetOrCreateCartIdAsync(user.Id);
+
+                return Ok(new { Token = token, userName = user.UserName, userRole = "client", cartId });
                 //return Ok(new { Message = "ѕользователь успешно зарегистрировалс€" });
             }
             return BadRequest(result.Errors);
@@ -68,6 +72,11 @@ namespace ProjectManagement.Api.Controllers
                 var token = GenerateJwtToken(user);
                 IList<string> roles = await _userManager.GetRolesAsync(user);
                 string userRole = roles.FirstOrDefault();
+                if (userRole == "client")
+                {
+                    int cartId = await _cartService.GetOrCreateCartIdAsync(user.Id);
+                    return Ok(new { Token = token, userName = user.UserName, userRole, cartId });
+                }
                 //var roles = await _userManager.GetRolesAsync(user);
                 //if (!roles.Contains(model.SelectedRole))
                 //    return BadRequest("¬ыбранна€ роль указана неверно");

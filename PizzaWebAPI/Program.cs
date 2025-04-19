@@ -71,6 +71,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<PizzaService>();
 builder.Services.AddScoped<IngredientService>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<OrderLineService>();
 builder.Services.AddScoped<DeliveryService>();

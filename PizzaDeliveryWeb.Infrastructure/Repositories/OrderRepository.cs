@@ -25,6 +25,10 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .Include(p => p.OrderLines)
                     .ThenInclude(ol => ol.Pizza)
                     .ThenInclude(p => p.Ingredients)
+                .Include(o=>o.OrderLines)
+                    .ThenInclude(ol=>ol.Ingredients)
+                .Include(o=>o.OrderLines)
+                    .ThenInclude(ol=>ol.PizzaSize)
                 .Include(o => o.Delivery)
                 .Include(o => o.DelStatus)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -107,8 +111,10 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                     .ThenInclude(p => p.Ingredients)
                 .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Ingredients)
-                .Where(o => o.ClientId == clientId && o.DelStatusId == (int)OrderStatusEnum.NotPlaced).FirstOrDefault();
-            return query;
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.PizzaSize)
+                .Where(o => o.ClientId == clientId && o.DelStatusId == (int)OrderStatusEnum.NotPlaced);
+            return await query.FirstOrDefaultAsync();
 
         }
 
