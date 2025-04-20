@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Http;
 namespace PizzaDeliveryWeb.Application.DTOs
 {
     //При создании ингредиента
-    public class CreateNewIngredientDto
+    public class CreateIngredientDto
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Small { get; set; }
@@ -19,7 +19,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public decimal Big { get; set; }
         public decimal PricePerGram { get; set; }
         public bool IsAvailable { get; set; }
-        public IFormFile Image { get; set; }
+        public string Image { get; set; }
 
     }
 }

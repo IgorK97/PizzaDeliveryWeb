@@ -13,6 +13,7 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
         //Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId);
         //Task<List<Delivery>> GetDeliveriesByOrderIdAsync(int orderId);
         Task<IEnumerable<Order>> GetOrdersAsync(int? lastId=null, int pageSize=10);
+        Task<IEnumerable<Order>> GetOrdersByClientIdAsync(string clientId, int? lastId= null, int pageSize = 50);
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId,
             int? lastId = null, int pageSize=10);
         Task AddOrderAsync(Order order);

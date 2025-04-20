@@ -53,7 +53,7 @@ namespace PizzaDeliveryProject.Tests.ApplicationTests
         public async Task AddIngredientAsync_ShouldAddIngredient()
         {
             // Arrange
-            var IngrDto = new IngredientDto { Name = "New Ingredient", Description = "New Description", Small = 10, Medium = 20, Big = 30, PricePerGram = 5 };
+            var IngrDto = new CreateIngredientDto { Name = "New Ingredient", Image="", IsAvailable=true, Description = "New Description", Small = 10, Medium = 20, Big = 30, PricePerGram = 5 };
 
             // Act
             await _ingrService.AddIngredientAsync(IngrDto);

@@ -16,13 +16,14 @@ namespace PizzaDeliveryWeb.API.Controllers
     {
         private readonly IngredientService _ingredientService;
         private readonly ILogger<IngredientsController> _logger;
+        private readonly IWebHostEnvironment _env;
 
 
-
-        public IngredientsController(IngredientService ingredientService, ILogger<IngredientsController> logger)
+        public IngredientsController(IngredientService ingredientService, IWebHostEnvironment env, ILogger<IngredientsController> logger)
         {
             _ingredientService = ingredientService;
             _logger = logger;
+            _env = env;
         }
         
         
@@ -89,56 +90,147 @@ namespace PizzaDeliveryWeb.API.Controllers
         // POST api/<IngredientsController>
         //[Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<ActionResult<IngredientDto>> CreateIngredient([FromForm] CreateNewIngredientDto ingredientDto)
+        public async Task<ActionResult<IngredientDto>> CreateIngredient([FromBody] CreateIngredientDto ingredientDto)
         {
 
-            string? imagePath = null;
-            if (ingredientDto.Image != null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ingredientDto.Image.FileName);
-                var path = Path.Combine("wwwroot", "images", "pizzas", fileName);
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await ingredientDto.Image.CopyToAsync(stream);
-                }
-                imagePath = $"/images/pizzas/{fileName}";
+                string imageUrl = await ProcessImageAsync(ingredientDto.Image);
+
+
+
+
+                ingredientDto.Image = imageUrl;
+                //pizzaDto.Id = 0;
+                var createdIngredient = await _ingredientService.AddIngredientAsync(ingredientDto);
+                return CreatedAtAction(nameof(GetIngredientById),
+                    new { id = createdIngredient.Id }, createdIngredient);
             }
-            IngredientDto iDto = new IngredientDto
+            catch (Exception ex)
             {
-                Id = 0,
-                Name = ingredientDto.Name,
-                Description = ingredientDto.Description,
-                IsAvailable = ingredientDto.IsAvailable/*=="true"?true:false*/,
-                Image = imagePath,
-                Big=ingredientDto.Big,
-                Medium=ingredientDto.Medium,
-                PricePerGram=ingredientDto.PricePerGram,
-                Small=ingredientDto.Small
-            };
-            //pizzaDto.ImageUrl = imagePath;
-            await _ingredientService.AddIngredientAsync(iDto);
-            return CreatedAtAction(nameof(GetIngredientById),
-                new { id = iDto.Id }, iDto);
+                _logger.LogError(ex, "Ошибка создания пиццы");
+                return BadRequest(ex.Message);
+            }
+
+
+            //string? imagePath = null;
+            //if (ingredientDto.Image != null)
+            //{
+            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ingredientDto.Image.FileName);
+            //    var path = Path.Combine("wwwroot", "images", "pizzas", fileName);
+            //    using (var stream = new FileStream(path, FileMode.Create))
+            //    {
+            //        await ingredientDto.Image.CopyToAsync(stream);
+            //    }
+            //    imagePath = $"/images/pizzas/{fileName}";
+            //}
+            //IngredientDto iDto = new IngredientDto
+            //{
+            //    Id = 0,
+            //    Name = ingredientDto.Name,
+            //    Description = ingredientDto.Description,
+            //    IsAvailable = ingredientDto.IsAvailable/*=="true"?true:false*/,
+            //    Image = imagePath,
+            //    Big=ingredientDto.Big,
+            //    Medium=ingredientDto.Medium,
+            //    PricePerGram=ingredientDto.PricePerGram,
+            //    Small=ingredientDto.Small
+            //};
+            ////pizzaDto.ImageUrl = imagePath;
+            //await _ingredientService.AddIngredientAsync(iDto);
+            //return CreatedAtAction(nameof(GetIngredientById),
+            //    new { id = iDto.Id }, iDto);
 
             //await _ingredientService.AddIngredientAsync(ingrDto);
             //return CreatedAtAction(nameof(GetIngredientById),
             //    new { id = iDto.Id }, iDto);
         }
 
+        private void DeleteOldImage(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath)) return;
+
+            var fullPath = Path.Combine(_env.WebRootPath, imagePath.TrimStart('/'));
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+        }
+
+        private async Task<string> ProcessImageAsync(string base64Image)
+        {
+            if (string.IsNullOrEmpty(base64Image))
+                return string.Empty;
+
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "images", "ingredients");
+
+            Directory.CreateDirectory(uploadsFolder);
+            var fileName = $"{Guid.NewGuid()}.png";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            var imageData = base64Image.Split(',')[1];
+            await System.IO.File.WriteAllBytesAsync(filePath, Convert.FromBase64String(imageData));
+
+            return $"/images/ingredients/{fileName}";
+        }
+
         // PUT api/<IngredientsController>/5
         //[Authorize(Roles = "admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateIngredient(int id, IngredientDto ingrDto)
+        public async Task<IActionResult> UpdateIngredient(int id, UpdateIngredientDto ingrDto)
         {
-            if (id != ingrDto.Id) return BadRequest();
-            await _ingredientService.UpdateIngredientAsync(ingrDto);
-            return NoContent();
+
+            try
+            {
+                if (id != ingrDto.Id)
+                    return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var existingIngredient = await _ingredientService.GetIngredientByIdAsync(id);
+                if (existingIngredient == null) return NotFound();
+
+                string imageUrl = existingIngredient.Image;
+                if (!string.IsNullOrEmpty(ingrDto.Image))
+                {
+                    DeleteOldImage(existingIngredient.Image);
+                    imageUrl = await ProcessImageAsync(ingrDto.Image);
+                }
+
+                ingrDto.Image = imageUrl;
+
+                //pizzaDto.Image = imageUrl;
+
+                //var pizzaToUpdate = new UpdateIngredientDto
+                //{
+                //    Id = id,
+                //    Name = ingrDto.Name,
+                //    Description = ingrDto.Description,
+                //    IsAvailable = pizzaDto.IsAvailable,
+                //    Ingredients = pizzaDto.Ingredients,
+                //    Image = imageUrl
+                //};
+
+                var updatedIngr = await _ingredientService.UpdateIngredientAsync(ingrDto);
+                return Ok(updatedIngr);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка обновления пиццы {PizzaId}", id);
+                return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
+            }
+            //if (id != ingrDto.Id) return BadRequest();
+            //await _ingredientService.UpdateIngredientAsync(ingrDto);
+            //return NoContent();
         }
 
         // DELETE api/<IngredientsController>/5
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles ="manager")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteIngredient(int id)
         {
             try
             {
@@ -147,7 +239,7 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
             catch(ApplicationException ex)
             {
-                return Conflict(new { message = ex.Message });
+                return StatusCode(500, "Не удалось удалить ингредиент");
             }
         }
     }

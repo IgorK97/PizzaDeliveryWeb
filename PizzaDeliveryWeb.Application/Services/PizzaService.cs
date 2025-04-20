@@ -205,9 +205,9 @@ namespace PizzaDeliveryWeb.Application.Services
 
             try
             {
-                var ingredients = await LoadIngredientsAsync(pizzaDto.Ingredients);
+                var ingredients = await LoadIngredientsAsync(pizzaDto.DefaultIngredientIds);
 
-                if (ingredients.Count != pizzaDto.Ingredients.Count())
+                if (ingredients.Count != pizzaDto.DefaultIngredientIds.Count())
                     throw new ArgumentException("Некоторые ингредиенты не найдены");
 
 

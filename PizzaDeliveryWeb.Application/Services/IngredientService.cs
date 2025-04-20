@@ -60,10 +60,11 @@ namespace PizzaDeliveryWeb.Application.Services
             };
         }
            
-        public async Task AddIngredientAsync(IngredientDto ingrDto)
+        public async Task<IngredientDto> AddIngredientAsync(CreateIngredientDto ingrDto)
         {
             var t = new Ingredient
             {
+                Id=0,
                 Name = ingrDto.Name,
                 Description = ingrDto.Description,
                 Small = ingrDto.Small,
@@ -73,10 +74,22 @@ namespace PizzaDeliveryWeb.Application.Services
                 Image=ingrDto.Image
             };
             await _ingrRepository.AddIngredientAsync(t);
-            ingrDto.Id = t.Id;
+            return new IngredientDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Description = t.Description,
+                Small = t.Small,
+                Medium = t.Medium,
+                Big = t.Big,
+                PricePerGram = t.PricePerGram,
+                Image = t.Image
+
+            };
+            //ingrDto.Id = t.Id;
         }
 
-        public async Task UpdateIngredientAsync(IngredientDto ingrDto)
+        public async Task<IngredientDto> UpdateIngredientAsync(UpdateIngredientDto ingrDto)
         {
             var res = await _ingrRepository.GetIngredientByIdAsync(ingrDto.Id);
             if (res != null)
@@ -111,7 +124,22 @@ namespace PizzaDeliveryWeb.Application.Services
                     order.Weight = order.OrderLines.Sum(ol => ol.Weight);
                     await _orderRepository.UpdateOrderAsync(order);
                 }
+
+
+                return new IngredientDto
+                {
+                    Id = res.Id,
+                    Image = res.Image,
+                    Big = res.Big,
+                    Small = res.Small,
+                    Medium = res.Medium,
+                    Description = res.Description,
+                    IsAvailable = res.IsAvailable,
+                    Name = res.Name,
+                    PricePerGram = res.PricePerGram
+                };
             }
+            throw new Exception("Ингредиента с таким id не существует");
         }
 
         private async Task RecalculateOrderLinePriceAsync(OrderLine orderLine, Ingredient ingr)

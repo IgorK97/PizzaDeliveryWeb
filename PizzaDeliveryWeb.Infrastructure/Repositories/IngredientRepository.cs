@@ -56,7 +56,9 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             var ingr = await _context.Ingredients.FindAsync(id);
             if (ingr != null)
             {
-                _context.Ingredients.Remove(ingr);
+                //_context.Ingredients.Remove(ingr);
+                ingr.IsDeleted = true;
+                ingr.IsAvailable = false;
                 await _context.SaveChangesAsync();
             }
         }

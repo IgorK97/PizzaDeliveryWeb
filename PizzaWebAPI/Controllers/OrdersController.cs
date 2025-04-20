@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -71,14 +72,30 @@ namespace PizzaDeliveryWeb.API.Controllers
         //        return Ok(orders);
         //}
 
-        [HttpGet("my")]
-        [Authorize(Roles ="client")]
-        public async Task<IActionResult> GetMyOrders(int? lastId, int pageSize = 10)
+        //[HttpGet("my")]
+        [HttpGet("history")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<ClientOrderDto>>> GetMyOrders()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Unauthorized();
+            if (user == null) 
+                return Unauthorized();
+            //if (countOrders >= 50)
+            //    return NoContent();
+            //if (countOrders + pageSize > 50)
+            //    pageSize = countOrders + pageSize - 50;
+            //return Ok(await _orderService.GetClientOrderHistoryAsync(user.Id, lastId, pageSize));
+            var orders = await _orderService.GetClientOrderHistoryAsync(user.Id, null, 50);
+            return Ok(orders);
+            //var hasMore = orders.Any() && orders.Last().Id > lastId;
+            //var hasMore = true;
 
-            return Ok(await _orderService.GetClientOrderHistoryAsync(user.Id));
+            //return Ok(new
+            //{
+            //    Items = orders,
+            //    LastId = orders.LastOrDefault()?.Id ?? lastId,
+            //    HasMore = hasMore
+            //});
         }
 
         [HttpGet]
@@ -110,17 +127,18 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPost("{id}/cancel")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CancelOrder(int id)
+        public async Task<ActionResult<ClientOrderDto>> CancelOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
-            // Дополнительная проверка принадлежности заказа
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order.ClientId != user.Id) return Forbid();
+            //// Дополнительная проверка принадлежности заказа
+            //if (order.ClientId != user.Id) return Forbid();
 
             await _orderService.CancelOrderAsync(id);
-            return NoContent();
+            var order = await _orderService.GetOrderByIdAsync(id);
+
+            return Ok(order);
         }
 
 

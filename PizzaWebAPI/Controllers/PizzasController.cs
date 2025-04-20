@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
+using PizzaDeliveryWeb.API.Models;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
@@ -27,7 +28,7 @@ namespace PizzaWebAPI.Controllers
         }
         // GET: api/<PizzasController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PizzaDto>>> GetPizzas(
+        public async Task<ActionResult<ResultGetPizzas>> GetPizzas(
             [FromQuery] int lastId = 0,
             [FromQuery] int pageSize = 10
             )
@@ -37,7 +38,7 @@ namespace PizzaWebAPI.Controllers
                 _logger.LogInformation("Запрос списка пицц, {lastId}, {pageSize}", lastId, pageSize);
                 var pizzas = await _pizzaService.GetPizzasAsync(lastId, pageSize, true);
                 var hasMore = pizzas.Any() && pizzas.Last().Id > lastId;
-                return Ok(new
+                return Ok(new ResultGetPizzas
                 {
                     Items = pizzas,
                     LastId = pizzas.LastOrDefault()?.Id ?? lastId,
@@ -57,13 +58,7 @@ namespace PizzaWebAPI.Controllers
         {
             var pizza = await _pizzaService.GetPizzaByIdAsync(id);
             return pizza != null ? Ok(pizza) : NotFound();
-            //if (pizza == null)
-            //{
-            //    return NotFound();
-            //}
-            ////var baseUrl = $"{Request.Scheme}://{Request.Host}";
-            ////pizza.Image = pizza.Image != "" ? $"{baseUrl}{pizza.Image}" : "";
-            //return Ok(pizza);
+           
         }
         [HttpGet("{id}/ingredients")]
         public async Task<ActionResult<IEnumerable<IngredientDto>>>
@@ -102,47 +97,6 @@ namespace PizzaWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
 
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
-
-
-            //try
-            //{
-            //    await _pizzaService.AddPizzaAsync(pizzaDto);
-            //    return CreatedAtAction(
-            //        nameof(GetPizzaById),
-            //        new { id = pizzaDto.Id }, pizzaDto);
-            //}
-            //catch(Exception ex)
-            //{
-            //    _logger.LogError(ex, "Ошибка при получении пицц при создании пиццы");
-
-            //    return BadRequest(ex.Message);
-            //}
-            
-            //string fileName;
-            //if (string.IsNullOrEmpty(pizzaDto.Image))
-            //{
-            //    return BadRequest("Изображение не передано");
-            //}
-            //var imageBytes = Convert.FromBase64String(pizzaDto.Image.Split(',')[1]);
-            //var uploadsFolder = Path.Combine("wwwroot", "images", "pizzas");
-            //Directory.CreateDirectory(uploadsFolder);
-            //fileName = $"{Guid.NewGuid()}.png";
-            //var filePath = Path.Combine(uploadsFolder, fileName);
-            //await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
-            //CreatePizzaDto pDto = new CreatePizzaDto
-            //{
-            //    Id = 0,
-            //    Name = pizzaDto.Name,
-            //    Description=pizzaDto.Description,
-            //    IsAvailable=pizzaDto.IsAvailable/*=="true"?true:false*/,
-            //    Image=$"/images/pizzas/{fileName}"
-            //};
-            ////pizzaDto.ImageUrl = imagePath;
-            //await _pizzaService.AddPizzaAsync(pDto);
-            //return CreatedAtAction(nameof(GetPizza),
-            //    new { id = pDto.Id }, pDto);
         }
 
         private async Task<string> ProcessImageAsync(string base64Image)
@@ -212,12 +166,11 @@ namespace PizzaWebAPI.Controllers
                 };
 
                 var updatedPizza = await _pizzaService.UpdatePizzaAsync(pizzaToUpdate);
+                _logger.LogInformation("Обновление пиццы {PizzaId}", updatedPizza.Id);
+
                 return Ok(updatedPizza);
             }
-            catch(KeyNotFoundException ex)
-            {
-                return NotFound(new { Error = ex.Message });
-            }
+            
             catch(Exception ex)
             {
                 _logger.LogError(ex, "Ошибка обновления пиццы {PizzaId}", id);

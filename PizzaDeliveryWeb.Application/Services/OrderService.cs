@@ -144,6 +144,37 @@ namespace PizzaDeliveryWeb.Application.Services
                .ToList() ?? new List<OrderLineShortDto>()
             };
         }
+        private ClientOrderDto MapToClientOrderDto(Order order)
+        {
+            return new ClientOrderDto
+            {
+                Id = order.Id,
+                Price = order.Price,
+                Status = order.DelStatus.Description,
+                OrderTime = (DateTime)order.OrderTime,
+                Address = order.Address,
+                AcceptedTime = order.AcceptedTime,
+                CancellationTime = order.CancellationTime,
+                CompletionTime = order.CompletionTime,
+                DeliveryStartTime = order.Delivery!=null?order.Delivery.AcceptanceTime:null,
+                IsCancelled = order.CancellationTime != null,
+                IsDelivered = order.Delivery!=null,
+                OrderLines = order.OrderLines?
+               .Select(ol => new OrderLineShortDto
+               {
+                   Id = ol.Id,
+                   PizzaId = ol.PizzaId,
+                   PizzaName = ol.Pizza.Name,
+                   Size = ol.PizzaSize.Name,
+                   Quantity = ol.Quantity,
+                   Price = ol.Price,
+                   AddedIngredients = ol.Ingredients?
+                   .Select(ai => ai.Name)
+                   .ToList() ?? new List<string>()
+               })
+               .ToList() ?? new List<OrderLineShortDto>()
+            };
+        }
 
 
 
@@ -166,11 +197,14 @@ namespace PizzaDeliveryWeb.Application.Services
 
         
 
-        public async Task<IEnumerable<OrderDto>> GetClientOrderHistoryAsync(string userId)
+        public async Task<IEnumerable<ClientOrderDto>> GetClientOrderHistoryAsync(string userId, int? lastId=null, int pageSize=10)
         {
-            return await GetOrdersByFilterAsync(
-                o => o.ClientId == userId &&
-                     o.DelStatusId != (int)OrderStatusEnum.NotPlaced);
+            var orders = await _uow.Orders.GetOrdersByClientIdAsync(userId, lastId, pageSize);
+            return orders.Select(MapToClientOrderDto);
+
+            //return await GetOrdersByFilterAsync(
+            //    o => o.ClientId == userId &&
+            //         o.DelStatusId != (int)OrderStatusEnum.NotPlaced);
         }
 
         // Методы для курьера
@@ -197,10 +231,10 @@ namespace PizzaDeliveryWeb.Application.Services
                      o.DelStatusId != (int)OrderStatusEnum.IsCancelled);
         }
 
-        public async Task<OrderDto> GetOrderByIdAsync(int id)
+        public async Task<ClientOrderDto> GetOrderByIdAsync(int id)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(id);
-            return MapToOrderDto(order);
+            return MapToClientOrderDto(order);
         }
 
 
@@ -266,7 +300,7 @@ namespace PizzaDeliveryWeb.Application.Services
         }
 
         // Отмена заказа
-        public async Task<OrderDto> CancelOrderAsync(int orderId)
+        public async Task<ClientOrderDto> CancelOrderAsync(int orderId)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(orderId);
             if (!IsCancellable(order))
@@ -276,7 +310,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
             order.DelStatusId = (int)OrderStatusEnum.IsCancelled;
             await _uow.Orders.UpdateOrderAsync(order);
-            return MapToOrderDto(order);
+            return MapToClientOrderDto(order);
         }
 
         private bool IsCancellable(Order order)

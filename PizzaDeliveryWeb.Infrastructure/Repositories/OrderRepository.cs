@@ -84,6 +84,28 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             //return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients).
             //    Include(o=>o.Deliveries).ToListAsync();
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByClientIdAsync(string clientId, int? lastId=null, int pageSize = 50)
+        {
+            var query = _context.Orders.AsNoTracking()
+                .Include(o=>o.Delivery)
+                .Include(o=>o.OrderLines)
+                    .ThenInclude(ol=>ol.Pizza)
+                    .ThenInclude(p=>p.Ingredients)
+                .Include(o=>o.OrderLines)
+                    .ThenInclude(ol=>ol.Ingredients)
+                .Include(o=>o.OrderLines)
+                    .ThenInclude(ol=>ol.PizzaSize)
+                .Include(o=>o.DelStatus)
+                .OrderBy(o => o.Id)
+                .Where(o => o.ClientId == clientId && o.DelStatusId!=(int)OrderStatusEnum.NotPlaced)
+                .Take(pageSize);
+            if (lastId.HasValue)
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+            return await query.ToListAsync();
+        }
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId,
             int? lastId=null, int pageSize=10)
         {

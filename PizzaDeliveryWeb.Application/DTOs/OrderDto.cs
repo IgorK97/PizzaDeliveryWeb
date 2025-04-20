@@ -23,6 +23,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public DateTime? CompletionTime { get; set; }
         public DateTime? CancellationTime { get; set; }
         public string Address { get; set; }
+        public DeliveryDto Delivery { get; set; }
 
         public virtual ICollection<OrderLineShortDto> OrderLines { get; set; } = new List<OrderLineShortDto>();
     }

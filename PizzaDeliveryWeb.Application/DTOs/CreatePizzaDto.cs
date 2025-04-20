@@ -16,7 +16,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public bool IsAvailable { get; set; }
         public string Image { get; set; }
         //public IFormFile Image { get; set; }
-        public List<int> Ingredients { get; set; } = new List<int>();
+        public List<int> DefaultIngredientIds { get; set; } = new List<int>();
 
     }
 }
