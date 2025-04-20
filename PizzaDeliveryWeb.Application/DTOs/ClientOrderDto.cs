@@ -14,6 +14,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public DateTime OrderTime { get; set; }
         public DateTime? AcceptedTime { get; set; }
         public DateTime? DeliveryStartTime { get; set; }
+        public DateTime? EndCookingTime { get; set; }
         public DateTime? CompletionTime { get; set; }
         public DateTime? CancellationTime { get; set; }
         public string Address { get; set; }

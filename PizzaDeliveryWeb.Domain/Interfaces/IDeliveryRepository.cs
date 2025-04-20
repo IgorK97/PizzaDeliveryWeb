@@ -11,7 +11,7 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
     {
         Task<Delivery> GetDeliveryByIdAsync(int id);
         Task<IEnumerable<Delivery>> GetDeliveriesAsync();
-        Task<IEnumerable<Delivery>> GetDeliveriesByOrderIdAsync(int id);
+        Task<Delivery> GetDeliveryByOrderIdAsync(int id);
         Task AddDeliveryAsync(Delivery delivery);
         Task UpdateDeliveryAsync(Delivery delivery);
         Task DeleteDeliveryAsync(int id);

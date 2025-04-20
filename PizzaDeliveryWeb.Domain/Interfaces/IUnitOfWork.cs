@@ -15,6 +15,7 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
         IPizzaSizeRepository PizzaSizes { get; }
         IIngredientRepository Ingredients { get; }
         IPizzaRepository Pizzas { get; }
+        IStatusRepository Statuses { get; }
         Task<int> Save();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

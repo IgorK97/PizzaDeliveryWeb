@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PizzaDeliveryWeb.API.Models;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
@@ -73,8 +74,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         //}
 
         //[HttpGet("my")]
-        [HttpGet("history")]
         [Authorize]
+        [HttpGet("history")]
         public async Task<ActionResult<IEnumerable<ClientOrderDto>>> GetMyOrders()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -125,8 +126,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
 
-        [HttpPost("{id}/cancel")]
-        [Authorize(Roles = "Customer")]
+        [HttpPatch("{id}/cancel")]
+        [Authorize]
         public async Task<ActionResult<ClientOrderDto>> CancelOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -142,36 +143,54 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
 
-        [HttpPost("{id}/accept")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> AcceptOrder(int id)
+        [HttpPatch("{id}/accept")]
+        [Authorize]
+        public async Task<ActionResult<ClientOrderDto>> AcceptOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
             await _orderService.AcceptOrderAsync(id, user.Id);
-            return NoContent();
+            var order = await _orderService.GetOrderByIdAsync(id);
+            return Ok(order);
         }
 
 
-        [HttpPost("{id}/start-delivery")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> StartDelivery(int id)
-        {
-            await _orderService.StartDeliveryAsync(id);
-            return NoContent();
-        }
-
-
-        [HttpPost("{id}/complete")]
-        [Authorize(Roles = "Courier")]
-        public async Task<IActionResult> CompleteDelivery(int id)
+        [HttpPatch("{id}/to-delivery")]
+        [Authorize]
+        public async Task<ActionResult<ClientOrderDto>> StartDelivery(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
-            await _orderService.CompleteDeliveryAsync(id, user.Id);
-            return NoContent();
+            await _orderService.TransferToDelivery(id);
+            var order = await _orderService.GetOrderByIdAsync(id);
+            return Ok(order);
+        }
+
+        [HttpPatch("{id}/choose")]
+        [Authorize]
+        public async Task<ActionResult<ClientOrderDto>> TakeOrder(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            await _orderService.TakeOrder(id, user.Id);
+            var order = await _orderService.GetOrderByIdAsync(id);
+            return Ok(order);
+        }
+
+
+        [HttpPatch("{id}/complete")]
+        [Authorize]
+        public async Task<ActionResult<ClientOrderDto>> CompleteDelivery(SetDeliveryModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            await _orderService.CompleteDeliveryAsync(model.OrderId, model.Status, model.Comment);
+            var order = await _orderService.GetOrderByIdAsync(model.OrderId);
+            return Ok(order);
         }
 
 

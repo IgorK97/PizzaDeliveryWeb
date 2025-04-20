@@ -53,11 +53,9 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 ThenInclude(o=>o.OrderLines).ThenInclude(ol=>ol.Ingredients).FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<IEnumerable<Delivery>> GetDeliveriesByOrderIdAsync(int orderId)
+        public async Task<Delivery> GetDeliveryByOrderIdAsync(int orderId)
         {
-            return await _context.Deliveries.Include(d => d.Order).ThenInclude(o => o.OrderLines).
-                ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients).Include(d => d.Order).
-                ThenInclude(o => o.OrderLines).ThenInclude(ol => ol.Ingredients).Where(d => d.OrderId == orderId).ToListAsync();
+            return await _context.Deliveries.Include(d => d.Order).Where(d => d.OrderId == orderId).FirstOrDefaultAsync();
         }
 
         public async Task UpdateDeliveryAsync(Delivery delivery)

@@ -23,31 +23,30 @@ namespace PizzaDeliveryWeb.Application.Services
         }
 
         // В OrderService
-        public async Task CompleteDeliveryAsync(int orderId, string courierId)
+        public async Task CompleteDeliveryAsync(int orderId, string status, string comment)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
 
-            // Проверяем существование хотя бы одной доставки
-            //if (!order.Deliveries.Any())
-            //    throw new InvalidOperationException("Для заказа не созданы доставки");
+            //Проверяем существование хотя бы одной доставки
+            if (order.Delivery==null)
+                throw new InvalidOperationException("Для заказа не созданы доставки");
+            var delivery = await _uow.Deliveries.GetDeliveryByOrderIdAsync(orderId);
+            delivery.DeliveryTime = DateTime.UtcNow;
+            var deliveryStatus =await _uow.Statuses.GetStatusByDescriptionAsync(status);
+            if (deliveryStatus == null)
+                throw new Exception("Ошибка при указании статуса");
+            if(deliveryStatus.Id == (int)OrderStatusEnum.IsDelivered)
+            {
+                delivery.IsSuccessful = true;
+                order.DelStatusId = (int)OrderStatusEnum.IsDelivered;
+            }
+            else
+            {
+                delivery.IsSuccessful = false;
+                delivery.Comment = comment;
+                order.DelStatusId = (int)OrderStatusEnum.IsNotDelivered;
 
-            //// Берем последнюю доставку (предполагаем что статусы меняются в хронологическом порядке)
-            //var lastDelivery = order.Deliveries
-            //    .OrderByDescending(d => d.AcceptanceTime)
-            //    .FirstOrDefault();
-
-            // Проверяем назначение на курьера
-            //if (lastDelivery.CourierId != courierId)
-            //    throw new SecurityException("Текущий курьер не назначен на эту доставку");
-
-            //if (lastDelivery.IsSuccessful != null)
-            //    throw new InvalidOperationException("Доставка не в активном статуе");
-
-            //// Обновление статусов
-            //order.DelStatusId = (int)OrderStatusEnum.IsDelivered;
-            //lastDelivery.IsSuccessful = true;
-            //lastDelivery.DeliveryTime = DateTime.UtcNow;
-            //order.CompletionTime = lastDelivery.DeliveryTime;
+            }
 
             await _uow.Save();
         }
@@ -61,7 +60,7 @@ namespace PizzaDeliveryWeb.Application.Services
             return orders.Select(MapToOrderDto);
         }
 
-        public async Task StartDeliveryAsync(int orderId)
+        public async Task TransferToDelivery(int orderId)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
 
@@ -69,14 +68,31 @@ namespace PizzaDeliveryWeb.Application.Services
                 throw new InvalidOperationException("Невозможно начать доставку");
 
             order.DelStatusId = (int)OrderStatusEnum.IsBeingTransferred;
+            order.CompletionTime = DateTime.UtcNow;
+            //// Создаем запись доставки
+            //var delivery = new Delivery
+            //{
+            //    OrderId = orderId,
+            //    AcceptanceTime = DateTime.UtcNow
+            //};
 
-            // Создаем запись доставки
+            //await _uow.Deliveries.AddDeliveryAsync(delivery);
+            await _uow.Save();
+        }
+        public async Task TakeOrder(int orderId, string courierId)
+        {
+            var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
+            if (order.DelStatusId != (int)OrderStatusEnum.IsBeingTransferred)
+                throw new InvalidOperationException("Невозможно начать доставку");
+
+            order.DelStatusId = (int)OrderStatusEnum.HasBeenTransferred;
+            //order.CompletionTime = DateTime.UtcNow;
             var delivery = new Delivery
             {
                 OrderId = orderId,
-                AcceptanceTime = DateTime.UtcNow
+                AcceptanceTime = DateTime.UtcNow,
+                CourierId=courierId
             };
-
             await _uow.Deliveries.AddDeliveryAsync(delivery);
             await _uow.Save();
         }
@@ -88,7 +104,7 @@ namespace PizzaDeliveryWeb.Application.Services
             if (order == null)
                 throw new ArgumentException("Заказ не найден");
 
-            if (order.DelStatusId != (int)OrderStatusEnum.NotPlaced)
+            if (order.DelStatusId != (int)OrderStatusEnum.IsBeingFormed)
                 throw new InvalidOperationException("Невозможно принять заказ в текущем статусе");
 
             return order;
@@ -102,7 +118,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 var order = await ValidateOrderForAcceptance(orderId);
                 order.ManagerId = managerId;
                 order.DelStatusId = (int)OrderStatusEnum.IsBeingPrepared;
-
+                order.AcceptedTime = DateTime.UtcNow;
                 await _uow.Save();
                 await _uow.CommitTransactionAsync();
             }
@@ -134,6 +150,8 @@ namespace PizzaDeliveryWeb.Application.Services
                    Id = ol.Id,
                    PizzaId = ol.PizzaId,
                    PizzaName = ol.Pizza.Name,
+                   PizzaImage=ol.Pizza.Image,
+                   Weight=ol.Weight,
                    Size = ol.PizzaSize.Name,
                    Quantity = ol.Quantity,
                    Price = ol.Price,
@@ -155,7 +173,8 @@ namespace PizzaDeliveryWeb.Application.Services
                 Address = order.Address,
                 AcceptedTime = order.AcceptedTime,
                 CancellationTime = order.CancellationTime,
-                CompletionTime = order.CompletionTime,
+                EndCookingTime = order.CompletionTime,
+                CompletionTime = order.Delivery != null ? order.Delivery.DeliveryTime : null,
                 DeliveryStartTime = order.Delivery!=null?order.Delivery.AcceptanceTime:null,
                 IsCancelled = order.CancellationTime != null,
                 IsDelivered = order.Delivery!=null,
@@ -168,6 +187,9 @@ namespace PizzaDeliveryWeb.Application.Services
                    Size = ol.PizzaSize.Name,
                    Quantity = ol.Quantity,
                    Price = ol.Price,
+                   Weight = order.Weight,
+                   PizzaImage = ol.Pizza.Image,
+
                    AddedIngredients = ol.Ingredients?
                    .Select(ai => ai.Name)
                    .ToList() ?? new List<string>()
@@ -309,7 +331,10 @@ namespace PizzaDeliveryWeb.Application.Services
             }
 
             order.DelStatusId = (int)OrderStatusEnum.IsCancelled;
+            order.CancellationTime = DateTime.UtcNow;
             await _uow.Orders.UpdateOrderAsync(order);
+            order = await _uow.Orders.GetOrderByIdAsync(orderId);
+
             return MapToClientOrderDto(order);
         }
 

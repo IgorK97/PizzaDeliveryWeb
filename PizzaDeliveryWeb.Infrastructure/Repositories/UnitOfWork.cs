@@ -24,6 +24,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             PizzaSizes = new PizzaSizeRepository(context);
             Ingredients = new IngredientRepository(context);
             Pizzas = new PizzaRepository(context);
+            Statuses = new StatusRepository(context);
         }
 
         public IOrderRepository Orders { get; }
@@ -32,6 +33,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
         public IPizzaSizeRepository PizzaSizes { get; }
         public IIngredientRepository Ingredients { get; }
         public IPizzaRepository Pizzas { get; }
+        public IStatusRepository Statuses { get; }
 
         public async Task<int> Save()
         {

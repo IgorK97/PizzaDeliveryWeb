@@ -88,11 +88,11 @@ namespace PizzaDeliveryWeb.Application.Services
         }
         //Хотя для одного заказа нужна всего одна доставка, может произойти непредвиденная ситуация,
         //Из-за чего может быть проведена повторная доставка в рамках одного заказа
-        public async Task<IEnumerable<DeliveryDto>> GetDeliveriesByOrderIdAsync(int orderId)
-        {
-            var deliveries = await _deliveryRepository.GetDeliveriesByOrderIdAsync(orderId);
-            return deliveries.Select(i => MapToDeliveryDto(i));
-        }
+        //public async Task<IEnumerable<DeliveryDto>> GetDeliveriesByOrderIdAsync(int orderId)
+        //{
+        //    var deliveries = await _deliveryRepository.GetDeliveriesByOrderIdAsync(orderId);
+        //    return deliveries.Select(i => MapToDeliveryDto(i));
+        //}
 
         public async Task AddDeliveryAsync(CreateDeliveryDto createDeliveryDto)
         {
