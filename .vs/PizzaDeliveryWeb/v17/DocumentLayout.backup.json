@@ -136,10 +136,9 @@
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\StatusRepository.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\StatusRepository.cs",
               "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\StatusRepository.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAawBUAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAawBoAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:44:08.811Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:44:08.811Z"
             },
             {
               "$type": "Document",
@@ -151,8 +150,7 @@
               "RelativeToolTip": "PizzaWebAPI\\Models\\SetDeliveryModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:30:16.961Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:30:16.961Z"
             },
             {
               "$type": "Document",
@@ -164,8 +162,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\DeliveryService.cs",
               "ViewState": "AgIAAFEAAAAAAAAAAAAewFkAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:12:12.454Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:12:12.454Z"
             },
             {
               "$type": "Document",
@@ -177,8 +174,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAAQwCMAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:07:02.677Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:07:02.677Z"
             },
             {
               "$type": "Document",
@@ -190,8 +186,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\DeliveryRepository.cs",
               "ViewState": "AgIAACYAAAAAAAAAAAAgwDcAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:04:39.075Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:04:39.075Z"
             },
             {
               "$type": "Document",
@@ -203,8 +198,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IDeliveryRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:04:30.689Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:04:30.689Z"
             },
             {
               "$type": "Document",
@@ -216,8 +210,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:03:54.075Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:03:54.075Z"
             },
             {
               "$type": "Document",
@@ -229,8 +222,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Application\\DTOs\\ClientOrderDto.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T15:19:38.231Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T15:19:38.231Z"
             },
             {
               "$type": "Document",
@@ -254,8 +246,7 @@
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\OrdersController.cs",
               "ViewState": "AgIAALAAAAAAAAAAAAAWwMAAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T10:03:33.869Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T10:03:33.869Z"
             },
             {
               "$type": "Document",
@@ -267,8 +258,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\OrderRepository.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAAACIAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T09:50:03.582Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T09:50:03.582Z"
             },
             {
               "$type": "Document",
@@ -276,9 +266,9 @@
               "Title": "OrderService.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs*",
-              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs*",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAMwCIAAAAmAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAMwCUAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-20T09:46:16.286Z",
               "EditorCaption": ""
@@ -293,8 +283,7 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IOrderRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T09:45:30.985Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T09:45:30.985Z"
             },
             {
               "$type": "Document",
@@ -318,8 +307,7 @@
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\PizzasController.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAgwCUAAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T09:08:07.393Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T09:08:07.393Z"
             },
             {
               "$type": "Document",
