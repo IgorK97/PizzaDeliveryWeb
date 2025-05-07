@@ -34,20 +34,10 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        //public async Task<List<OrderLine>> GetOrderLinesByOrderIdAsync(int orderId)
-        //{
-        //    return await _context.OrderLines.Where(t => t.OrderId == orderId).ToListAsync();
-        //}
+
         public async Task<IEnumerable<OrderLine>> GetNotPlacedOrderLinesWithIngredientAsync(int ingredientId)
         {
-            //    return await _context.OrderLines
-            //.Include(ol => ol.Order).
-            //.Include(ol => ol.Ingredients)
-            //    .ThenInclude(oli => oli.Ingredient)
-            //.Where(ol =>
-            //    ol.Order.Status == OrderStatus.Pending &&
-            //    ol.Ingredients.Any(oli => oli.IngredientId == ingredientId))
-            //.ToListAsync();
+    
             return await _context.OrderLines
                 .AsNoTracking()
                 .Include(ol => ol.Order)
@@ -57,10 +47,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                     ol.Pizza.Ingredients.Any(i=>i.Id==ingredientId))
                 .ToListAsync();
 
-            //var necOrders = result.Where(ol => 
-            //    ol.Order.DelStatusId == (int)OrderStatusEnum.NotPlaced &&
-            //    ol.Ingredients.Any(oli=>oli.Id==ingredientId));
-            //return necOrders;
+  
         }
 
 
@@ -69,7 +56,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
         //    return await _context.Deliveries.Where(t => t.OrderId == orderId).ToListAsync();
         //}
 
-        public async Task<IEnumerable<Order>> GetOrdersAsync(int ?lastId = null,
+        public async Task<IEnumerable<Order>> GetOrdersAsync(OrderStatusEnum? status, int ?lastId = null,
             int pageSize=10)
         {
             var query = _context.Orders.AsNoTracking()
@@ -87,6 +74,10 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             if (lastId.HasValue)
             {
                 query = query.Where(o => o.Id > lastId.Value);
+            }
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.DelStatusId == (int)status);
             }
             return await query.ToListAsync();
         }
@@ -130,12 +121,41 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .Include(o=>o.OrderLines)
                     .ThenInclude(ol=>ol.PizzaSize)
                 .Include(o=>o.DelStatus)
-                .OrderBy(o => o.Id)
+                .OrderByDescending(o => o.Id)
                 .Where(o => o.ClientId == clientId && o.DelStatusId!=(int)OrderStatusEnum.NotPlaced)
                 .Take(pageSize);
             if (lastId.HasValue)
             {
                 query = query.Where(o => o.Id > lastId.Value);
+            }
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByCourierIdAsync(string courierId, OrderStatusEnum? status, int? lastId = null, int pageSize = 50)
+        {
+            var query = _context.Orders.AsNoTracking()
+                .Include(o => o.Delivery)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Pizza)
+                    .ThenInclude(p => p.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.PizzaSize)
+                .Include(o => o.DelStatus)
+                .OrderByDescending(o => o.Id)
+                .Where(o => o.Delivery != null && o.Delivery.CourierId == courierId ||
+                o.DelStatusId != (int)OrderStatusEnum.NotPlaced ||
+                o.DelStatusId != (int)OrderStatusEnum.IsBeingFormed ||
+                o.DelStatusId != (int)OrderStatusEnum.IsBeingPrepared)
+                .Take(pageSize);
+            if (lastId.HasValue)
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.DelStatusId == (int)status);
             }
             return await query.ToListAsync();
         }
@@ -226,15 +246,33 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             int? lastId,
             int pageSize)
         {
-            var query = _context.Orders
-                .Where(o => o.DelStatusId == statusId)
-                .OrderByDescending(o => o.Id).AsQueryable();
-
+            var query = _context.Orders.AsNoTracking()
+               .Include(o => o.Delivery)
+               .Include(o => o.OrderLines)
+                   .ThenInclude(ol => ol.Pizza)
+                   .ThenInclude(p => p.Ingredients)
+               .Include(o => o.OrderLines)
+                   .ThenInclude(ol => ol.Ingredients)
+               .Include(o => o.OrderLines)
+                   .ThenInclude(ol => ol.PizzaSize)
+               .Include(o => o.DelStatus)
+               .OrderByDescending(o => o.Id)
+               .Where(o => o.DelStatusId == statusId)
+               .Take(pageSize);
             if (lastId.HasValue)
-                query = query.Where(o => o.Id < lastId.Value);
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+            return await query.ToListAsync();
+            //var query = _context.Orders
+            //    .Where(o => o.DelStatusId == statusId)
+            //    .OrderByDescending(o => o.Id).AsQueryable();
 
-            return await query.Take(pageSize)
-                .ToListAsync();
+            //if (lastId.HasValue)
+            //    query = query.Where(o => o.Id < lastId.Value);
+
+            //return await query.Take(pageSize)
+            //    .ToListAsync();
         }
 
 

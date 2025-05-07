@@ -20,74 +20,46 @@ namespace PizzaDeliveryWeb.API.Controllers
         private readonly DeliveryService _deliveryService;
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<OrdersController> _logger;
         public OrdersController(UserManager<User> userManager, IWebHostEnvironment env, OrderService orderService, 
-            DeliveryService deliveryService)
+            DeliveryService deliveryService,
+            ILogger<OrdersController> logger)
         {
             _userManager = userManager;
 
             _orderService = orderService;
             _env = env;
             _deliveryService = deliveryService;
+            _logger = logger;
         }
-        /// <summary>
-        /// Получить список заказов (по роли пользователя)
-        /// для клиента только ИСТОРИЯ ЗАКАЗОВ (пока что)
-        /// </summary>
-        /// <returns></returns>
-        // GET: api/<OrdersController>
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders(
-        //    [FromQuery] int? lastId = null,
-        //    [FromQuery] int pageSize=10)
-        //{
-        //    User usr = await _userManager.GetUserAsync(HttpContext.User);
-        //    if (usr == null)
-        //    {
-        //        return Unauthorized(new { message = "Вы Гость. Пожалуйста, выполните вход" });
-        //    }
-        //    var roles = User.Claims
-        //        .Where(c => c.Type == ClaimTypes.Role)
-        //        .Select(c => c.Value)
-        //        .ToList();
-        ////    var myr = User.Claims
-        ////.FirstOrDefault(c => c.Type == "SelectedRole")?.Value;
-        //    IEnumerable<OrderDto> orders;
-        //    if (roles.Contains("client"))
-        //    {
-        //        orders = await _orderService.GetClientOrdersAsync(usr.Id);
-        //    }
-        //    else if (roles.Contains("courier"))
-        //    {
-        //        //IEnumerable<OrderDto> courierOrders;
-        //        orders = await _orderService.GetCourierOrdersAsync(usr.Id);
-        //    }
-        //    else if (roles.Contains("admin"))
-        //    {
-        //        orders = await _orderService.GetAllActiveOrdersAsync();
-        //    }
-        //    else
-        //    {
-        //        return Forbid();
-        //    }
-        //        //var orders = await _orderService.GetOrdersAsync();
-        //        return Ok(orders);
-        //}
+
 
         //[HttpGet("my")]
-        [Authorize]
-        [HttpGet("history")]
+        [HttpGet]
+        [Authorize(Roles = "client")]
+        
         public async Task<ActionResult<IEnumerable<ShortOrderDto>>> GetMyOrders()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) 
-                return Unauthorized();
-            //if (countOrders >= 50)
-            //    return NoContent();
-            //if (countOrders + pageSize > 50)
-            //    pageSize = countOrders + pageSize - 50;
-            //return Ok(await _orderService.GetClientOrderHistoryAsync(user.Id, lastId, pageSize));
-            var orders = await _orderService.GetClientOrderHistoryAsync(user.Id, null, 50);
-            return Ok(orders);
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+
+                var orders = await _orderService.GetClientOrderHistoryAsync(user.Id, null, 50);
+                //return Ok(orders);
+                return Ok(new
+                {
+                    Items = orders,
+                    HasMore = false,
+                    LastId = 0
+                });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при запросе заказов");
+                return StatusCode(500, "Ошибка сервера");
+            }
             //var hasMore = orders.Any() && orders.Last().Id > lastId;
             //var hasMore = true;
 
@@ -102,7 +74,7 @@ namespace PizzaDeliveryWeb.API.Controllers
         [HttpGet("manager")]
         //[Authorize(Roles = "manager")]
         public async Task<IActionResult> GetAllOrders(
-            //[FromQuery] OrderStatusEnum status,
+            [FromQuery] int status=0
             //int lastId,
             //int pageSize = 10
             )
@@ -110,19 +82,47 @@ namespace PizzaDeliveryWeb.API.Controllers
             //var orders = status.HasValue
             //? await _orderService.GetOrdersByStatusAsync(status.Value, lastId, pageSize)
             //: await _orderService.GetAllActiveOrdersAsync();
-            var orders = await _orderService.GetAllActiveOrdersAsync();
-            return Ok(orders);
+            try
+            {
+                var orders = status != 0 ? await _orderService.GetOrdersByStatusAsync((OrderStatusEnum)status, null, 10)
+                : await _orderService.GetAllActiveOrdersAsync();
+                return Ok(new
+                {
+                    Items = orders,
+                    HasMore = false,
+                    LastId = 0
+                });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при запросе заказов");
+                return StatusCode(500, "Ошибка сервера");
+            }
         }
 
 
         [HttpGet("courier")]
         [Authorize(Roles = "Courier")]
-        public async Task<IActionResult> GetCourierOrders()
+        public async Task<IActionResult> GetCourierOrders([FromQuery] int status = 0)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Unauthorized();
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
 
-            return Ok(await _orderService.GetCourierActiveOrdersAsync(user.Id));
+                var orders = await _orderService.GetCourierActiveOrdersAsync(user.Id, (OrderStatusEnum)status);
+                return Ok(new
+                {
+                    Items = orders,
+                    HasMore = false,
+                    LastId = 0
+                });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при запросе заказов");
+                return StatusCode(500, "Ошибка сервера");
+            }
             //return Ok();
         }
 

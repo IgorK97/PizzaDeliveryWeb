@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PizzaDeliveryWeb.Domain.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         IOrderRepository Orders { get; }
         IOrderLineRepository OrderLines { get; }
@@ -17,8 +17,8 @@ namespace PizzaDeliveryWeb.Domain.Interfaces
         IPizzaRepository Pizzas { get; }
         IStatusRepository Statuses { get; }
         Task<int> Save();
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-        Task RollbackTransactionAsync();
+        //Task BeginTransactionAsync();
+        //Task CommitTransactionAsync();
+        //Task RollbackTransactionAsync();
     }
 }

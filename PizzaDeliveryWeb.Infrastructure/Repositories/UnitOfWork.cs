@@ -40,42 +40,42 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task BeginTransactionAsync()
-        {
-            _transaction = await _context.Database.BeginTransactionAsync();
-            //return transaction as IDbTransaction;
-        }
+        //public async Task BeginTransactionAsync()
+        //{
+        //    _transaction = await _context.Database.BeginTransactionAsync();
+        //    //return transaction as IDbTransaction;
+        //}
 
-        public async Task CommitTransactionAsync()
-        {
-            await Save();
-            await _transaction.CommitAsync();
-            await _transaction.DisposeAsync();
-        }
-        private bool disposed = false;
-        public virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-                this.disposed = true;
-            }
-        }
+        //public async Task CommitTransactionAsync()
+        //{
+        //    await Save();
+        //    await _transaction.CommitAsync();
+        //    await _transaction.DisposeAsync();
+        //}
+        //private bool disposed = false;
+        //public virtual void Dispose(bool disposing)
+        //{
+        //    if (!this.disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            _context.Dispose();
+        //        }
+        //        this.disposed = true;
+        //    }
+        //}
 
-        public async Task RollbackTransactionAsync()
-        {
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
-        }
+        //public async Task RollbackTransactionAsync()
+        //{
+        //    await _transaction.RollbackAsync();
+        //    await _transaction.DisposeAsync();
+        //}
 
-        public void Dispose()
-        {
-            //_context?.Dispose();
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    //_context?.Dispose();
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }

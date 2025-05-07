@@ -12,6 +12,9 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public int Id { get; set; }
         public decimal Price { get; set; }
 
+        public string ClientId { get; set; }
+        public string? CourierId { get; set; }
+
         public OrderStatusEnum StatusId { get; set; }
         public string Status => StatusId switch
         {

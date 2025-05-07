@@ -55,6 +55,7 @@ namespace PizzaDeliveryWeb.Application.Services
                    PizzaId = ol.PizzaId,
                    PizzaName = ol.Pizza.Name,
                    Size = ol.PizzaSize.Name,
+                   PizzaSizeId = (DTOs.PizzaSizeEnum)ol.PizzaSize.Id,
                    Quantity = ol.Quantity,
                    Price = ol.Price,
                    AddedIngredients = ol.Ingredients?

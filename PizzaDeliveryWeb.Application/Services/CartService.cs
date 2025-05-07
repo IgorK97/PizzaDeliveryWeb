@@ -51,7 +51,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
         public async Task<CartDto> UpdateCartAsync(CartDto cartDto)
         {
-            await _uow.BeginTransactionAsync();
+            //await _uow.BeginTransactionAsync();
             try
             {
                 var order = await _uow.Orders.GetOrderByIdAsync(cartDto.Id);
@@ -114,13 +114,13 @@ namespace PizzaDeliveryWeb.Application.Services
                 order.Weight = order.OrderLines.Sum(ol => ol.Weight * ol.Quantity);
 
                 //await _uow.Save();
-                await _uow.CommitTransactionAsync();
+                //await _uow.CommitTransactionAsync();
 
                 return MapToCartDto(order);
             }
             catch (Exception ex)
             {
-               await  _uow.RollbackTransactionAsync();
+               //await  _uow.RollbackTransactionAsync();
                throw new Exception();
             }
         }
@@ -234,7 +234,7 @@ namespace PizzaDeliveryWeb.Application.Services
         {
             _logger.LogInformation("Начало оформления корзины для пользователя {ClientId}, clientId");
 
-            await _uow.BeginTransactionAsync();
+            //await _uow.BeginTransactionAsync();
             try
             {
                 var cart = await _uow.Orders.GetCartAsync(clientId);
@@ -264,14 +264,14 @@ namespace PizzaDeliveryWeb.Application.Services
                 cart.OrderTime = DateTime.UtcNow;
                 cart.Address = address;
                 await _uow.Save();
-                await _uow.CommitTransactionAsync();
+                //await _uow.CommitTransactionAsync();
 
                 _logger.LogInformation("По корзине {CartId} успешно оформлен заказ", cart.Id);
                 
             }
             catch(Exception ex)
             {
-                await _uow.RollbackTransactionAsync();
+                //await _uow.RollbackTransactionAsync();
                 throw new Exception(ex.Message);
             }
         }

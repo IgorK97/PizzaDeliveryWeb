@@ -34,7 +34,8 @@ builder.Services.AddDbContext<PizzaDeliveringContext>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<PizzaDeliveringContext>()
     .AddDefaultTokenProviders();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -46,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.
-            GetBytes(builder.Configuration["SigningKey SigningKey SigningKey SigningKey SigningKey SigningKey SigningKey SigningKey "]))
+            GetBytes(builder.Configuration["Jwt:SigningKey"]))
         };
     });
 
@@ -54,6 +55,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("admin"));
 });
+
 
 
 
