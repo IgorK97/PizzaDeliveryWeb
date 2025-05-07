@@ -160,7 +160,7 @@ namespace PizzaDeliveryWeb.Application.Services
             }
             Pizza pizza = await _pizzaRepository.GetPizzaByIdAsync(oline.PizzaId);
 
-            if (oline.PizzaSizeId == (int)PizzaSizeEnum.Small)
+            if (oline.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Small)
             {
                 additionalPrice = lineIngrs.Sum(i => i.Small * i.PricePerGram);
                 additionalWeight = lineIngrs.Sum(i => i.Small);
@@ -168,7 +168,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 innerPrice = pizza.Ingredients.Sum(i => i.Small * i.PricePerGram);
                 innerWeight = pizza.Ingredients.Sum(i => i.Small);
             }
-            else if (oline.PizzaSizeId == (int)PizzaSizeEnum.Medium)
+            else if (oline.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Medium)
             {
                 additionalPrice = lineIngrs.Sum(i => i.Medium * i.PricePerGram);
                 additionalWeight = lineIngrs.Sum(i => i.Medium);
@@ -237,7 +237,7 @@ namespace PizzaDeliveryWeb.Application.Services
             }
             Pizza pizza = await _pizzaRepository.GetPizzaByIdAsync(oline.PizzaId);
 
-            if (oline.PizzaSizeId == (int)PizzaSizeEnum.Small)
+            if (oline.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Small)
             {
                 additionalPrice = lineIngrs.Sum(i => i.Small * i.PricePerGram);
                 additionalWeight = lineIngrs.Sum(i => i.Small);
@@ -245,7 +245,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 innerPrice = pizza.Ingredients.Sum(i => i.Small * i.PricePerGram);
                 innerWeight = pizza.Ingredients.Sum(i => i.Small);
             }
-            else if (oline.PizzaSizeId == (int)PizzaSizeEnum.Medium)
+            else if (oline.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Medium)
             {
                 additionalPrice = lineIngrs.Sum(i => i.Medium * i.PricePerGram);
                 additionalWeight = lineIngrs.Sum(i => i.Medium);

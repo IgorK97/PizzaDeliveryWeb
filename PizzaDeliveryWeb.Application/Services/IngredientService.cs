@@ -162,12 +162,12 @@ namespace PizzaDeliveryWeb.Application.Services
                 //{
                 //var currentIngredient = await _ingrRepository
                 //.GetIngredientByIdAsync(oli.Id);
-                if (orderLine.PizzaSizeId == (int)PizzaSizeEnum.Small)
+                if (orderLine.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Small)
                 {
                     elementWeight += oli.Small;
                     elementPrice += oli.PricePerGram * oli.Small;
                 }
-                else if (orderLine.PizzaSizeId == (int)PizzaSizeEnum.Medium)
+                else if (orderLine.PizzaSizeId == (int)Domain.Entities.PizzaSizeEnum.Medium)
                 {
                     elementWeight += oli.Medium;
                     elementPrice += oli.PricePerGram * oli.Medium;

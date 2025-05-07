@@ -73,6 +73,15 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             int pageSize=10)
         {
             var query = _context.Orders.AsNoTracking()
+                .Include(o => o.Delivery)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Pizza)
+                    .ThenInclude(p => p.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.PizzaSize)
+                .Include(o => o.DelStatus)
                 .OrderBy(o => o.Id)
                 .Take(pageSize);
             if (lastId.HasValue)
@@ -80,9 +89,33 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 query = query.Where(o => o.Id > lastId.Value);
             }
             return await query.ToListAsync();
+        }
 
-            //return await _context.Orders.Include(p => p.OrderLines).ThenInclude(ol => ol.Pizza).ThenInclude(p => p.Ingredients).
-            //    Include(o=>o.Deliveries).ToListAsync();
+        public async Task<IEnumerable<Order>> GetActiveOrdersAsync(int? lastId = null,
+            int pageSize = 10)
+        {
+            var query = _context.Orders.AsNoTracking()
+                .Include(o => o.Delivery)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Pizza)
+                    .ThenInclude(p => p.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Ingredients)
+                .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.PizzaSize)
+                .Include(o => o.DelStatus)
+                .Include(o=>o.Client)
+                .OrderByDescending(o => o.Id)
+                .Where(o=> o.DelStatusId != (int)OrderStatusEnum.NotPlaced &&
+                     o.DelStatusId != (int)OrderStatusEnum.IsCancelled
+
+                     )
+                .Take(pageSize);
+            if (lastId.HasValue)
+            {
+                query = query.Where(o => o.Id > lastId.Value);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<IEnumerable<Order>> GetOrdersByClientIdAsync(string clientId, int? lastId=null, int pageSize = 50)

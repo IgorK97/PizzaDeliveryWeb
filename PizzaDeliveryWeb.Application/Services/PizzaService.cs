@@ -24,15 +24,15 @@ namespace PizzaDeliveryWeb.Application.Services
             _pizzaSizeRepository = pizzaSizeRepository;
         }
 
-        private decimal CalculatePrice(Pizza pizza, DTOs.PizzaSize ps, decimal basePrice)
+        private decimal CalculatePrice(Pizza pizza, DTOs.PizzaSizeEnum ps, decimal basePrice)
         {
             var ingrPrice = pizza.Ingredients.Sum(pi =>
             {
                 var grams = ps switch
                 {
-                    DTOs.PizzaSize.Small => pi.Small,
-                    DTOs.PizzaSize.Medium => pi.Medium,
-                    DTOs.PizzaSize.Big => pi.Big,
+                    DTOs.PizzaSizeEnum.Small => pi.Small,
+                    DTOs.PizzaSizeEnum.Medium => pi.Medium,
+                    DTOs.PizzaSizeEnum.Big => pi.Big,
                     _ => throw new InvalidOperationException("Неизвестный размер пиццы")
                 };
                 return grams * pi.PricePerGram;
@@ -41,15 +41,15 @@ namespace PizzaDeliveryWeb.Application.Services
             return totalPrice;
         }
 
-        private decimal CalculateWeight(Pizza pizza, DTOs.PizzaSize ps, decimal baseWeight)
+        private decimal CalculateWeight(Pizza pizza, DTOs.PizzaSizeEnum ps, decimal baseWeight)
         {
             var ingrWeight = pizza.Ingredients.Sum(pi =>
             {
                 var grams = ps switch
                 {
-                    DTOs.PizzaSize.Small => pi.Small,
-                    DTOs.PizzaSize.Medium => pi.Medium,
-                    DTOs.PizzaSize.Big => pi.Big,
+                    DTOs.PizzaSizeEnum.Small => pi.Small,
+                    DTOs.PizzaSizeEnum.Medium => pi.Medium,
+                    DTOs.PizzaSizeEnum.Big => pi.Big,
                     _ => throw new InvalidOperationException("Неизвестный размер пиццы")
                 };
                 return grams;
@@ -106,21 +106,21 @@ namespace PizzaDeliveryWeb.Application.Services
                 Ingredients = pizza.Ingredients?
                 .Select(i => MapToIngredientDto(i))
                 .ToList() ?? new List<IngredientDto>(),
-                Prices = new Dictionary<DTOs.PizzaSize, decimal>(),
-                Weights = new Dictionary<DTOs.PizzaSize, decimal>()
+                Prices = new Dictionary<int, decimal>(),
+                Weights = new Dictionary<int, decimal>()
             };
 
             //var pizzaSizes = await _pizzaSizeRepository.GetPizzaSizesAsync();
 
             //decimal smallPrice = pizzaSizes.FirstOrDefault(p => p.Id == 1).Price;
 
-            dto.Prices[DTOs.PizzaSize.Small] = CalculatePrice(pizza, DTOs.PizzaSize.Small, pizzaSizes.FirstOrDefault(p=>p.Name.ToLower()=="small")?.Price??0);
-            dto.Prices[DTOs.PizzaSize.Medium] = CalculatePrice(pizza, DTOs.PizzaSize.Medium, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "medium")?.Price ?? 0);
-            dto.Prices[DTOs.PizzaSize.Big] = CalculatePrice(pizza, DTOs.PizzaSize.Big, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "big")?.Price ?? 0);
+            dto.Prices[(int)DTOs.PizzaSizeEnum.Small] = CalculatePrice(pizza, DTOs.PizzaSizeEnum.Small, pizzaSizes.FirstOrDefault(p=>p.Name.ToLower()=="small")?.Price??0);
+            dto.Prices[(int)DTOs.PizzaSizeEnum.Medium] = CalculatePrice(pizza, DTOs.PizzaSizeEnum.Medium, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "medium")?.Price ?? 0);
+            dto.Prices[(int)DTOs.PizzaSizeEnum.Big] = CalculatePrice(pizza, DTOs.PizzaSizeEnum.Big, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "big")?.Price ?? 0);
 
-            dto.Weights[DTOs.PizzaSize.Small] = CalculateWeight(pizza, DTOs.PizzaSize.Small, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "small")?.Weight ?? 0);
-            dto.Weights[DTOs.PizzaSize.Medium] = CalculateWeight(pizza, DTOs.PizzaSize.Medium, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "medium")?.Weight ?? 0);
-            dto.Weights[DTOs.PizzaSize.Big] = CalculateWeight(pizza, DTOs.PizzaSize.Big, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "big")?.Weight ?? 0);
+            dto.Weights[(int)DTOs.PizzaSizeEnum.Small] = CalculateWeight(pizza, DTOs.PizzaSizeEnum.Small, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "small")?.Weight ?? 0);
+            dto.Weights[(int)DTOs.PizzaSizeEnum.Medium] = CalculateWeight(pizza, DTOs.PizzaSizeEnum.Medium, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "medium")?.Weight ?? 0);
+            dto.Weights[(int)DTOs.PizzaSizeEnum.Big] = CalculateWeight(pizza, DTOs.PizzaSizeEnum.Big, pizzaSizes.FirstOrDefault(p => p.Name.ToLower() == "big")?.Weight ?? 0);
 
 
             return dto;

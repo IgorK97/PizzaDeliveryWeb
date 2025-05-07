@@ -86,18 +86,18 @@ namespace PizzaDeliveryWeb.Application.Services
                         orderLine.Ingredients.Add(ingredient);
                     }
 
-                    orderLine.Price = pizzaSize.Price + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
-                                                                                    pizzaSize.Id == (int)PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
+                    orderLine.Price = pizzaSize.Price + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
+                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
                                                                                     i.PricePerGram * i.Big)
-                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
-                                                                                    pizzaSize.Id == (int)PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
+                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
+                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
                                                                                     i.PricePerGram * i.Big);
 
-                    orderLine.Weight = pizzaSize.Weight + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)PizzaSizeEnum.Small ? i.Small :
-                                                                                    pizzaSize.Id == (int)PizzaSizeEnum.Medium ? i.Medium :
+                    orderLine.Weight = pizzaSize.Weight + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
+                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
                                                                                     i.Big)
-                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)PizzaSizeEnum.Small ? i.Small :
-                                                                                    pizzaSize.Id == (int)PizzaSizeEnum.Medium ? i.Medium :
+                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
+                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
                                                                                     i.Big);
 
                 }
@@ -143,6 +143,7 @@ namespace PizzaDeliveryWeb.Application.Services
                     PizzaName = ol.Pizza.Name,
                     PizzaImage = ol.Pizza.Image,
                     PizzaSize = ol.PizzaSize.Name,
+                    PizzaSizeId = ol.PizzaSize.Id,
                     ItemPrice = ol.Price,
                     ItemWeight = ol.Weight,
                     Quantity = ol.Quantity,
@@ -182,9 +183,9 @@ namespace PizzaDeliveryWeb.Application.Services
         {
             return sizeId switch
             {
-                (int)PizzaSizeEnum.Small => ingredient.Small,
-                (int)PizzaSizeEnum.Medium => ingredient.Medium,
-                (int)PizzaSizeEnum.Big => ingredient.Big,
+                (int)Domain.Entities.PizzaSizeEnum.Small => ingredient.Small,
+                (int)Domain.Entities.PizzaSizeEnum.Medium => ingredient.Medium,
+                (int)Domain.Entities.PizzaSizeEnum.Big => ingredient.Big,
                 _ => 0
             };
         }
@@ -194,7 +195,8 @@ namespace PizzaDeliveryWeb.Application.Services
             var order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
 
             var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
-            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+            //var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByIdAsync(itemDto.PizzaSizeId);
 
             var ingredients = new List<Ingredient>();
             foreach(var ingredientId in itemDto.AddedIngredientIds)
@@ -230,7 +232,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
         public async Task SubmitCartAsync(string clientId, decimal price, string address)
         {
-            _logger.LogInformation("Начало оформления корзины для пользователя {ClientId}, c;ientId");
+            _logger.LogInformation("Начало оформления корзины для пользователя {ClientId}, clientId");
 
             await _uow.BeginTransactionAsync();
             try
@@ -308,7 +310,7 @@ namespace PizzaDeliveryWeb.Application.Services
             //await _uow.OrderLines.DeleteOrderLineAsync(orderLine.Id);
 
             var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
-            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByIdAsync(itemDto.PizzaSizeId);
 
             var ingredients = new List<Ingredient>();
             foreach(var ingredientId in itemDto.AddedIngredientIds)

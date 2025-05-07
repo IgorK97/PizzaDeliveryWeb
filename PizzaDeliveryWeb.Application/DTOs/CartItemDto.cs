@@ -14,6 +14,7 @@ namespace PizzaDeliveryWeb.Application.DTOs
         public string PizzaName { get; set; }
         public string PizzaImage { get; set; }
         public string PizzaSize { get; set; }
+        public int PizzaSizeId { get; set; }
         public decimal ItemPrice { get; set; }
         public decimal ItemWeight { get; set; }
         public int Quantity { get; set; }

@@ -76,7 +76,7 @@ namespace PizzaDeliveryWeb.API.Controllers
         //[HttpGet("my")]
         [Authorize]
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<ClientOrderDto>>> GetMyOrders()
+        public async Task<ActionResult<IEnumerable<ShortOrderDto>>> GetMyOrders()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) 
@@ -99,17 +99,18 @@ namespace PizzaDeliveryWeb.API.Controllers
             //});
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Manager")]
+        [HttpGet("manager")]
+        //[Authorize(Roles = "manager")]
         public async Task<IActionResult> GetAllOrders(
-            [FromQuery] OrderStatusEnum? status,
-            int? lastId,
-            int pageSize = 10)
+            //[FromQuery] OrderStatusEnum status,
+            //int lastId,
+            //int pageSize = 10
+            )
         {
-            var orders = status.HasValue
-            ? await _orderService.GetOrdersByStatusAsync(status.Value, lastId, pageSize)
-            : await _orderService.GetAllActiveOrdersAsync();
-
+            //var orders = status.HasValue
+            //? await _orderService.GetOrdersByStatusAsync(status.Value, lastId, pageSize)
+            //: await _orderService.GetAllActiveOrdersAsync();
+            var orders = await _orderService.GetAllActiveOrdersAsync();
             return Ok(orders);
         }
 
@@ -128,7 +129,7 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPatch("{id}/cancel")]
         [Authorize]
-        public async Task<ActionResult<ClientOrderDto>> CancelOrder(int id)
+        public async Task<ActionResult<ShortOrderDto>> CancelOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -144,8 +145,8 @@ namespace PizzaDeliveryWeb.API.Controllers
 
 
         [HttpPatch("{id}/accept")]
-        [Authorize]
-        public async Task<ActionResult<ClientOrderDto>> AcceptOrder(int id)
+        [Authorize(Roles ="manager")]
+        public async Task<ActionResult<ShortOrderDto>> AcceptOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -158,7 +159,7 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPatch("{id}/to-delivery")]
         [Authorize]
-        public async Task<ActionResult<ClientOrderDto>> StartDelivery(int id)
+        public async Task<ActionResult<ShortOrderDto>> StartDelivery(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -170,7 +171,7 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPatch("{id}/choose")]
         [Authorize]
-        public async Task<ActionResult<ClientOrderDto>> TakeOrder(int id)
+        public async Task<ActionResult<ShortOrderDto>> TakeOrder(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -183,7 +184,7 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         [HttpPatch("{id}/complete")]
         [Authorize]
-        public async Task<ActionResult<ClientOrderDto>> CompleteDelivery(SetDeliveryModel model)
+        public async Task<ActionResult<ShortOrderDto>> CompleteDelivery(SetDeliveryModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -220,7 +221,7 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         // POST api/<OrdersController>
         [HttpPost("confirm/{id}")]
-        public async Task<ActionResult<OrderDto>> Post([FromBody]ShortOrderDto order)
+        public async Task<ActionResult<OrderDto>> Post([FromBody]ConfirmOrderDto order)
         {
             User usr = await _userManager.GetUserAsync(HttpContext.User);
             if (usr == null)

@@ -162,13 +162,13 @@ namespace PizzaDeliveryWeb.Application.Services
                .ToList() ?? new List<OrderLineShortDto>()
             };
         }
-        private ClientOrderDto MapToClientOrderDto(Order order)
+        private ShortOrderDto MapToShortOrderDto(Order order)
         {
-            return new ClientOrderDto
+            return new ShortOrderDto
             {
                 Id = order.Id,
                 Price = order.Price,
-                Status = order.DelStatus.Description,
+                StatusId = (OrderStatusEnum) order.DelStatus.Id,
                 OrderTime = (DateTime)order.OrderTime,
                 Address = order.Address,
                 AcceptedTime = order.AcceptedTime,
@@ -206,23 +206,23 @@ namespace PizzaDeliveryWeb.Application.Services
                 (!string.IsNullOrEmpty(client.Surname) ? $"{client.Surname}" : "");
         }
 
-        private async Task<IEnumerable<OrderDto>> GetOrdersByFilterAsync(
-        Func<Order, bool> filter,
-        int? lastId = null,
-        int pageSize = 10)
-        {
-            var orders = await _uow.Orders.GetOrdersAsync(lastId, pageSize);
-            return orders.Where(filter).Select(MapToOrderDto);
-        }
+        //private async Task<IEnumerable<OrderDto>> GetOrdersByFilterAsync(
+        //Func<Order, bool> filter,
+        //int? lastId = null,
+        //int pageSize = 10)
+        //{
+        //    var orders = await _uow.Orders.GetOrdersAsync(lastId, pageSize);
+        //    return orders.Where(filter).Select(MapToOrderDto);
+        //}
 
         
 
         
 
-        public async Task<IEnumerable<ClientOrderDto>> GetClientOrderHistoryAsync(string userId, int? lastId=null, int pageSize=10)
+        public async Task<IEnumerable<ShortOrderDto>> GetClientOrderHistoryAsync(string userId, int? lastId=null, int pageSize=10)
         {
             var orders = await _uow.Orders.GetOrdersByClientIdAsync(userId, lastId, pageSize);
-            return orders.Select(MapToClientOrderDto);
+            return orders.Select(MapToShortOrderDto);
 
             //return await GetOrdersByFilterAsync(
             //    o => o.ClientId == userId &&
@@ -246,17 +246,21 @@ namespace PizzaDeliveryWeb.Application.Services
 
 
         // Методы для менеджера
-        public async Task<IEnumerable<OrderDto>> GetAllActiveOrdersAsync()
+        public async Task<IEnumerable<ShortOrderDto>> GetAllActiveOrdersAsync(int? lastId = null, int pageSize=10)
         {
-            return await GetOrdersByFilterAsync(
-                o => o.DelStatusId != (int)OrderStatusEnum.IsDelivered &&
-                     o.DelStatusId != (int)OrderStatusEnum.IsCancelled);
+            //return await GetOrdersByFilterAsync(
+            //    o => o.DelStatusId != (int)OrderStatusEnum.IsDelivered &&
+            //         o.DelStatusId != (int)OrderStatusEnum.IsCancelled);
+            //var orders = await _uow.Orders.GetOrdersAsync(lastId, pageSize);
+            //return orders.Where(filter).Select(MapToOrderDto);
+            var orders = await _uow.Orders.GetActiveOrdersAsync(lastId, pageSize);
+            return orders.Select(o => MapToShortOrderDto(o));
         }
 
-        public async Task<ClientOrderDto> GetOrderByIdAsync(int id)
+        public async Task<ShortOrderDto> GetOrderByIdAsync(int id)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(id);
-            return MapToClientOrderDto(order);
+            return MapToShortOrderDto(order);
         }
 
 
@@ -322,7 +326,7 @@ namespace PizzaDeliveryWeb.Application.Services
         }
 
         // Отмена заказа
-        public async Task<ClientOrderDto> CancelOrderAsync(int orderId)
+        public async Task<ShortOrderDto> CancelOrderAsync(int orderId)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(orderId);
             if (!IsCancellable(order))
@@ -335,7 +339,7 @@ namespace PizzaDeliveryWeb.Application.Services
             await _uow.Orders.UpdateOrderAsync(order);
             order = await _uow.Orders.GetOrderByIdAsync(orderId);
 
-            return MapToClientOrderDto(order);
+            return MapToShortOrderDto(order);
         }
 
         private bool IsCancellable(Order order)
