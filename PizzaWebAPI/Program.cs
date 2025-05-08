@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,8 +24,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-builder.Logging.AddEventSourceLogger();
+//builder.Logging.AddDebug();
+//builder.Logging.AddEventSourceLogger();
 
 builder.Logging.AddFilter("Microsoft", LogLevel.Warning)
     .AddFilter("System", LogLevel.Warning)
@@ -47,7 +49,8 @@ builder.Services.AddAuthentication(
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.
-            GetBytes(builder.Configuration["Jwt:SigningKey"]))
+            GetBytes(builder.Configuration["Jwt:Key"])),
+            RoleClaimType = ClaimsIdentity.DefaultRoleClaimType
         };
     });
 
@@ -124,6 +127,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //app.UseCors("AllowLocalHost3000");
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();

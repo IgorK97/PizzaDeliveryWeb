@@ -3,40 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.domain\\interfaces\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|solutionrelative:pizzadeliveryweb.domain\\interfaces\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.infrastructure\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|solutionrelative:pizzadeliveryweb.infrastructure\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\cartscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\cartscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\cartitemscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\cartitemscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\ingredientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\ingredientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\pizzascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\pizzascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\myexceptions\\emptycartexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\myexceptions\\emptycartexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\myexceptions\\outdatedcartexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\myexceptions\\outdatedcartexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\myexceptions\\cartnotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\myexceptions\\cartnotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\myexceptions\\notfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\myexceptions\\notfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\myexceptions\\mydbexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\myexceptions\\mydbexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.infrastructure\\repositories\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -47,28 +67,28 @@
       "RelativeMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|solutionrelative:pizzadeliveryweb.domain\\interfaces\\iorderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\shortorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\shortorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\orderlineshortdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\orderlineshortdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|solutionrelative:pizzadeliveryweb.domain\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\updateingredientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\updateingredientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.domain\\interfaces\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|solutionrelative:pizzadeliveryweb.domain\\interfaces\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.infrastructure\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|solutionrelative:pizzadeliveryweb.infrastructure\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\shortorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\shortorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\deliveryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\services\\deliveryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\confirmorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\confirmorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.infrastructure\\repositories\\deliveryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|solutionrelative:pizzadeliveryweb.infrastructure\\repositories\\deliveryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\pizzaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -91,14 +111,6 @@
       "RelativeMoniker": "D:0:0:{4A61C522-B83C-4579-8341-61AD60154E2B}|PizzaDeliveryWeb.Infrastructure\\PizzaDeliveryWeb.Infrastructure.csproj|solutionrelative:pizzadeliveryweb.infrastructure\\repositories\\statusrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzawebapi\\controllers\\ingredientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9687B802-6B19-46A1-A9E5-2A4CFD1A3D72}|PizzaWebAPI\\PizzaDeliveryWeb.API.csproj|solutionrelative:pizzawebapi\\controllers\\ingredientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.domain\\interfaces\\ideliveryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{16D3F503-4DE4-4C90-AD33-C8618709671B}|PizzaDeliveryWeb.Domain\\PizzaDeliveryWeb.Domain.csproj|solutionrelative:pizzadeliveryweb.domain\\interfaces\\ideliveryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{ED48C4A7-FFF1-466C-A41B-D0DAC069C1C1}|PizzaDeliveryProject.Tests\\PizzaDeliveryProject.Tests.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryproject.tests\\applicationtests\\ingredientservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{ED48C4A7-FFF1-466C-A41B-D0DAC069C1C1}|PizzaDeliveryProject.Tests\\PizzaDeliveryProject.Tests.csproj|solutionrelative:pizzadeliveryproject.tests\\applicationtests\\ingredientservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -109,10 +121,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\services\\ingredientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\services\\ingredientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\updateingredientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|solutionrelative:pizzadeliveryweb.application\\dtos\\updateingredientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A40331F-96AA-41F3-96E7-052791FD9D8F}|PizzaDeliveryWeb.Application\\PizzaDeliveryWeb.Application.csproj|c:\\users\\igora\\source\\repos\\myprojects\\pizzadeliverycorp\\pizzadeliveryweb.application\\dtos\\createingredientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -130,47 +138,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 231,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 14,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T21:25:43.244Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CartService.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\CartService.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\CartService.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\CartService.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\CartService.cs",
-              "ViewState": "AgIAAEgBAAAAAAAAAAD4vxEBAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T21:24:39.718Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IUnitOfWork.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAuwAwAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T21:24:06.686Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -181,136 +150,214 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\appsettings.json",
-              "RelativeDocumentMoniker": "PizzaWebAPI\\appsettings.json",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\appsettings.json",
-              "RelativeToolTip": "PizzaWebAPI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-07T19:21:47.48Z",
+              "DocumentIndex": 4,
+              "Title": "PizzasController.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\PizzasController.cs",
+              "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\PizzasController.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\PizzasController.cs",
+              "RelativeToolTip": "PizzaWebAPI\\Controllers\\PizzasController.cs",
+              "ViewState": "AgIAADsBAAAAAAAAAAAUwEgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T09:59:36.009Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "EmptyCartException.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\EmptyCartException.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\MyExceptions\\EmptyCartException.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\EmptyCartException.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\MyExceptions\\EmptyCartException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T08:30:03.576Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "OutdatedCartException.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\OutdatedCartException.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\MyExceptions\\OutdatedCartException.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\OutdatedCartException.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\MyExceptions\\OutdatedCartException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T08:29:26.86Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CartNotFoundException.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\CartNotFoundException.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\MyExceptions\\CartNotFoundException.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\CartNotFoundException.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\MyExceptions\\CartNotFoundException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T08:28:41.205Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "MyDbException.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\MyDbException.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\MyExceptions\\MyDbException.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\MyDbException.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\MyExceptions\\MyDbException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T07:38:13.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "NotFoundException.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\NotFoundException.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\MyExceptions\\NotFoundException.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\MyExceptions\\NotFoundException.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\MyExceptions\\NotFoundException.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T07:27:01.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CartItemsController.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\CartItemsController.cs",
+              "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\CartItemsController.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\CartItemsController.cs",
+              "RelativeToolTip": "PizzaWebAPI\\Controllers\\CartItemsController.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwBsAAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-08T07:06:56.431Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\UnitOfWork.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T21:25:43.244Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "IUnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IUnitOfWork.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAuwAcAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T21:24:06.686Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "Order.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Entities\\Order.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Domain\\Entities\\Order.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Entities\\Order.cs",
               "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Entities\\Order.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T17:44:19.335Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "OrderLineShortDto.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\OrderLineShortDto.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\OrderLineShortDto.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\OrderLineShortDto.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Application\\DTOs\\OrderLineShortDto.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBAAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T17:31:24.151Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "ConfirmOrderDto.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\ConfirmOrderDto.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\ConfirmOrderDto.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\ConfirmOrderDto.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Application\\DTOs\\ConfirmOrderDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T14:56:50.346Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
               "Title": "IOrderRepository.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IOrderRepository.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Domain\\Interfaces\\IOrderRepository.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IOrderRepository.cs",
               "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IOrderRepository.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAABJAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA8AAABmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T14:32:53.991Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 14,
               "Title": "OrderRepository.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\OrderRepository.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\OrderRepository.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\OrderRepository.cs",
               "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\OrderRepository.cs",
-              "ViewState": "AgIAAH0AAAAAAAAAAAAswJ0AAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAPUAAAAAAAAAAAAuwP4AAAByAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T14:31:26.417Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "OrderService.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs",
-              "ViewState": "AgIAABQBAAAAAAAAAAD4vyMBAAA4AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\OrderService.cs*",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\OrderService.cs*",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAADIBAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T14:23:20.349Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
               "Title": "OrdersController.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\OrdersController.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\OrdersController.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\OrdersController.cs",
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\OrdersController.cs",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAQwG0AAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAACEBAAAAAAAAAADwvzkBAABjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T13:55:32.096Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Program.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Program.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Program.cs",
               "RelativeToolTip": "PizzaWebAPI\\Program.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAAADEAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAABoAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T12:45:59.149Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "CartsController.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\CartsController.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\CartsController.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\CartsController.cs",
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\CartsController.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAQwE0AAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAswIAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-24T07:07:47.773Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 23,
               "Title": "CartDto.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\CartDto.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\CartDto.cs",
@@ -322,7 +369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 26,
               "Title": "StatusRepository.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\StatusRepository.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\StatusRepository.cs",
@@ -334,7 +381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 21,
               "Title": "DeliveryService.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\DeliveryService.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\DeliveryService.cs",
@@ -342,36 +389,11 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\DeliveryService.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAA3wDkAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:12:12.454Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T16:12:12.454Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "DeliveryRepository.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\DeliveryRepository.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\DeliveryRepository.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\DeliveryRepository.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Infrastructure\\Repositories\\DeliveryRepository.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAA3wDcAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:04:39.075Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "IDeliveryRepository.cs",
-              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IDeliveryRepository.cs",
-              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Domain\\Interfaces\\IDeliveryRepository.cs",
-              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Domain\\Interfaces\\IDeliveryRepository.cs",
-              "RelativeToolTip": "PizzaDeliveryWeb.Domain\\Interfaces\\IDeliveryRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T16:04:30.689Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 20,
               "Title": "ShortOrderDto.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\ShortOrderDto.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\ShortOrderDto.cs",
@@ -379,12 +401,11 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Application\\DTOs\\ShortOrderDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T15:19:38.231Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-20T15:19:38.231Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 25,
               "Title": "ResultGetPizzas.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Models\\ResultGetPizzas.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Models\\ResultGetPizzas.cs",
@@ -396,7 +417,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "IngredientServiceTests.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryProject.Tests\\ApplicationTests\\IngredientServiceTests.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryProject.Tests\\ApplicationTests\\IngredientServiceTests.cs",
@@ -408,7 +429,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 17,
               "Title": "UpdateIngredientDto.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\UpdateIngredientDto.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\UpdateIngredientDto.cs",
@@ -416,11 +437,12 @@
               "RelativeToolTip": "PizzaDeliveryWeb.Application\\DTOs\\UpdateIngredientDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T08:45:20.798Z"
+              "WhenOpened": "2025-04-20T08:45:20.798Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "IngredientService.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\IngredientService.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\IngredientService.cs",
@@ -432,7 +454,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "CreateIngredientDto.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\DTOs\\CreateIngredientDto.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\DTOs\\CreateIngredientDto.cs",
@@ -444,7 +466,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 22,
               "Title": "PizzaService.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\PizzaService.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\PizzaService.cs",
@@ -456,7 +478,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 24,
               "Title": "CartSubmitResult.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Models\\CartSubmitResult.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Models\\CartSubmitResult.cs",
@@ -468,7 +490,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "IngredientRepository.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\IngredientRepository.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\IngredientRepository.cs",
@@ -480,7 +502,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "PizzaSizeRepository.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Infrastructure\\Repositories\\PizzaSizeRepository.cs",
               "RelativeDocumentMoniker": "PizzaDeliveryWeb.Infrastructure\\Repositories\\PizzaSizeRepository.cs",
@@ -492,28 +514,63 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\AccountController.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\AccountController.cs",
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAYwEMAAABOAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAAwJIAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-18T06:19:08.964Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 3,
               "Title": "IngredientsController.cs",
               "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\IngredientsController.cs",
               "RelativeDocumentMoniker": "PizzaWebAPI\\Controllers\\IngredientsController.cs",
               "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaWebAPI\\Controllers\\IngredientsController.cs",
               "RelativeToolTip": "PizzaWebAPI\\Controllers\\IngredientsController.cs",
-              "ViewState": "AgIAAKoAAAAAAAAAAAAIwPEAAABIAAAAAAAAAA==",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAUwOwAAABmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T14:55:04.374Z"
+              "WhenOpened": "2025-04-16T14:55:04.374Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "b0e3fb33-60db-4b15-bbec-4effea08e58f",
+        "Display": 1,
+        "X": 273,
+        "Y": 263,
+        "Width": 1025,
+        "Height": 494,
+        "WindowState": 0
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CartService.cs",
+              "DocumentMoniker": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\CartService.cs",
+              "RelativeDocumentMoniker": "PizzaDeliveryWeb.Application\\Services\\CartService.cs",
+              "ToolTip": "C:\\Users\\IgorA\\source\\repos\\MyProjects\\PizzaDeliveryCorp\\PizzaDeliveryWeb.Application\\Services\\CartService.cs",
+              "RelativeToolTip": "PizzaDeliveryWeb.Application\\Services\\CartService.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwEAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T21:24:39.718Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PizzaDeliveryWeb.Application.DTOs;
@@ -90,6 +91,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         // POST api/<IngredientsController>
         //[Authorize(Roles = "admin")]
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
+
         public async Task<ActionResult<IngredientDto>> CreateIngredient([FromBody] CreateIngredientDto ingredientDto)
         {
 
@@ -181,6 +184,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         // PUT api/<IngredientsController>/5
         //[Authorize(Roles = "admin")]
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
+
         public async Task<IActionResult> UpdateIngredient(int id, UpdateIngredientDto ingrDto)
         {
 
@@ -228,7 +233,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
         // DELETE api/<IngredientsController>/5
-        [Authorize(Roles ="manager")]
+        //[Authorize(Roles ="manager")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIngredient(int id)
         {

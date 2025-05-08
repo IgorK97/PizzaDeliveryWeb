@@ -7,22 +7,32 @@ using Microsoft.Extensions.Logging;
 using PizzaDeliveryWeb.Application.DTOs;
 using PizzaDeliveryWeb.Domain.Entities;
 using PizzaDeliveryWeb.Domain.Interfaces;
+using PizzaDeliveryWeb.Application.MyExceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
     public class CartService
     {
         private readonly IUnitOfWork _uow;
-        private readonly ILogger<CartService> _logger;
-        public CartService(IUnitOfWork uow, ILogger<CartService> logger)
+        //private readonly ILogger<CartService> _logger;
+        public CartService(IUnitOfWork uow)
         {
             _uow = uow;
-            _logger = logger;
+            //_logger = logger;
         }
         public async Task<CartDto> GetOrCreateCartAsync(string clientId)
         {
 
-            var order = await _uow.Orders.GetCartAsync(clientId);
+            Order order;
+            try
+            {
+                order = await _uow.Orders.GetCartAsync(clientId);
+            }
+            catch(DbUpdateException ex)
+            {
+                throw new MyDbException("Ошибка при получении корзины. попробуйте позже", ex);
+            }
             if (order == null)
             {
                 //return MapToCartDto(order);
@@ -35,9 +45,26 @@ namespace PizzaDeliveryWeb.Application.Services
                     DelStatusId=(int)OrderStatusEnum.NotPlaced
 
                 };
-                await _uow.Orders.AddOrderAsync(order);
-                await _uow.Save();
-                order = await _uow.Orders.GetCartAsync(clientId);
+                try
+                {
+                    await _uow.Orders.AddOrderAsync(order);
+                    await _uow.Save();
+                }
+                catch(DbUpdateException ex)
+                {
+                    throw new MyDbException("Ошибка при сохранении корзины. Попробуйте позже.", ex);
+                }
+
+                try
+                {
+                    order = await _uow.Orders.GetCartAsync(clientId);
+                }
+                catch (DbUpdateException ex)
+                {
+                    throw new MyDbException("Ошибка при получении корзины. попробуйте позже", ex);
+                }
+                if (order == null)
+                    throw new CartNotFoundException($"Не удалось получить корзину для клиента {clientId}");
 
             }
             return MapToCartDto(order);
@@ -49,81 +76,81 @@ namespace PizzaDeliveryWeb.Application.Services
             return cart.Id;
         }
 
-        public async Task<CartDto> UpdateCartAsync(CartDto cartDto)
-        {
-            //await _uow.BeginTransactionAsync();
-            try
-            {
-                var order = await _uow.Orders.GetOrderByIdAsync(cartDto.Id);
-                if (order == null)
-                    throw new ArgumentException("Корзина не найдена");
+        //public async Task<CartDto> UpdateCartAsync(CartDto cartDto)
+        //{
+        //    //await _uow.BeginTransactionAsync();
+        //    try
+        //    {
+        //        var order = await _uow.Orders.GetOrderByIdAsync(cartDto.Id);
+        //        if (order == null)
+        //            throw new ArgumentException("Корзина не найдена");
 
-                order.Address = cartDto.Address;
-                var dtoItemIds = cartDto.Items.Where(i => i.Id != 0).Select(i => i.Id).ToHashSet();
+        //        order.Address = cartDto.Address;
+        //        var dtoItemIds = cartDto.Items.Where(i => i.Id != 0).Select(i => i.Id).ToHashSet();
 
-                foreach (var itemDto in cartDto.Items)
-                {
-                    OrderLine orderLine;
+        //        foreach (var itemDto in cartDto.Items)
+        //        {
+        //            OrderLine orderLine;
 
 
-                    orderLine = order.OrderLines.FirstOrDefault(ol => ol.Id == itemDto.Id);
+        //            orderLine = order.OrderLines.FirstOrDefault(ol => ol.Id == itemDto.Id);
 
-                    var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
+        //            var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
 
-                    orderLine.Pizza = pizza;
+        //            orderLine.Pizza = pizza;
 
-                    orderLine.PizzaId = itemDto.PizzaId;
-                    orderLine.Quantity = itemDto.Quantity;
+        //            orderLine.PizzaId = itemDto.PizzaId;
+        //            orderLine.Quantity = itemDto.Quantity;
 
-                    var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
-                    orderLine.PizzaSizeId = pizzaSize.Id;
+        //            var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
+        //            orderLine.PizzaSizeId = pizzaSize.Id;
 
-                    orderLine.Ingredients.Clear();
-                    foreach (var ingredientId in itemDto.AddedIngredientIds)
-                    {
-                        var ingredient = await _uow.Ingredients.GetIngredientByIdAsync(ingredientId);
+        //            orderLine.Ingredients.Clear();
+        //            foreach (var ingredientId in itemDto.AddedIngredientIds)
+        //            {
+        //                var ingredient = await _uow.Ingredients.GetIngredientByIdAsync(ingredientId);
 
-                        orderLine.Ingredients.Add(ingredient);
-                    }
+        //                orderLine.Ingredients.Add(ingredient);
+        //            }
 
-                    orderLine.Price = pizzaSize.Price + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
-                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
-                                                                                    i.PricePerGram * i.Big)
-                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
-                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
-                                                                                    i.PricePerGram * i.Big);
+        //            orderLine.Price = pizzaSize.Price + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
+        //                                                                            pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
+        //                                                                            i.PricePerGram * i.Big)
+        //                + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.PricePerGram * i.Small :
+        //                                                                            pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.PricePerGram * i.Medium :
+        //                                                                            i.PricePerGram * i.Big);
 
-                    orderLine.Weight = pizzaSize.Weight + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
-                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
-                                                                                    i.Big)
-                        + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
-                                                                                    pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
-                                                                                    i.Big);
+        //            orderLine.Weight = pizzaSize.Weight + orderLine.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
+        //                                                                            pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
+        //                                                                            i.Big)
+        //                + orderLine.Pizza.Ingredients.Sum(i => pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Small ? i.Small :
+        //                                                                            pizzaSize.Id == (int)Domain.Entities.PizzaSizeEnum.Medium ? i.Medium :
+        //                                                                            i.Big);
 
-                }
-                var linesToRemove = order.OrderLines
-                    .Where(ol => !dtoItemIds.Contains(ol.Id))
-                    .ToList();
-                foreach (var line in linesToRemove)
-                {
-                    order.OrderLines.Remove(line);
-                    _uow.OrderLines.DeleteOrderLineAsync(line.Id);
-                }
+        //        }
+        //        var linesToRemove = order.OrderLines
+        //            .Where(ol => !dtoItemIds.Contains(ol.Id))
+        //            .ToList();
+        //        foreach (var line in linesToRemove)
+        //        {
+        //            order.OrderLines.Remove(line);
+        //            _uow.OrderLines.DeleteOrderLineAsync(line.Id);
+        //        }
 
-                order.Price = order.OrderLines.Sum(ol => ol.Price * ol.Quantity);
-                order.Weight = order.OrderLines.Sum(ol => ol.Weight * ol.Quantity);
+        //        order.Price = order.OrderLines.Sum(ol => ol.Price * ol.Quantity);
+        //        order.Weight = order.OrderLines.Sum(ol => ol.Weight * ol.Quantity);
 
-                //await _uow.Save();
-                //await _uow.CommitTransactionAsync();
+        //        //await _uow.Save();
+        //        //await _uow.CommitTransactionAsync();
 
-                return MapToCartDto(order);
-            }
-            catch (Exception ex)
-            {
-               //await  _uow.RollbackTransactionAsync();
-               throw new Exception();
-            }
-        }
+        //        return MapToCartDto(order);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //       //await  _uow.RollbackTransactionAsync();
+        //       throw new Exception();
+        //    }
+        //}
 
         public CartDto MapToCartDto(Order order)
         {
@@ -192,16 +219,28 @@ namespace PizzaDeliveryWeb.Application.Services
 
         public async Task<CartDto> AddNewItemToCartAsync(NewCartItemDto itemDto)
         {
+            if (itemDto.Quantity <= 0)
+                throw new ArgumentException("Количество товаров в позиции заказа должно быть больше нуля");
+
             var order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
+            if (order == null)
+                throw new NotFoundException("Корзина", itemDto.CartId);
+
 
             var pizza = await _uow.Pizzas.GetPizzaByIdAsync(itemDto.PizzaId);
+            if (pizza == null)
+                throw new NotFoundException("Пицца", itemDto.PizzaId);
             //var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByNameAsync(itemDto.PizzaSize);
             var pizzaSize = await _uow.PizzaSizes.GetPizzaSizeByIdAsync(itemDto.PizzaSizeId);
+            if (pizzaSize == null)
+                throw new NotFoundException("Размер пиццы", itemDto.PizzaSizeId);
 
             var ingredients = new List<Ingredient>();
             foreach(var ingredientId in itemDto.AddedIngredientIds)
             {
                 var ingredient = await _uow.Ingredients.GetIngredientByIdAsync(ingredientId);
+                if (ingredient == null)
+                    throw new NotFoundException("Ингредиент", ingredientId);
                 ingredients.Add(ingredient);
             }
 
@@ -219,61 +258,61 @@ namespace PizzaDeliveryWeb.Application.Services
             order.OrderLines.Add(orderLine);
             order.Price += orderLine.Price * orderLine.Quantity;
             order.Weight += orderLine.Weight * orderLine.Quantity;
+            try
+            {
+                await _uow.Save();
+            }
+            catch(DbUpdateException ex)
+            {
+                throw new MyDbException("Ошибка при сохранении корзины. попробуйте позже.", ex);
+            }
 
-            await _uow.Save();
-
-            _logger.LogInformation("Добавлена новая позиция в корзину {CartId}", itemDto.CartId);
+            //_logger.LogInformation("Добавлена новая позиция в корзину {CartId}", itemDto.CartId);
 
             order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
-
+            if (order == null)
+                throw new NotFoundException("Корзина", itemDto.CartId);
 
             return MapToCartDto(order);
         }
 
         public async Task SubmitCartAsync(string clientId, decimal price, string address)
         {
-            _logger.LogInformation("Начало оформления корзины для пользователя {ClientId}, clientId");
 
-            //await _uow.BeginTransactionAsync();
-            try
-            {
-                var cart = await _uow.Orders.GetCartAsync(clientId);
-                if (cart == null)
-                {
-                    _logger.LogWarning("Корзина для пользователя {ClientId} не найдена", clientId);
-                    throw new Exception("Корзина не найдена");
-                }
-
+            if (price <= 0)
+                throw new ArgumentException("Недопустимая цена");
+            if (String.IsNullOrEmpty(address))
+                throw new ArgumentException("Адрес должен быть указан");
+            var cart = await _uow.Orders.GetCartAsync(clientId);
+            if (cart == null)
+                throw new CartNotFoundException($"Корзина для клиента {clientId} не найдена");
+                
                 if(cart.Price!=price)
                 {
-                    _logger.LogWarning("Корзина клиента устарела");
-                    throw new Exception("Корзина клиента устарела");
+
+                    throw new OutdatedCartException("Корзина клиента устарела");
                 }
-                //if (string.IsNullOrWhiteSpace(cart.Address))
-                //{
-                //    _logger.LogWarning("Корзина для пользователя {ClientId}, адрес при заказе не указан", clientId);
-                //    throw new Exception("Адрес доставки не указан");
-                //}
+
                 if (!cart.OrderLines.Any())
                 {
-                    _logger.LogWarning("Попытка оформления пустой корзины");
-                    throw new Exception("Корзина пуста");
+
+                    throw new EmptyCartException("Корзина пуста");
                 }
 
                 cart.DelStatusId = (int)OrderStatusEnum.IsBeingFormed;
                 cart.OrderTime = DateTime.UtcNow;
                 cart.Address = address;
-                await _uow.Save();
-                //await _uow.CommitTransactionAsync();
-
-                _logger.LogInformation("По корзине {CartId} успешно оформлен заказ", cart.Id);
-                
-            }
-            catch(Exception ex)
+            try
             {
-                //await _uow.RollbackTransactionAsync();
-                throw new Exception(ex.Message);
+                await _uow.Save();
             }
+            catch (DbUpdateException ex)
+            {
+                throw new MyDbException("Ошибка при сохранении заказа. Попробуйте позже.", ex);
+            }
+
+
+
         }
 
 

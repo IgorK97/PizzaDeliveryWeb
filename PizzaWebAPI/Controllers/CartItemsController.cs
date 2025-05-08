@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PizzaDeliveryWeb.Application.DTOs;
@@ -23,15 +24,8 @@ namespace PizzaDeliveryWeb.API.Controllers
             _logger = logger;
         }
 
-       
-
-        // POST api/<CartItemsController>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
         // PUT api/<CartItemsController>/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpPut("{id}")]
         public async Task<ActionResult<CartDto>> Put(int id, [FromBody]NewCartItemDto itemDto)
         {
@@ -42,8 +36,9 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
         // DELETE api/<CartItemsController>/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpDelete("{id}")]
-        [Authorize(Roles="client")]
+        
         public async Task<ActionResult<CartDto>> Delete(int id)
         {
             var user = await _userManager.GetUserAsync(User);

@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PizzaDeliveryWeb.API.Models;
 using PizzaDeliveryWeb.Application.DTOs;
+using PizzaDeliveryWeb.Application.MyExceptions;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
 
@@ -32,63 +34,102 @@ namespace PizzaDeliveryWeb.API.Controllers
 
 
         // GET: api/<CartsController>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpGet]
-        [Authorize(Roles ="client")]
+        
         
         public async Task<ActionResult<CartDto>> GetCart()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
-            var cart = await _cartService.GetOrCreateCartAsync(user.Id);
-            _logger.LogInformation("Возвращение корзины");
-            return Ok(cart);
-            //return new string[] { "value1", "value2" };
-        }
-        [HttpPut]
-        [Authorize(Roles ="client")]
-        public async Task<ActionResult<CartDto>> UpdateCart([FromBody] CartDto cartDto)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Unauthorized();
             try
             {
-                var updatedCart = await _cartService.UpdateCartAsync(cartDto);
-                return Ok(updatedCart);
-            }
-            catch(DirectoryNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch(ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("items")]
-        [Authorize]
-        public async Task<ActionResult<CartDto>> AddItemToCart([FromBody] NewCartItemDto itemDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null) 
-                    return Unauthorized();
-                var cart = await _cartService.AddNewItemToCartAsync(itemDto);
+                var cart = await _cartService.GetOrCreateCartAsync(user.Id);
+                _logger.LogInformation("Возвращение корзины");
                 return Ok(cart);
             }
-            catch(Exception ex)
+            catch (CartNotFoundException ex)
             {
+                _logger.LogWarning("Корзина не найдена для пользователя {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return NotFound("Корзина не найдена.");
+            }
+            catch (MyDbException ex)
+            {
+                _logger.LogError("Ошибка при работе с базой данных у пользователя {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return StatusCode(500, "Произошла ошибка при получении корзины. Попробуйте позже.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Неизвестная ошибка при получении корзины для пользователя {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return StatusCode(500, "Произошла непредвиденная ошибка. Попробуйте позже.");
+            }
+
+        }
+        //[HttpPut]
+        //[Authorize(Roles ="client")]
+        //public async Task<ActionResult<CartDto>> UpdateCart([FromBody] CartDto cartDto)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null) return Unauthorized();
+        //    try
+        //    {
+        //        var updatedCart = await _cartService.UpdateCartAsync(cartDto);
+        //        return Ok(updatedCart);
+        //    }
+        //    catch(DirectoryNotFoundException ex)
+        //    {
+        //        return NotFound(ex.Message);
+        //    }
+        //    catch(ValidationException ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
+        [HttpPost("items")]
+        
+        public async Task<ActionResult<CartDto>> AddItemToCart([FromBody] NewCartItemDto itemDto)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+            try
+            {
+                
+                var cart = await _cartService.AddNewItemToCartAsync(itemDto);
+                _logger.LogInformation("Пользователем {userId} был добавлен товар в корзину: Cart = {CartId}", 
+                    user.Id, itemDto.CartId);
+                return Ok(cart);
+            }
+            catch(ArgumentException ex)
+            {
+                _logger.LogWarning("Некорреткный запрос при добавлении позиции в корзину пользвоателем {userId}. Ошибка: {ErrorMessage}",
+                    user.Id, ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(NotFoundException ex)
+            {
+                _logger.LogWarning("Ресурс не найден: {ResourseName}, ID: {Id}", ex.EntityType, ex.Key);
+                return NotFound(ex.Message);
+
+
+            }
+            catch (MyDbException ex)
+            {
+                _logger.LogError("Ошибка на стороне БД: {ErrorMessage}", ex.Message);
+                return StatusCode(500, $"Ошибка сервера: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Внутренняя ошибка сервера: {ErrorMessage}", ex.Message);
+
                 return StatusCode(500, $"Ошибка сервера: {ex.Message}");
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpPost("submit")]
-        [Authorize]
+        
         public async Task<ActionResult<OrderDto>> SubmitCart([FromBody] SubmitOrderModel newOrder)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -111,16 +152,54 @@ namespace PizzaDeliveryWeb.API.Controllers
                     UpdatedCart=cart
                 });
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
+                _logger.LogWarning("Некорреткный запрос при оформлении заказа пользвоателем {userId}. Ошибка: {ErrorMessage}",
+                    user.Id, ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(CartNotFoundException ex)
+            {
+                _logger.LogWarning("Корзина для пользователя с ID не найдена: {Id}", user.Id);
+                return NotFound(ex.Message);
+            }
+            catch(OutdatedCartException ex)
+            {
+                _logger.LogWarning("Корзина устарела для пользователя с ID {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
 
-                var currentCart = await _cartService.GetOrCreateCartAsync(user.Id);
+                CartDto updatedCart;
+                try
+                {
+                    updatedCart = await _cartService.GetOrCreateCartAsync(user.Id);
+                }
+                catch (Exception fetchEx)
+                {
+                    _logger.LogError("Не удалось получить или создать корзину после ошибки устаревания. Пользователь: {userId}, Ошибка: {ErrorMessage}", user.Id, fetchEx.Message);
+                    return StatusCode(500, "Ошибка при повторном получении корзины. Попробуйте позже.");
+                }
+
                 return Conflict(new CartSubmitResult
                 {
-                    Success=false,
-                    Message = "Оформить заказ не удалось. Корзина обновлена. Проверьте ее еще раз",
-                    UpdatedCart = currentCart
+                    Success = false,
+                    Message = "Корзина устарела, пожалуйста, обновите корзину и попробуйте снова.",
+                    UpdatedCart = updatedCart
                 });
+            }
+            catch(EmptyCartException ex)
+            {
+                _logger.LogWarning("Корзина пуста для пользователя с ID {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return BadRequest("Корзина пуста, добавьте товары перед оформлением заказа.");
+            }
+            catch(MyDbException ex)
+            {
+                _logger.LogError("Ошибка базы данных при оформлении заказа пользователем с ID {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return StatusCode(500, "Ошибка сервера при сохранении данных. Пожалуйста, попробуйте позже.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ошибка сервера при оформлении заказа пользователем с ID {userId}. Ошибка: {ErrorMessage}", user.Id, ex.Message);
+                return StatusCode(500, "Ошибка сервера: " + ex.Message);
+                
             }
             
         }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PizzaDeliveryWeb.Application.Services;
 using PizzaDeliveryWeb.Domain.Entities;
+using PizzaWebAPI.Controllers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,12 +24,16 @@ namespace ProjectManagement.Api.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly CartService _cartService;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, CartService cartService)
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
+            IConfiguration configuration, CartService cartService,
+            ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _cartService = cartService;
+            _logger = logger;
         }
 
         [HttpPost("register")]
@@ -109,11 +114,14 @@ namespace ProjectManagement.Api.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var claims = new List<Claim>
+            try
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+
             };
 
             var roles = _userManager.GetRolesAsync(user).Result;
@@ -123,7 +131,8 @@ namespace ProjectManagement.Api.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
 
-            var token = new JwtSecurityToken(
+            
+                var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
@@ -131,7 +140,13 @@ namespace ProjectManagement.Api.Controllers
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Œ¯Ë·Í‡", ex.Message);
+                throw new Exception();
+            }
         }
 
         //private string GenerateJwtToken(User user, string selectedRole)

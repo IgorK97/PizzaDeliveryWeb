@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Constraints;
@@ -70,7 +71,8 @@ namespace PizzaWebAPI.Controllers
             return Ok(ingredients);
         }
         // POST api/<PizzasController>
-        [Authorize(Roles = "manager")]
+        //[Authorize(Roles = "manager")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpPost]
         public async Task<ActionResult<PizzaDto>> CreatePizza( [FromBody]CreatePizzaDto pizzaDto)
         {
@@ -129,7 +131,9 @@ namespace PizzaWebAPI.Controllers
         }
 
         // PUT api/<PizzasController>/5
-        [Authorize(Roles ="manager")]
+        //[Authorize(Roles ="manager")]
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePizza(int id, /*[FromForm]*/ UpdatePizzaDto pizzaDto)
         {
@@ -246,7 +250,8 @@ namespace PizzaWebAPI.Controllers
 
 
         // DELETE api/<PizzasController>/5
-        [Authorize(Roles = "manager")]
+        //[Authorize(Roles = "manager")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePizza(int id)
         {
@@ -297,7 +302,9 @@ namespace PizzaWebAPI.Controllers
         }
 
         [HttpPatch("{id}/restore")]
-        [Authorize(Roles = "manager")]
+        //[Authorize(Roles = "manager")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
+
         public async Task<IActionResult> RestorePizza(int id)
         {
             try
@@ -317,7 +324,9 @@ namespace PizzaWebAPI.Controllers
         }
 
         [HttpGet("manage")]
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
+
         public async Task<IActionResult> GetPizzasForManagement(
         [FromQuery] int lastId = 0,
         [FromQuery] int pageSize = 10)
