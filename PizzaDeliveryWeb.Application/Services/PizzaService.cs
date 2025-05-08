@@ -67,31 +67,7 @@ namespace PizzaDeliveryWeb.Application.Services
             var pizzas = await _pizzaRepository.GetPizzasAsync(lastId, pageSize,
                 includeUnavailable? null: true);
             return pizzas.Select(p => MapToPizzaDto(p, pizzaSizes));
-            //return pizzas.Select(p => {
-            //    List<IngredientDto> addedIngrs = new List<IngredientDto>();
-            //    foreach(Ingredient i in p.Ingredients)
-            //    {
-            //        addedIngrs.Add(new IngredientDto
-            //        {
-            //            Id = i.Id,
-            //            Name = i.Name,
-            //            Description = i.Description,
-            //            Small = i.Small,
-            //            Medium = i.Medium,
-            //            Big = i.Big,
-            //            PricePerGram = i.PricePerGram
-            //        });
-            //    }
-            //    return new PizzaDto
-            //    {
-            //        Id = p.Id,
-            //        Name = p.Name,
-            //        Description = p.Description,
-            //        Ingredients=addedIngrs,
-            //        Image=p.Image,
-            //        IsAvailable=p.IsAvailable
-            //    };
-            //});
+            
         }
 
         private PizzaDto MapToPizzaDto(Pizza pizza, IEnumerable<Domain.Entities.PizzaSize> pizzaSizes)

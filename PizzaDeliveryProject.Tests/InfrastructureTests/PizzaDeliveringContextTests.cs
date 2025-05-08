@@ -26,7 +26,7 @@ namespace PizzaDelivery.Tests.InfrastructureTests
         {
             using (var context = new PizzaDeliveringContext(_options))
             {
-                var pizza = new Pizza { Name = "Test Pizza", Description = "Test Description" };
+                var pizza = new Pizza { Name = "Test Pizza", Description = "Test Description", Image="testimage.jpg" };
                 context.Pizzas.Add(pizza);
                 await context.SaveChangesAsync();
             }
