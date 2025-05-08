@@ -40,12 +40,12 @@ namespace PizzaDeliveryWeb.Application.Services
         /// Завершает процесс доставки заказа
         /// </summary>
         /// <param name="orderId">Идентификатор заказа</param>
-        /// <param name="status">Новый статус доставки</param>
+        /// <param name="status">Статус: доставлено (true) или не доставлено (false) </param>
         /// <param name="comment">Комментарий к доставке (для неудачных доставок)</param>
         /// <exception cref="NotFoundException">Если заказ или доставка не найдены</exception>
         /// <exception cref="ArgumentException">Если указан некорректный статус</exception>
         /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
-        public async Task CompleteDeliveryAsync(int orderId, string status, string comment)
+        public async Task CompleteDeliveryAsync(int orderId, bool status, string comment)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
             if (order == null)
@@ -57,11 +57,11 @@ namespace PizzaDeliveryWeb.Application.Services
             if (delivery == null)
                 throw new NotFoundException("дотсавка для заказа", orderId);
             
-            var deliveryStatus =await _uow.Statuses.GetStatusByDescriptionAsync(status);
-            if (deliveryStatus == null)
-                throw new ArgumentException("Ошибка при указании статуса");
+            //var deliveryStatus =await _uow.Statuses.GetStatusByDescriptionAsync(status);
+            //if (deliveryStatus == null)
+            //    throw new ArgumentException("Ошибка при указании статуса");
             delivery.DeliveryTime = DateTime.UtcNow;
-            if (deliveryStatus.Id == (int)OrderStatusEnum.IsDelivered)
+            if (status)
             {
                 delivery.IsSuccessful = true;
                 order.DelStatusId = (int)OrderStatusEnum.IsDelivered;

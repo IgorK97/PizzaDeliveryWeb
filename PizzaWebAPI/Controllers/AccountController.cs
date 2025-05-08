@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -114,12 +115,27 @@ namespace ProjectManagement.Api.Controllers
         /// Выполняет выход текущего авторизованного пользователя.
         /// </summary>
         /// <returns>Результат выхода.</returns>
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            return Ok(new { Message = "Пользователь успешно вышел" });
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                _logger.LogWarning("Выход: ID пользователя не найден");
+                return BadRequest("Не удалось идентифицировать пользователя");
+            }
+            try
+            {
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation("Успешный выход из системы пользователя с id {Id}", userId);
+                return Ok(new { Message = "Пользователь успешно вышел" });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка выхода пользователя с ID: {UserId}", userId);
+                return StatusCode(500);
+            }
         }
 
 
@@ -127,6 +143,7 @@ namespace ProjectManagement.Api.Controllers
         /// Проверяет валидность текущего JWT токена.
         /// </summary>
         /// <returns>Информация о текущем пользователе, если токен действителен.</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("validate")]
         public async Task<IActionResult> ValidateToken()
         {
@@ -183,33 +200,7 @@ namespace ProjectManagement.Api.Controllers
             }
         }
 
-        //private string GenerateJwtToken(User user, string selectedRole)
-        //{
-        //    var claims = new List<Claim>
-        //    {
-        //        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-        //        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        //        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        //        new Claim("SelectedRole", selectedRole.ToString())
-        //    };
 
-        //    var roles = _userManager.GetRolesAsync(user).Result;
-        //    claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
-
-        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        //    var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
-
-        //    var token = new JwtSecurityToken(
-        //        issuer: _configuration["Jwt:Issuer"],
-        //        audience: _configuration["Jwt:Audience"],
-        //        claims: claims,
-        //        expires: expires,
-        //        signingCredentials: creds
-        //    );
-
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
     }
 
 }
