@@ -14,6 +14,9 @@ using PizzaDeliveryWeb.Infrastructure.Data;
 
 namespace PizzaWebAPI.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с пиццами.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PizzasController : ControllerBase
@@ -21,12 +24,26 @@ namespace PizzaWebAPI.Controllers
         private readonly PizzaService _pizzaService;
         private readonly ILogger<PizzasController> _logger;
         private readonly IWebHostEnvironment _env;
+
+        /// <summary>
+        /// Конструктор контроллера.
+        /// </summary>
+        /// <param name="logger">Логгер для контроллера.</param>
+        /// <param name="env">Среда веб-хоста для получения информации о хосте.</param>
+        /// <param name="pizzaService">Сервис для работы с пиццами.</param>
         public PizzasController(ILogger<PizzasController> logger, IWebHostEnvironment env, PizzaService pizzaService)
         {
             _pizzaService = pizzaService;
             _logger = logger;
             _env = env;
         }
+
+        /// <summary>
+        /// Получение списка пицц с пагинацией.
+        /// </summary>
+        /// <param name="lastId">Идентификатор последней пиццы на предыдущей странице.</param>
+        /// <param name="pageSize">Количество пицц на одной странице.</param>
+        /// <returns>Список пицц с информацией о наличии следующих элементов.</returns>
         // GET: api/<PizzasController>
         [HttpGet]
         public async Task<ActionResult<ResultGetPizzas>> GetPizzas(
@@ -53,6 +70,12 @@ namespace PizzaWebAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Получение пиццы по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы.</param>
+        /// <returns>Пицца с указанным идентификатором.</returns>
         // GET api/<PizzasController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PizzaDto>> GetPizzaById(int id)
@@ -61,6 +84,12 @@ namespace PizzaWebAPI.Controllers
             return pizza != null ? Ok(pizza) : NotFound();
            
         }
+
+        /// <summary>
+        /// Получение списка ингредиентов для пиццы.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы.</param>
+        /// <returns>Список ингредиентов для пиццы.</returns>
         [HttpGet("{id}/ingredients")]
         public async Task<ActionResult<IEnumerable<IngredientDto>>>
             GetIngredientsForPizza(int id)
@@ -70,6 +99,12 @@ namespace PizzaWebAPI.Controllers
                 return NotFound($"Не найдено ингредиентов для такой пиццы с ID {id}.");
             return Ok(ingredients);
         }
+
+        /// <summary>
+        /// Создание новой пиццы.
+        /// </summary>
+        /// <param name="pizzaDto">Данные для создания пиццы.</param>
+        /// <returns>Созданная пицца.</returns>
         // POST api/<PizzasController>
         //[Authorize(Roles = "manager")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
@@ -101,6 +136,12 @@ namespace PizzaWebAPI.Controllers
 
         }
 
+
+        /// <summary>
+        /// Обработка изображения в формате base64.
+        /// </summary>
+        /// <param name="base64Image">Изображение в формате base64.</param>
+        /// <returns>URL обработанного изображения.</returns>
         private async Task<string> ProcessImageAsync(string base64Image)
         {
             if (string.IsNullOrEmpty(base64Image))
@@ -118,6 +159,11 @@ namespace PizzaWebAPI.Controllers
             return $"/images/pizzas/{fileName}";
         }
 
+
+        /// <summary>
+        /// Удаление старого изображения.
+        /// </summary>
+        /// <param name="imagePath">Путь к изображению, которое нужно удалить.</param>
         private void DeleteOldImage(string imagePath)
         {
             if (string.IsNullOrEmpty(imagePath)) return;
@@ -130,6 +176,12 @@ namespace PizzaWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Обновление данных пиццы.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы для обновления.</param>
+        /// <param name="pizzaDto">Данные для обновления пиццы.</param>
+        /// <returns>Обновленная пицца.</returns>
         // PUT api/<PizzasController>/5
         //[Authorize(Roles ="manager")]
 
@@ -181,74 +233,13 @@ namespace PizzaWebAPI.Controllers
                 return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
             }
 
-
-
-
-
-            //if (id != pizzaDto.Id)
-            //    return BadRequest("ID в пути и теле запроса не совпадают");
-
-            //try
-            //{
-            //    await _pizzaService.UpdatePizzaAsync(pizzaDto);
-            //}
-
-
-
-
-
-
-
-            //var pizza = await _pizzaService.GetPizzaByIdAsync(id);
-            //if (pizza == null)
-            //{
-            //    return NotFound();
-            //}
-            //PizzaDto pDto = new PizzaDto
-            //{
-            //    Id=id,
-            //    Name = pizzaDto.Name,
-            //    Description = pizzaDto.Description,
-            //    IsAvailable = pizzaDto.IsAvailable,
-            //    Image=pizza.Image
-            //};
-            //if (!string.IsNullOrEmpty(pizzaDto.Image))
-            //{
-                
-            //    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pizza.Image.TrimStart('/'));
-            //    if (System.IO.File.Exists(oldImagePath))
-            //    {
-            //        System.IO.File.Delete(oldImagePath);
-            //    }
-            //    var uploadsFolder = Path.Combine("wwwroot","images","pizzas");
-            //    Directory.CreateDirectory(uploadsFolder);
-
-            //    var fileName = $"{Guid.NewGuid()}.png";
-            //    pDto.Image = $"/images/pizzas/{fileName}";
-            //    var filePath = Path.Combine(uploadsFolder, fileName);
-
-            //    var imageBytes = Convert.FromBase64String(pizzaDto.Image.Split(',')[1]);
-            //    await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
-               
-            //    //pDto.Image = $"/images/pizzas/{fileName}";
-            //}
-            ////pDto.Image = pizza.Image;
-            //await _pizzaService.UpdatePizzaAsync(pDto);
-
-            //return Ok(pDto);
-
-
-
-
-            //return CreatedAtAction(nameof(GetPizza), new { id = pizzaDto.Id }, pizzaDto);
-            //return NoContent();
-
-            //if (id != pizzaDto.Id) return BadRequest();
-            //await _pizzaService.UpdatePizzaAsync(pizzaDto);
-            //return NoContent();
         }
 
-
+        /// <summary>
+        /// Удаление пиццы.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы для удаления.</param>
+        /// <returns>Результат операции удаления.</returns>
         // DELETE api/<PizzasController>/5
         //[Authorize(Roles = "manager")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
@@ -301,6 +292,12 @@ namespace PizzaWebAPI.Controllers
             //}
         }
 
+
+        /// <summary>
+        /// Восстановление удаленной пиццы.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы для восстановления.</param>
+        /// <returns>Результат восстановления пиццы.</returns>
         [HttpPatch("{id}/restore")]
         //[Authorize(Roles = "manager")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
@@ -323,6 +320,13 @@ namespace PizzaWebAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Получение пицц для управления (доступные и недоступные).
+        /// </summary>
+        /// <param name="lastId">Идентификатор последней пиццы на предыдущей странице.</param>
+        /// <param name="pageSize">Количество пицц на одной странице.</param>
+        /// <returns>Список доступных и недоступных пицц.</returns>
         [HttpGet("manage")]
         //[Authorize(Roles = "Manager")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]

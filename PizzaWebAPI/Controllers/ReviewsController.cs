@@ -9,6 +9,10 @@ using PizzaDeliveryWeb.Domain.Entities;
 
 namespace PizzaDeliveryWeb.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с отзывами.
+    /// Позволяет получать, добавлять, обновлять и удалять отзывы.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ReviewsController : ControllerBase
@@ -16,12 +20,23 @@ namespace PizzaDeliveryWeb.API.Controllers
         public readonly ReviewService _reviewService;
         private readonly UserManager<User> _userManager;
 
+        /// <summary>
+        /// Конструктор контроллера.
+        /// </summary>
+        /// <param name="userManager">Менеджер пользователей для работы с идентификацией пользователей.</param>
+        /// <param name="reviewService">Сервис для работы с отзывами.</param>
+        /// <param name="logger">Логгер для записи действий в контроллере.</param>
         public ReviewsController(UserManager<User> userManager, ReviewService reviewService)
         {
             _reviewService = reviewService;
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Получить список отзывов по ID заказа.
+        /// </summary>
+        /// <param name="orderId">ID заказа для получения отзывов.</param>
+        /// <returns>Список отзывов, относящихся к указанному заказу.</returns>
         // GET: api/<ReviewsController>
         [HttpGet("order/{orderId}")]
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewsByOrderId(int orderId)
@@ -32,6 +47,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             return Ok(reviews);
         }
 
+
+        /// <summary>
+        /// Получить отзыв по ID.
+        /// </summary>
+        /// <param name="id">ID отзыва для получения.</param>
+        /// <returns>Отзыв с указанным ID.</returns>
         // GET api/<ReviewsController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ReviewDto>> GetReview(int id)
@@ -42,6 +63,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             return review;
         }
 
+
+        /// <summary>
+        /// Добавить новый отзыв.
+        /// </summary>
+        /// <param name="model">Модель отзыва с информацией о контенте и рейтинге.</param>
+        /// <returns>Ответ о результате добавления отзыва.</returns>
         // POST api/<ReviewsController>
         [HttpPost]
         public async Task<ActionResult> AddReview([FromBody]AddReviewModel model)
@@ -52,6 +79,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             return Ok();
         }
 
+
+        /// <summary>
+        /// Обновить отзыв.
+        /// </summary>
+        /// <param name="model">Модель для обновления отзыва с новым контентом и рейтингом.</param>
+        /// <returns>Ответ о результате обновления отзыва.</returns>
         // PUT api/<ReviewsController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Updatereview([FromBody]UpdateReviewModel model)
@@ -60,6 +93,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             return Ok();
         }
 
+
+        /// <summary>
+        /// Удалить отзыв по ID.
+        /// </summary>
+        /// <param name="id">ID отзыва для удаления.</param>
+        /// <returns>Ответ о результате удаления отзыва.</returns>
         // DELETE api/<ReviewsController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteReview(int id)

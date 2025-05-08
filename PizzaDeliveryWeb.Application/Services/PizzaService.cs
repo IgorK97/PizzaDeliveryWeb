@@ -11,12 +11,21 @@ using PizzaDeliveryWeb.Domain.Interfaces;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
+    /// <summary>
+    /// Сервис для управления пиццами, включая получение, добавление, обновление и удаление.
+    /// </summary>
     public class PizzaService
     {
         private readonly IPizzaRepository _pizzaRepository;
         private readonly IIngredientRepository _ingrRepository;
         private readonly IPizzaSizeRepository _pizzaSizeRepository;
 
+        /// <summary>
+        /// Конструктор сервиса пиццы.
+        /// </summary>
+        /// <param name="pizzaRepository">Репозиторий пицц</param>
+        /// <param name="ingrRepository">Репозиторий ингредиентов</param>
+        /// <param name="pizzaSizeRepository">Репозиторий размеров пицц</param>
         public PizzaService(IPizzaRepository pizzaRepository, IIngredientRepository ingrRepository, IPizzaSizeRepository pizzaSizeRepository)
         {
             _pizzaRepository = pizzaRepository;
@@ -24,6 +33,14 @@ namespace PizzaDeliveryWeb.Application.Services
             _pizzaSizeRepository = pizzaSizeRepository;
         }
 
+
+        /// <summary>
+        /// Расчет цены пиццы с учетом ингредиентов и базовой цены.
+        /// </summary>
+        /// <param name="pizza">Пицца</param>
+        /// <param name="ps">Размер пиццы</param>
+        /// <param name="basePrice">Базовая цена</param>
+        /// <returns>Общая цена пиццы</returns>
         private decimal CalculatePrice(Pizza pizza, DTOs.PizzaSizeEnum ps, decimal basePrice)
         {
             var ingrPrice = pizza.Ingredients.Sum(pi =>
@@ -41,6 +58,14 @@ namespace PizzaDeliveryWeb.Application.Services
             return totalPrice;
         }
 
+
+        /// <summary>
+        /// Расчет общего веса пиццы на основе ингредиентов и базового веса.
+        /// </summary>
+        /// <param name="pizza">Пицца</param>
+        /// <param name="ps">Размер пиццы</param>
+        /// <param name="baseWeight">Базовый вес</param>
+        /// <returns>Общий вес пиццы</returns>
         private decimal CalculateWeight(Pizza pizza, DTOs.PizzaSizeEnum ps, decimal baseWeight)
         {
             var ingrWeight = pizza.Ingredients.Sum(pi =>
@@ -58,6 +83,14 @@ namespace PizzaDeliveryWeb.Application.Services
             return totalWeight;
         }
 
+
+        /// <summary>
+        /// Получает список доступных пицц с учетом пагинации и фильтрации.
+        /// </summary>
+        /// <param name="lastId">Последний ID для пагинации</param>
+        /// <param name="pageSize">Размер страницы</param>
+        /// <param name="includeUnavailable">Включать ли недоступные пиццы</param>
+        /// <returns>Список DTO пицц</returns>
         public async Task<IEnumerable<PizzaDto>> GetPizzasAsync(int lastId = 0, 
             int pageSize=10,
             bool includeUnavailable = false)
@@ -70,6 +103,13 @@ namespace PizzaDeliveryWeb.Application.Services
             
         }
 
+
+        /// <summary>
+        /// Преобразует объект пиццы в DTO.
+        /// </summary>
+        /// <param name="pizza">Пицца</param>
+        /// <param name="pizzaSizes">Список размеров пицц</param>
+        /// <returns>Объект PizzaDto</returns>
         private PizzaDto MapToPizzaDto(Pizza pizza, IEnumerable<Domain.Entities.PizzaSize> pizzaSizes)
         {
             var dto =  new PizzaDto
@@ -102,6 +142,12 @@ namespace PizzaDeliveryWeb.Application.Services
             return dto;
         }
 
+
+        /// <summary>
+        /// Преобразует объект ингредиента в DTO.
+        /// </summary>
+        /// <param name="ingredient">Ингредиент</param>
+        /// <returns>Объект IngredientDto</returns>
         private IngredientDto MapToIngredientDto(Ingredient ingredient)
         {
             return new IngredientDto
@@ -116,60 +162,54 @@ namespace PizzaDeliveryWeb.Application.Services
             };
         }
 
+
+        /// <summary>
+        /// Получает пиццу по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы</param>
+        /// <returns>DTO пиццы или null</returns>
         public async Task<PizzaDto?> GetPizzaByIdAsync(int id)
         {
             var pizza = await _pizzaRepository.GetPizzaByIdAsync(id);
             var pizzaSizes = await _pizzaSizeRepository.GetPizzaSizesAsync();
 
             return (pizza != null ? MapToPizzaDto(pizza, pizzaSizes) : null);
-            //if (pizza == null) return null;
-            //return new PizzaDto
-            //{
-            //    Id = pizza.Id,
-            //    Name = pizza.Name,
-            //    Description = pizza.Description,
-            //    IsAvailable = pizza.IsAvailable,
-            //    Image = pizza.Image,
-            //    Ingredients = pizza.Ingredients.Select(t => new IngredientDto
-            //    {
-            //        Id = t.Id,
-            //        Name = t.Name,
-            //        Description = t.Description,
-            //        Small = t.Small,
-            //        Medium = t.Medium,
-            //        Big = t.Big,
-            //        PricePerGram = t.PricePerGram
-            //    }).ToList()
-            //};
+
+     
         }
 
+
+        /// <summary>
+        /// Получает ингредиенты, связанные с конкретной пиццей.
+        /// </summary>
+        /// <param name="pizzaId">ID пиццы</param>
+        /// <returns>Список DTO ингредиентов</returns>
         public async Task<List<IngredientDto>> GetIngredientsForPizzaAsync(int pizzaId)
         {
             var ingrs = await _pizzaRepository.GetIngredientsByPizzaIdAsync(pizzaId);
 
             return ingrs.Select(MapToIngredientDto).ToList();
 
-            //if (ingrs == null || ingrs.Count == 0)
-            //    return null;
-
-            //return ingrs.Select(t => new IngredientDto
-            //{
-            //    Id = t.Id,
-            //    Name = t.Name,
-            //    Description = t.Description,
-            //    Small = t.Small,
-            //    Medium = t.Medium,
-            //    Big = t.Big,
-            //    PricePerGram = t.PricePerGram
-            //}).ToList();
         }
 
+
+        /// <summary>
+        /// Загружает список ингредиентов по их идентификаторам.
+        /// </summary>
+        /// <param name="ingredientIds">Список ID ингредиентов</param>
+        /// <returns>Список объектов ингредиентов</returns>
         private async Task<List<Ingredient>> LoadIngredientsAsync(IEnumerable<int> ingredientIds)
         {
             return (await _ingrRepository.GetIngredientsByIdsAsync(ingredientIds)).ToList();
         }
 
-
+        /// <summary>
+        /// Добавляет новую пиццу.
+        /// </summary>
+        /// <param name="pizzaDto">DTO новой пиццы</param>
+        /// <returns>Добавленная пицца в виде DTO</returns>
+        /// <exception cref="ArgumentNullException">Если DTO пиццы равен null</exception>
+        /// <exception cref="ArgumentException">Если отсутствуют обязательные данные</exception>
         public async Task<PizzaDto> AddPizzaAsync(CreatePizzaDto pizzaDto)
         {
 
@@ -215,6 +255,11 @@ namespace PizzaDeliveryWeb.Application.Services
             }
         }
 
+        /// <summary>
+        /// Обновляет существующую пиццу.
+        /// </summary>
+        /// <param name="pizzaDto">DTO пиццы для обновления</param>
+        /// <returns>Обновленная пицца в виде DTO</returns>
         public async Task<PizzaDto> UpdatePizzaAsync(UpdatePizzaDto pizzaDto)
         {
             var pizza = await _pizzaRepository.GetPizzaByIdAsync(pizzaDto.Id);
@@ -237,17 +282,14 @@ namespace PizzaDeliveryWeb.Application.Services
             var pizzaSizes = await _pizzaSizeRepository.GetPizzaSizesAsync();
 
             return MapToPizzaDto(pizza, pizzaSizes);
-            //if (pizza != null)
-            //{
-            //    pizza.Name = pizzaDto.Name;
-            //    pizza.Description = pizzaDto.Description;
-            //    pizza.Image = pizzaDto.Image;
-            //    pizza.IsAvailable = pizzaDto.IsAvailable;
-            //    //ingredients
-            //    await _pizzaRepository.UpdatePizzaAsync(pizza);
-            //}
+
         }
 
+
+        /// <summary>
+        /// Удаляет пиццу по ID (логически)
+        /// </summary>
+        /// <param name="id">ID пиццы</param>
         public async Task DeletePizzaAsync(int id)
         {
             try
@@ -261,6 +303,11 @@ namespace PizzaDeliveryWeb.Application.Services
             }
         }
 
+
+        /// <summary>
+        /// Восстанавливает ранее удаленную пиццу.
+        /// </summary>
+        /// <param name="id">ID пиццы</param>
         public async Task RestorePizzaAsync(int id)
         {
             try

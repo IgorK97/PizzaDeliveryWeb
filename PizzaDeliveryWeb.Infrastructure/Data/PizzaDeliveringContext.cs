@@ -8,6 +8,11 @@ using System.Reflection.Metadata;
 
 namespace PizzaDeliveryWeb.Infrastructure.Data
 {
+
+    /// <summary>
+    /// Контекст базы данных для системы доставки пиццы.
+    /// Включает в себя конфигурации сущностей, связи и ограничения.
+    /// </summary>
     public partial class PizzaDeliveringContext : IdentityDbContext<User>
     {
         //public DbSet<User> Users { get; set; }
@@ -22,6 +27,11 @@ namespace PizzaDeliveryWeb.Infrastructure.Data
 
         public PizzaDeliveringContext(DbContextOptions<PizzaDeliveringContext> options) : base(options) { }
 
+        /// <summary>
+        /// Настраивает модель базы данных с помощью Fluent API.
+        /// Устанавливает индексы, связи между таблицами и правила удаления.
+        /// </summary>
+        /// <param name="builder">Построитель модели.</param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

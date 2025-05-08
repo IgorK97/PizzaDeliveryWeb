@@ -13,16 +13,38 @@ using PizzaDeliveryWeb.Domain.Interfaces;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
-    
+    /// <summary>
+    /// Сервис для управления заказами и их жизненным циклом
+    /// </summary>
+    /// <remarks>
+    /// Обеспечивает бизнес-логику для работы с заказами:
+    /// - Обновление статусов доставки
+    /// - Получение списков заказов
+    /// - Управление процессом доставки
+    /// - Обработка отмены заказов
+    /// </remarks>
     public class OrderService
     {
        
         private readonly IUnitOfWork _uow;
+        /// <summary>
+        /// Инициализирует новый экземпляр сервиса заказов
+        /// </summary>
+        /// <param name="uow">Единица работы для доступа к репозиториям</param>
         public OrderService(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
+        /// <summary>
+        /// Завершает процесс доставки заказа
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <param name="status">Новый статус доставки</param>
+        /// <param name="comment">Комментарий к доставке (для неудачных доставок)</param>
+        /// <exception cref="NotFoundException">Если заказ или доставка не найдены</exception>
+        /// <exception cref="ArgumentException">Если указан некорректный статус</exception>
+        /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
         public async Task CompleteDeliveryAsync(int orderId, string status, string comment)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
@@ -62,6 +84,13 @@ namespace PizzaDeliveryWeb.Application.Services
             }
         }
 
+        /// <summary>
+        /// Получает список краткой информации о заказах по статусу
+        /// </summary>
+        /// <param name="status">Статус заказа для фильтрации</param>
+        /// <param name="lastId">Идентификатор последнего заказа для пагинации</param>
+        /// <param name="pageSize">Размер страницы (по умолчанию 10)</param>
+        /// <returns>Коллекция краткой информации о заказах</returns>
         public async Task<IEnumerable<ShortOrderDto>> GetOrdersByStatusAsync(
         OrderStatusEnum status,
         int? lastId,
@@ -71,6 +100,14 @@ namespace PizzaDeliveryWeb.Application.Services
             return orders.Select(MapToShortOrderDto);
         }
 
+
+        /// <summary>
+        /// Переводит заказ в статус "В процессе передачи"
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <exception cref="NotFoundException">Если заказ не найден</exception>
+        /// <exception cref="InvalidOperationException">Если текущий статус не позволяет перевод</exception>
+        /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
         public async Task TransferToDelivery(int orderId)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
@@ -91,6 +128,15 @@ namespace PizzaDeliveryWeb.Application.Services
                 throw new MyDbException("Ошибка при обновлении заказа в процессе передачи в доставку", ex);
             }
         }
+
+        // <summary>
+        /// Назначает курьера на доставку заказа
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <param name="courierId">Идентификатор курьера</param>
+        /// <exception cref="NotFoundException">Если заказ не найден</exception>
+        /// <exception cref="InvalidOperationException">Если статус заказа не позволяет назначение</exception>
+        /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
         public async Task TakeOrder(int orderId, string courierId)
         {
             var order = await _uow.Orders.GetOrderWithDeliveryAsync(orderId);
@@ -136,6 +182,15 @@ namespace PizzaDeliveryWeb.Application.Services
             return order;
         }
 
+
+        /// <summary>
+        /// Принимает заказ в обработку менеджером
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <param name="managerId">Идентификатор менеджера</param>
+        /// <exception cref="NotFoundException">Если заказ не найден</exception>
+        /// <exception cref="InvalidOperationException">Если текущий статус не позволяет принятие</exception>
+        /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
         public async Task AcceptOrderAsync(int orderId, string managerId)
         {
             //await _uow.BeginTransactionAsync();
@@ -156,40 +211,40 @@ namespace PizzaDeliveryWeb.Application.Services
           
         }
 
-        private OrderDto MapToOrderDto(Order order)
-        {
-            return new OrderDto
-            {
-                Id = order.Id,
-                ClientName = FormatClientName(order.Client),
-                FinalPrice = order.Price,
-                Status = ((OrderStatusEnum)order.DelStatusId).ToString(),
-                OrderTime = order.OrderTime,
-                Address = order.Address,
-                AcceptedTime = order.AcceptedTime,
-                CancellationTime = order.CancellationTime,
-                CompletionTime = order.CompletionTime,
-                ClientId = order.ClientId,
-                Weight = order.Weight,
-                OrderLines = order.OrderLines?
-               .Select(ol => new OrderLineShortDto
-               {
-                   Id = ol.Id,
-                   PizzaId = ol.PizzaId,
-                   PizzaName = ol.Pizza.Name,
-                   PizzaImage=ol.Pizza.Image,
-                   Weight=ol.Weight,
-                   Size = ol.PizzaSize.Name,
-                   PizzaSizeId=(DTOs.PizzaSizeEnum)ol.PizzaSizeId,
-                   Quantity = ol.Quantity,
-                   Price = ol.Price,
-                   AddedIngredients = ol.Ingredients?
-                   .Select(ai => ai.Name)
-                   .ToList() ?? new List<string>()
-               })
-               .ToList() ?? new List<OrderLineShortDto>()
-            };
-        }
+        //private OrderDto MapToOrderDto(Order order)
+        //{
+        //    return new OrderDto
+        //    {
+        //        Id = order.Id,
+        //        ClientName = FormatClientName(order.Client),
+        //        FinalPrice = order.Price,
+        //        Status = ((OrderStatusEnum)order.DelStatusId).ToString(),
+        //        OrderTime = order.OrderTime,
+        //        Address = order.Address,
+        //        AcceptedTime = order.AcceptedTime,
+        //        CancellationTime = order.CancellationTime,
+        //        CompletionTime = order.CompletionTime,
+        //        ClientId = order.ClientId,
+        //        Weight = order.Weight,
+        //        OrderLines = order.OrderLines?
+        //       .Select(ol => new OrderLineShortDto
+        //       {
+        //           Id = ol.Id,
+        //           PizzaId = ol.PizzaId,
+        //           PizzaName = ol.Pizza.Name,
+        //           PizzaImage=ol.Pizza.Image,
+        //           Weight=ol.Weight,
+        //           Size = ol.PizzaSize.Name,
+        //           PizzaSizeId=(DTOs.PizzaSizeEnum)ol.PizzaSizeId,
+        //           Quantity = ol.Quantity,
+        //           Price = ol.Price,
+        //           AddedIngredients = ol.Ingredients?
+        //           .Select(ai => ai.Name)
+        //           .ToList() ?? new List<string>()
+        //       })
+        //       .ToList() ?? new List<OrderLineShortDto>()
+        //    };
+        //}
         private ShortOrderDto MapToShortOrderDto(Order order)
         {
             return new ShortOrderDto
@@ -231,14 +286,20 @@ namespace PizzaDeliveryWeb.Application.Services
 
 
 
-        private string FormatClientName(User client)
-        {
-            return $"{client.FirstName} {client.LastName}" +
-                (!string.IsNullOrEmpty(client.Surname) ? $"{client.Surname}" : "");
-        }
+        //private string FormatClientName(User client)
+        //{
+        //    return $"{client.FirstName} {client.LastName}" +
+        //        (!string.IsNullOrEmpty(client.Surname) ? $"{client.Surname}" : "");
+        //}
 
-        
 
+        /// <summary>
+        /// Получает историю заказов клиента
+        /// </summary>
+        /// <param name="userId">Идентификатор клиента</param>
+        /// <param name="lastId">Идентификатор последнего заказа для пагинации</param>
+        /// <param name="pageSize">Размер страницы (по умолчанию 10)</param>
+        /// <returns>Коллекция краткой информации о заказах</returns>
         public async Task<IEnumerable<ShortOrderDto>> GetClientOrderHistoryAsync(string userId, int? lastId=null, int? pageSize=10)
         {
             var orders = await _uow.Orders.GetOrdersByClientIdAsync(userId, lastId, pageSize);
@@ -249,7 +310,14 @@ namespace PizzaDeliveryWeb.Application.Services
             //         o.DelStatusId != (int)OrderStatusEnum.NotPlaced);
         }
 
-
+        /// <summary>
+        /// Отменяет заказ
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <returns>Краткая информация об отмененном заказе</returns>
+        /// <exception cref="NotFoundException">Если заказ не найден</exception>
+        /// <exception cref="InvalidOperationException">Если заказ нельзя отменить</exception>
+        /// <exception cref="MyDbException">При ошибках сохранения в БД</exception>
         public async Task<IEnumerable<ShortOrderDto>> GetCourierActiveOrdersAsync(string courierId,
             OrderStatusEnum? filterStatus, int? lastId = null, int? pageSize=10)
         {
@@ -306,16 +374,7 @@ namespace PizzaDeliveryWeb.Application.Services
 
         //}
 
-     
 
-        //private async Task ProcessOrderSubmission(Order order, string address)
-        //{
-        //    order.Address = address;
-        //    order.OrderTime = DateTime.UtcNow;
-        //    order.DelStatusId = (int)OrderStatusEnum.IsBeingFormed;
-
-        //    await _uow.Orders.UpdateOrderAsync(order);
-        //}
 
         // Отмена заказа
         public async Task<ShortOrderDto> CancelOrderAsync(int orderId)

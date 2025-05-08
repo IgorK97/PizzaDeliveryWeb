@@ -14,28 +14,43 @@ using PizzaDeliveryWeb.Domain.Entities;
 
 namespace PizzaDeliveryWeb.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с заказами.
+    /// Обрабатывает запросы, связанные с созданием, изменением, получением и отменой заказов для клиентов, курьеров и менеджеров.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
         private readonly OrderService _orderService;
-        private readonly DeliveryService _deliveryService;
+        //private readonly DeliveryService _deliveryService;
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<OrdersController> _logger;
+        /// <summary>
+        /// Инициализирует новый экземпляр контроллера.
+        /// </summary>
+        /// <param name="userManager">Менеджер пользователей для работы с данными пользователя.</param>
+        /// <param name="env">Среда приложения.</param>
+        /// <param name="orderService">Сервис для работы с заказами.</param>
+        /// <param name="logger">Логгер для записи ошибок.</param>
         public OrdersController(UserManager<User> userManager, IWebHostEnvironment env, OrderService orderService, 
-            DeliveryService deliveryService,
+            //DeliveryService deliveryService,
             ILogger<OrdersController> logger)
         {
             _userManager = userManager;
 
             _orderService = orderService;
             _env = env;
-            _deliveryService = deliveryService;
+            //_deliveryService = deliveryService;
             _logger = logger;
         }
 
-
+        /// <summary>
+        /// Получает список заказов текущего клиента.
+        /// Только для пользователей с ролью "client".
+        /// </summary>
+        /// <returns>Список заказов клиента.</returns>
         //[HttpGet("my")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpGet]
@@ -79,6 +94,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             //});
         }
 
+
+        /// <summary>
+        /// Получает список всех заказов для менеджеров.
+        /// Только для пользователей с ролью "manager".
+        /// </summary>
+        /// <param name="status">Статус заказов для фильтрации.</param>
+        /// <returns>Список заказов для менеджеров.</returns>
         [HttpGet("manager")]
         //[Authorize(Roles = "manager")]
         public async Task<IActionResult> GetAllOrders(
@@ -112,6 +134,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Получает заказы для курьера.
+        /// Только для пользователей с ролью "courier".
+        /// </summary>
+        /// <param name="status">Статус заказов для фильтрации.</param>
+        /// <returns>Список заказов для курьера.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "courier")]
         [HttpGet("courier")]
        
@@ -156,6 +185,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             //return Ok();
         }
 
+
+        /// <summary>
+        /// Отменяет заказ клиента.
+        /// Только для пользователей с ролью "client".
+        /// </summary>
+        /// <param name="id">Идентификатор заказа.</param>
+        /// <returns>Обновленный заказ.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpPatch("{id}/cancel")]
         //[Authorize(Roles ="client")]
@@ -199,6 +235,13 @@ namespace PizzaDeliveryWeb.API.Controllers
 
         }
 
+
+        /// <summary>
+        /// Менеджер принимает заказ.
+        /// Только для пользователей с ролью "manager".
+        /// </summary>
+        /// <param name="id">Идентификатор заказа.</param>
+        /// <returns>Обновленный заказ.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpPatch("{id}/accept")]
         //[Authorize(Roles ="manager")]
@@ -238,6 +281,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Менеджер передает заказ в доставку.
+        /// Только для пользователей с ролью "manager".
+        /// </summary>
+        /// <param name="id">Идентификатор заказа.</param>
+        /// <returns>Обновленный заказ.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
         [HttpPatch("{id}/to-delivery")]
         //[Authorize]
@@ -274,6 +324,13 @@ namespace PizzaDeliveryWeb.API.Controllers
                 return StatusCode(500, "Произошла внутренняя ошибка сервера.");
             }
         }
+
+        /// <summary>
+        /// Курьер берет заказ для доставки.
+        /// Только для пользователей с ролью "courier".
+        /// </summary>
+        /// <param name="id">Идентификатор заказа.</param>
+        /// <returns>Обновленный заказ.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "courier")]
         [HttpPatch("{id}/choose")]
         //[Authorize]
@@ -311,6 +368,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Курьер завершает доставку заказа.
+        /// Только для пользователей с ролью "courier".
+        /// </summary>
+        /// <param name="model">Модель с данными о доставке.</param>
+        /// <returns>Обновленный заказ.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "courier")]
         [HttpPatch("{id}/complete")]
         //[Authorize]

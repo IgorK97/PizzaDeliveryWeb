@@ -9,15 +9,30 @@ using PizzaDeliveryWeb.Domain.Interfaces;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
+    /// <summary>
+    /// Сервис для управления отзывами клиентов.
+    /// Предоставляет методы для создания, получения, обновления и удаления отзывов.
+    /// </summary>
     public class ReviewService
     {
         private readonly IReviewRepository _reviewRepository;
+
+        /// <summary>
+        /// Конструктор сервиса отзывов.
+        /// </summary>
+        /// <param name="reviewRepository">Интерфейс репозитория отзывов</param>
 
         public ReviewService(IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
         }
 
+        /// <summary>
+        /// Получает отзыв по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор отзыва</param>
+        /// <returns>Объект ReviewDto</returns>
+        /// <exception cref="Exception">Выбрасывается, если отзыв не найден</exception>
         public async Task<ReviewDto> GetReviewByIdAsync(int id)
         {
             var review = await _reviewRepository.GetReviewByIdAsync(id);
@@ -35,6 +50,11 @@ namespace PizzaDeliveryWeb.Application.Services
             };
         }
 
+        /// <summary>
+        /// Получает все отзывы, связанные с определённым заказом.
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <returns>Список объектов ReviewDto</returns>
         public async Task<IEnumerable<ReviewDto>> GetReviewsByOrderIdAsync(int orderId)
         {
             var reviews = await _reviewRepository.GetReviewsByOrderIdAsync(orderId);
@@ -48,6 +68,14 @@ namespace PizzaDeliveryWeb.Application.Services
                 CreatedAt = r.CreatedAt
             }).ToList();
         }
+
+        /// <summary>
+        /// Добавляет новый отзыв от клиента.
+        /// </summary>
+        /// <param name="orderId">Идентификатор заказа</param>
+        /// <param name="customerId">Идентификатор клиента</param>
+        /// <param name="content">Содержимое отзыва</param>
+        /// <param name="rating">Оценка отзыва (например, от 1 до 5)</param>
 
         public async Task AddReviewAsync(int orderId, string customerId, string content, int rating)
         {
@@ -64,6 +92,15 @@ namespace PizzaDeliveryWeb.Application.Services
             await _reviewRepository.AddReviewAsync(review);
         }
 
+
+        /// <summary>
+        /// Обновляет существующий отзыв.
+        /// </summary>
+        /// <param name="reviewId">Идентификатор отзыва</param>
+        /// <param name="content">Новое содержимое отзыва</param>
+        /// <param name="rating">Новая оценка</param>
+        /// <exception cref="Exception">Выбрасывается, если отзыв не найден</exception>
+
         public async Task UpdateReviewAsync(int reviewId, string content, int rating)
         {
             var review = await _reviewRepository.GetReviewByIdAsync(reviewId);
@@ -77,6 +114,11 @@ namespace PizzaDeliveryWeb.Application.Services
             await _reviewRepository.UpdateReviewAsync(review);
         }
 
+
+        /// <summary>
+        /// Удаляет отзыв по его идентификатору.
+        /// </summary>
+        /// <param name="reviewId">Идентификатор отзыва</param>
         public async Task DeleteReviewAsync(int reviewId)
         {
             await _reviewRepository.DeleteReviewAsync(reviewId);

@@ -10,18 +10,42 @@ using PizzaDeliveryWeb.Infrastructure.Data;
 
 namespace PizzaDeliveryWeb.Infrastructure.Repositories
 {
+    /// <summary>
+    /// Репозиторий для управления сущностями пицц в базе данных.
+    /// Реализует доступ к данным (пиццам)
+    /// </summary>
     public class PizzaRepository : IPizzaRepository
     {
         private readonly PizzaDeliveringContext _context;
 
+
+
+        /// <summary>
+        /// Инициализирует новый экземпляр <see cref="PizzaRepository"/> с заданным контекстом базы данных.
+        /// </summary>
+        /// <param name="context">Контекст базы данных.</param>
         public PizzaRepository(PizzaDeliveringContext context)
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Возвращает пиццу по её идентификатору вместе с ингредиентами.
+        /// </summary>
+        /// <param name="id">Идентификатор пиццы.</param>
+        /// <returns>Объект пиццы или null, если не найдено.</returns>
         public async Task<Pizza> GetPizzaByIdAsync(int id)
         {
             return await _context.Pizzas.Include(t => t.Ingredients).FirstOrDefaultAsync(t => t.Id == id);
         }
+
+        /// <summary>
+        /// Возвращает список доступных пицц с постраничной выборкой и возможной фильтрацией по доступности.
+        /// </summary>
+        /// <param name="lastId">Последний полученный идентификатор (для постраничного просмотра).</param>
+        /// <param name="pageSize">Количество записей на странице.</param>
+        /// <param name="isAvailable">Флаг фильтрации по доступности (null - без фильтра).</param>
+        /// <returns>Список пицц.</returns>
         public async Task<IEnumerable<Pizza>> GetPizzasAsync(int lastId=0, int pageSize=10,
             bool? isAvailable = null)
         {
@@ -36,19 +60,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
                 .Take(pageSize)
                 .ToListAsync();
 
-            //return await _context.Pizzas
-            //    .Include(p => p.Ingredients)
-            //    .ToListAsync();
 
-
-
-            //return await _context.Pizzas.
-            //    AsNoTracking().
-            //    Include(p => p.Ingredients).
-            //    OrderBy(p => p.Id).
-            //    Where(p => p.Id > lastId).
-            //    Take(pageSize).
-            //    ToListAsync();
         }
 
         public async Task<IEnumerable<Pizza>> GetAllPizzasIncludingDeletedAsync()

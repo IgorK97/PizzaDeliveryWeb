@@ -10,6 +10,10 @@ using PizzaDeliveryWeb.Domain.Interfaces;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
+
+    /// <summary>
+    /// Сервис для упралвения ингредиентами (создание, получение, обновление, логическое удаление)
+    /// </summary>
     public class IngredientService
     {
         private readonly IIngredientRepository _ingrRepository;
@@ -17,6 +21,14 @@ namespace PizzaDeliveryWeb.Application.Services
         private readonly IPizzaSizeRepository _pizzaSizeRepository;
         private readonly IOrderLineRepository _orderLineRepository;
 
+
+        /// <summary>
+        /// инициализация нового экземпляра сервиса ингредиентов
+        /// </summary>
+        /// <param name="taskRepository"></param>
+        /// <param name="orderRepository"></param>
+        /// <param name="pizzaSizeRepository"></param>
+        /// <param name="orderLineRepository"></param>
         public IngredientService(IIngredientRepository taskRepository, IOrderRepository orderRepository,
             IPizzaSizeRepository pizzaSizeRepository, IOrderLineRepository orderLineRepository)
         {
@@ -26,6 +38,10 @@ namespace PizzaDeliveryWeb.Application.Services
             _orderLineRepository = orderLineRepository;
         }
 
+        /// <summary>
+        /// Получает список всех доступных ингредиентов
+        /// </summary>
+        /// <returns>Коллекция DTO объектов ингредиентов</returns>
         public async Task<IEnumerable<IngredientDto>> GetIngredientsAsync()
         {
             var oline = await _ingrRepository.GetIngredientsAsync();
@@ -43,6 +59,11 @@ namespace PizzaDeliveryWeb.Application.Services
             });
         }
 
+        /// <summary>
+        /// Получает ингредиент по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор ингредиента</param>
+        /// <returns>DTO объекта ингредиента или null, если не найден</returns>
         public async Task<IngredientDto> GetIngredientByIdAsync(int id)
         {
             var t = await _ingrRepository.GetIngredientByIdAsync(id);
@@ -59,7 +80,13 @@ namespace PizzaDeliveryWeb.Application.Services
                 Image=t.Image
             };
         }
-           
+
+        /// <summary>
+        /// Добавляет новый ингредиент в систему
+        /// </summary>
+        /// <param name="ingrDto">DTO с данными для создания ингредиента</param>
+        /// <returns>Созданный DTO объект ингредиента</returns>
+
         public async Task<IngredientDto> AddIngredientAsync(CreateIngredientDto ingrDto)
         {
             var t = new Ingredient
@@ -89,6 +116,12 @@ namespace PizzaDeliveryWeb.Application.Services
             //ingrDto.Id = t.Id;
         }
 
+
+        /// <summary>
+        /// Обновляет существующий ингредиент
+        /// </summary>
+        /// <param name="ingrDto">DTO с обновленными данными ингредиента</param>
+        /// <returns>Обновленный DTO объект ингредиента</returns>
         public async Task<IngredientDto> UpdateIngredientAsync(UpdateIngredientDto ingrDto)
         {
             var res = await _ingrRepository.GetIngredientByIdAsync(ingrDto.Id);
@@ -142,6 +175,12 @@ namespace PizzaDeliveryWeb.Application.Services
             throw new Exception("Ингредиента с таким id не существует");
         }
 
+
+        /// <summary>
+        /// Пересчитывает стоимость и вес позиции заказа
+        /// </summary>
+        /// <param name="orderLine">Позиция заказа для пересчета</param>
+        /// <param name="ingredient">Измененный ингредиент</param>
         private async Task RecalculateOrderLinePriceAsync(OrderLine orderLine, Ingredient ingr)
         {
             //var ingredientsInLine = await _orderRepository
@@ -190,6 +229,13 @@ namespace PizzaDeliveryWeb.Application.Services
             await _orderLineRepository.UpdateOrderLineAsync(orderLine);
             //await _orderRepository.UpdateOrderAsync(order);
         }
+
+        /// <summary>
+        /// Удаляет ингредиент по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор удаляемого ингредиента</param>
+        /// <exception cref="ArgumentException">Если ингредиент не найден</exception>
+        /// <exception cref="InvalidOperationException">Если ингредиент используется в заказах</exception>
 
         public async Task DeleteIngredientAsync(int id)
         {

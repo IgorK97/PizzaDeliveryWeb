@@ -13,6 +13,10 @@ using PizzaDeliveryWeb.Domain.Entities;
 
 namespace PizzaDeliveryWeb.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления корзиной пользователя: получение содержимого, добавление товаров и оформление заказа.
+    /// </summary>
+
     [Route("api/[controller]")]
     [ApiController]
     public class CartsController : ControllerBase
@@ -23,6 +27,12 @@ namespace PizzaDeliveryWeb.API.Controllers
         private readonly CartService _cartService;
         private readonly ILogger<CartsController> _logger;
 
+        /// <summary>
+        /// Конструктор контроллера корзины.
+        /// </summary>
+        /// <param name="userManager">Сервис управления пользователями.</param>
+        /// <param name="cartService">Сервис корзины.</param>
+        /// <param name="logger">Сервис логирования.</param>
 
         public CartsController(UserManager<User> userManager, CartService cartService, ILogger<CartsController> logger)
         {
@@ -32,11 +42,14 @@ namespace PizzaDeliveryWeb.API.Controllers
         }
 
 
+        /// <summary>
+        /// Получает текущую корзину пользователя. Если корзина отсутствует — создаёт новую.
+        /// </summary>
+        /// <returns>Текущая корзина пользователя.</returns>
 
         // GET: api/<CartsController>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpGet]
-        
         
         public async Task<ActionResult<CartDto>> GetCart()
         {
@@ -65,26 +78,14 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
 
         }
-        //[HttpPut]
-        //[Authorize(Roles ="client")]
-        //public async Task<ActionResult<CartDto>> UpdateCart([FromBody] CartDto cartDto)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user == null) return Unauthorized();
-        //    try
-        //    {
-        //        var updatedCart = await _cartService.UpdateCartAsync(cartDto);
-        //        return Ok(updatedCart);
-        //    }
-        //    catch(DirectoryNotFoundException ex)
-        //    {
-        //        return NotFound(ex.Message);
-        //    }
-        //    catch(ValidationException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+
+
+        /// <summary>
+        /// Добавляет новый товар в корзину пользователя.
+        /// </summary>
+        /// <param name="itemDto">Данные о добавляемом товаре.</param>
+        /// <returns>Обновлённая корзина пользователя.</returns>
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpPost("items")]
         
@@ -127,6 +128,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Оформляет заказ на основе текущей корзины пользователя.
+        /// </summary>
+        /// <param name="newOrder">Модель данных для оформления заказа.</param>
+        /// <returns>Результат оформления заказа и обновлённая корзина.</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
         [HttpPost("submit")]
         

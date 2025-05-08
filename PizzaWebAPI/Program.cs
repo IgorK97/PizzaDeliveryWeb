@@ -78,8 +78,8 @@ builder.Services.AddScoped<PizzaService>();
 builder.Services.AddScoped<IngredientService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<OrderLineService>();
-builder.Services.AddScoped<DeliveryService>();
+//builder.Services.AddScoped<OrderLineService>();
+//builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<ReviewService>();
 
 //builder.Services.AddAutoMapper(typeof(PizzaProfile));

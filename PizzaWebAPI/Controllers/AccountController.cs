@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManagement.Api.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления учётными записями пользователей: регистрация, вход, выход, валидация токена.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -25,6 +28,11 @@ namespace ProjectManagement.Api.Controllers
         private readonly IConfiguration _configuration;
         private readonly CartService _cartService;
         private readonly ILogger<AccountController> _logger;
+
+
+        /// <summary>
+        /// Конструктор контроллера аккаунтов.
+        /// </summary>
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
             IConfiguration configuration, CartService cartService,
             ILogger<AccountController> logger)
@@ -36,6 +44,11 @@ namespace ProjectManagement.Api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Регистрирует нового пользователя и автоматически авторизует его.
+        /// </summary>
+        /// <param name="model">Модель с регистрационными данными.</param>
+        /// <returns>JWT токен и данные пользователя при успешной регистрации.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -65,6 +78,12 @@ namespace ProjectManagement.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+
+        /// <summary>
+        /// Выполняет вход пользователя по имени и паролю.
+        /// </summary>
+        /// <param name="model">Модель входа с логином и паролем.</param>
+        /// <returns>JWT токен и информация о пользователе при успешной аутентификации.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
@@ -90,6 +109,11 @@ namespace ProjectManagement.Api.Controllers
             return Unauthorized();
         }
 
+
+        /// <summary>
+        /// Выполняет выход текущего авторизованного пользователя.
+        /// </summary>
+        /// <returns>Результат выхода.</returns>
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -98,6 +122,11 @@ namespace ProjectManagement.Api.Controllers
             return Ok(new { Message = "Пользователь успешно вышел" });
         }
 
+
+        /// <summary>
+        /// Проверяет валидность текущего JWT токена.
+        /// </summary>
+        /// <returns>Информация о текущем пользователе, если токен действителен.</returns>
         [HttpGet("validate")]
         public async Task<IActionResult> ValidateToken()
         {
@@ -112,6 +141,11 @@ namespace ProjectManagement.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Генерирует JWT токен на основе информации о пользователе.
+        /// </summary>
+        /// <param name="user">Пользователь, для которого создается токен.</param>
+        /// <returns>JWT токен.</returns>
         private string GenerateJwtToken(User user)
         {
             try

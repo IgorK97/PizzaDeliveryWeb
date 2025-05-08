@@ -11,6 +11,9 @@ using PizzaWebAPI.Controllers;
 
 namespace PizzaDeliveryWeb.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для обработки запросов, связанных с ингредиентами.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class IngredientsController : ControllerBase
@@ -19,15 +22,23 @@ namespace PizzaDeliveryWeb.API.Controllers
         private readonly ILogger<IngredientsController> _logger;
         private readonly IWebHostEnvironment _env;
 
-
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="IngredientsController"/>.
+        /// </summary>
+        /// <param name="ingredientService">Сервис для работы с ингредиентами.</param>
+        /// <param name="env">Среда веб-хостинга.</param>
+        /// <param name="logger">Журнал для логирования событий.</param>
         public IngredientsController(IngredientService ingredientService, IWebHostEnvironment env, ILogger<IngredientsController> logger)
         {
             _ingredientService = ingredientService;
             _logger = logger;
             _env = env;
         }
-        
-        
+
+        /// <summary>
+        /// Получает список всех ингредиентов.
+        /// </summary>
+        /// <returns>Список ингредиентов в формате <see cref="IngredientDto"/>.</returns>
         // GET: api/<IngredientsController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<IngredientDto>>> GetIngredientsAsync()
@@ -52,24 +63,13 @@ namespace PizzaDeliveryWeb.API.Controllers
                 _logger.LogError(ex, "Ошибка при получении ингредиентов");
                 return StatusCode(500, "Ошибка сервера: ошибка при получении ингредиентов :-(");
             }
-
-
-
-
-
-            //var ingredients = await _ingredientService.GetIngredientsAsync();
-            //return ingredients.Select(i => new IngredientDto
-            //{
-            //    Id = i.Id,
-            //    Name = i.Name,
-            //    Description = i.Description,
-            //    Small = i.Small,
-            //    Medium = i.Medium,
-            //    Big = i.Big,
-            //    PricePerGram = i.PricePerGram
-            //});
         }
 
+        /// <summary>
+        /// Получает ингредиент по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор ингредиента.</param>
+        /// <returns>Информация об ингредиенте в формате <see cref="IngredientDto"/>.</returns>
         // GET api/<IngredientsController>/5
         [HttpGet("{id}")]
         public async Task<IngredientDto> GetIngredientById(int id)
@@ -88,6 +88,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             };
         }
 
+
+        /// <summary>
+        /// Создает новый ингредиент.
+        /// </summary>
+        /// <param name="ingredientDto">Данные для создания ингредиента в формате <see cref="CreateIngredientDto"/>.</param>
+        /// <returns>Результат создания ингредиента.</returns>
         // POST api/<IngredientsController>
         //[Authorize(Roles = "admin")]
         [HttpPost]
@@ -152,6 +158,10 @@ namespace PizzaDeliveryWeb.API.Controllers
             //    new { id = iDto.Id }, iDto);
         }
 
+        /// <summary>
+        /// Удаляет старое изображение ингредиента.
+        /// </summary>
+        /// <param name="imagePath">Путь к изображению, которое нужно удалить.</param>
         private void DeleteOldImage(string imagePath)
         {
             if (string.IsNullOrEmpty(imagePath)) return;
@@ -164,6 +174,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Обрабатывает изображение ингредиента (конвертирует из base64 в файл).
+        /// </summary>
+        /// <param name="base64Image">Изображение в формате base64.</param>
+        /// <returns>Путь к изображению на сервере.</returns>
         private async Task<string> ProcessImageAsync(string base64Image)
         {
             if (string.IsNullOrEmpty(base64Image))
@@ -181,6 +197,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             return $"/images/ingredients/{fileName}";
         }
 
+
+        /// <summary>
+        /// Обновляет информацию о ингредиенте.
+        /// </summary>
+        /// <param name="id">Идентификатор ингредиента.</param>
+        /// <param name="ingrDto">Обновленные данные ингредиента.</param>
+        /// <returns>Результат обновления ингредиента.</returns>
         // PUT api/<IngredientsController>/5
         //[Authorize(Roles = "admin")]
         [HttpPut("{id}")]
@@ -232,6 +255,12 @@ namespace PizzaDeliveryWeb.API.Controllers
             //return NoContent();
         }
 
+
+        /// <summary>
+        /// Удаляет ингредиент по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор ингредиента для удаления.</param>
+        /// <returns>Результат удаления ингредиента.</returns>
         // DELETE api/<IngredientsController>/5
         //[Authorize(Roles ="manager")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]

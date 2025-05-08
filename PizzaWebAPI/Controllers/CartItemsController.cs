@@ -10,6 +10,9 @@ using PizzaDeliveryWeb.Domain.Entities;
 
 namespace PizzaDeliveryWeb.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления позициями корзины пользователя (обновление и удаление).
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CartItemsController : ControllerBase
@@ -17,12 +20,27 @@ namespace PizzaDeliveryWeb.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly CartService _cartService;
         private readonly ILogger<CartsController> _logger;
+
+        /// <summary>
+        /// Конструктор контроллера CartItems.
+        /// </summary>
+        /// <param name="userManager">Менеджер пользователей.</param>
+        /// <param name="cartService">Сервис корзины.</param>
+        /// <param name="logger">Логгер для записи событий.</param>
         public CartItemsController(UserManager<User> userManager, CartService cartService, ILogger<CartsController> logger)
         {
             _userManager = userManager;
             _cartService = cartService;
             _logger = logger;
         }
+
+
+        /// <summary>
+        /// Обновляет позицию в корзине.
+        /// </summary>
+        /// <param name="id">Идентификатор позиции корзины.</param>
+        /// <param name="itemDto">Данные для обновления позиции.</param>
+        /// <returns>Обновлённая корзина пользователя.</returns>
 
         // PUT api/<CartItemsController>/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]
@@ -34,6 +52,13 @@ namespace PizzaDeliveryWeb.API.Controllers
             var cart = await _cartService.UpdateItemFromcartAsync(itemDto);
             return Ok(cart);
         }
+
+
+        /// <summary>
+        /// Удаляет позицию из корзины.
+        /// </summary>
+        /// <param name="id">Идентификатор позиции корзины для удаления.</param>
+        /// <returns>Обновлённая корзина пользователя.</returns>
 
         // DELETE api/<CartItemsController>/5
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "client")]

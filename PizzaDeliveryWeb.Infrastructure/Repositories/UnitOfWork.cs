@@ -10,10 +10,19 @@ using PizzaDeliveryWeb.Infrastructure.Data;
 
 namespace PizzaDeliveryWeb.Infrastructure.Repositories
 {
+    /// <summary>
+    /// Реализация паттерна "Единица работы" (Unit of Work) для управления репозиториями.
+    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         private readonly PizzaDeliveringContext _context;
         private IDbContextTransaction _transaction;
+
+        /// <summary>
+        /// Создаёт экземпляр UnitOfWork с внедрённым контекстом базы данных.
+        /// Инициализирует репозитории.
+        /// </summary>
+        /// <param name="context">Контекст базы данных.</param>
 
         public UnitOfWork(PizzaDeliveringContext context)
         {
@@ -40,42 +49,8 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        //public async Task BeginTransactionAsync()
-        //{
-        //    _transaction = await _context.Database.BeginTransactionAsync();
-        //    //return transaction as IDbTransaction;
-        //}
 
-        //public async Task CommitTransactionAsync()
-        //{
-        //    await Save();
-        //    await _transaction.CommitAsync();
-        //    await _transaction.DisposeAsync();
-        //}
-        //private bool disposed = false;
-        //public virtual void Dispose(bool disposing)
-        //{
-        //    if (!this.disposed)
-        //    {
-        //        if (disposing)
-        //        {
-        //            _context.Dispose();
-        //        }
-        //        this.disposed = true;
-        //    }
-        //}
 
-        //public async Task RollbackTransactionAsync()
-        //{
-        //    await _transaction.RollbackAsync();
-        //    await _transaction.DisposeAsync();
-        //}
 
-        //public void Dispose()
-        //{
-        //    //_context?.Dispose();
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
     }
 }

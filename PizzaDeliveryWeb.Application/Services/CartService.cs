@@ -12,15 +12,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PizzaDeliveryWeb.Application.Services
 {
+    /// <summary>
+    /// Сервис для работы с корзиной клиента.
+    /// </summary>
     public class CartService
     {
         private readonly IUnitOfWork _uow;
         //private readonly ILogger<CartService> _logger;
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CartService"/>.
+        /// </summary>
+        /// <param name="uow">Единица работы (Unit of Work) для доступа к данным.</param>
+
         public CartService(IUnitOfWork uow)
         {
             _uow = uow;
             //_logger = logger;
         }
+        /// <summary>
+        /// Получает существующую корзину по идентификатору клиента или создает новую, если корзина отсутствует.
+        /// </summary>
+        /// <param name="clientId">Идентификатор клиента.</param>
+        /// <returns>Объект <see cref="CartDto"/> с данными корзины.</returns>
         public async Task<CartDto> GetOrCreateCartAsync(string clientId)
         {
 
@@ -69,7 +82,11 @@ namespace PizzaDeliveryWeb.Application.Services
             }
             return MapToCartDto(order);
         }
-
+        /// <summary>
+        /// Получает идентификатор корзины клиента, создавая её при необходимости.
+        /// </summary>
+        /// <param name="clientId">Идентификатор клиента.</param>
+        /// <returns>Идентификатор корзины.</returns>
         public async Task<int> GetOrCreateCartIdAsync(string clientId)
         {
             var cart = await GetOrCreateCartAsync(clientId);
@@ -152,6 +169,11 @@ namespace PizzaDeliveryWeb.Application.Services
         //    }
         //}
 
+        /// <summary>
+        /// Преобразует сущность заказа в DTO корзины.
+        /// </summary>
+        /// <param name="order">Сущность заказа.</param>
+        /// <returns>DTO корзины <see cref="CartDto"/>.</returns>
         public CartDto MapToCartDto(Order order)
         {
             CartDto cart = new CartDto
@@ -182,7 +204,13 @@ namespace PizzaDeliveryWeb.Application.Services
 
         }
 
-        // Вспомогательные методы для расчетов
+        /// <summary>
+        /// Вычисляет цену пиццы с учетом добавленных ингредиентов и размера.
+        /// </summary>
+        /// <param name="pizza">Пицца.</param>
+        /// <param name="size">Размер пиццы.</param>
+        /// <param name="ingredients">Список добавленных ингредиентов.</param>
+        /// <returns>Цена позиции.</returns>
         private decimal CalculatePrice(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
         {
            
@@ -195,6 +223,13 @@ namespace PizzaDeliveryWeb.Application.Services
             return size.Price + ingredientsPrice;
         }
 
+        /// <summary>
+        /// Вычисляет вес пиццы с учетом ингредиентов и размера.
+        /// </summary>
+        /// <param name="pizza">Пицца.</param>
+        /// <param name="size">Размер пиццы.</param>
+        /// <param name="ingredients">Список добавленных ингредиентов.</param>
+        /// <returns>Вес позиции.</returns>
         private decimal CalculateWeight(Pizza pizza, Domain.Entities.PizzaSize size, List<Ingredient> ingredients)
         {
             
@@ -206,6 +241,12 @@ namespace PizzaDeliveryWeb.Application.Services
             return size.Weight + ingredientsWeight;
         }
 
+        /// <summary>
+        /// Получает вес или стоимость ингредиента в зависимости от размера пиццы.
+        /// </summary>
+        /// <param name="ingredient">Ингредиент.</param>
+        /// <param name="sizeId">Идентификатор размера.</param>
+        /// <returns>Значение веса/цены.</returns>
         private decimal GetSizeValue(Ingredient ingredient, int sizeId)
         {
             return sizeId switch
@@ -216,6 +257,14 @@ namespace PizzaDeliveryWeb.Application.Services
                 _ => 0
             };
         }
+
+        /// <summary>
+        /// Добавляет новый товар в корзину.
+        /// </summary>
+        /// <param name="itemDto">Данные новой позиции корзины.</param>
+        /// <returns>Обновленная корзина <see cref="CartDto"/>.</returns>
+        /// <exception cref="ArgumentException">Если количество товара не положительное.</exception>
+        /// <exception cref="NotFoundException">Если заказ, пицца или ингредиенты не найдены.</exception>
 
         public async Task<CartDto> AddNewItemToCartAsync(NewCartItemDto itemDto)
         {
@@ -276,6 +325,17 @@ namespace PizzaDeliveryWeb.Application.Services
             return MapToCartDto(order);
         }
 
+        /// <summary>
+        /// Подтверждает корзину, формируя заказ.
+        /// </summary>
+        /// <param name="clientId">Идентификатор клиента.</param>
+        /// <param name="price">Итоговая цена.</param>
+        /// <param name="address">Адрес доставки.</param>
+        /// <exception cref="ArgumentException">Если цена некорректна или адрес пуст.</exception>
+        /// <exception cref="CartNotFoundException">Если корзина клиента не найдена.</exception>
+        /// <exception cref="OutdatedCartException">Если данные корзины устарели.</exception>
+        /// <exception cref="EmptyCartException">Если корзина пуста.</exception>
+
         public async Task SubmitCartAsync(string clientId, decimal price, string address)
         {
 
@@ -315,7 +375,12 @@ namespace PizzaDeliveryWeb.Application.Services
 
         }
 
-
+        /// <summary>
+        /// Удаляет позицию из корзины по её идентификатору.
+        /// </summary>
+        /// <param name="itemId">Идентификатор позиции заказа.</param>
+        /// <returns>Обновленная корзина <see cref="CartDto"/>.</returns>
+        /// <exception cref="Exception">Если позиция не найдена.</exception>
         public async Task<CartDto> RemoveItemFromCartAsync(int itemId)
         {
             var orderLine = await _uow.OrderLines.GetOrderLineByIdAsync(itemId);
@@ -335,6 +400,12 @@ namespace PizzaDeliveryWeb.Application.Services
             
         }
 
+        /// <summary>
+        /// Обновляет существующую позицию в корзине.
+        /// </summary>
+        /// <param name="itemDto">Новые данные позиции корзины.</param>
+        /// <returns>Обновленная корзина <see cref="CartDto"/>.</returns>
+        /// <exception cref="Exception">Если позиция не найдена.</exception>
         public async Task<CartDto> UpdateItemFromcartAsync(NewCartItemDto itemDto)
         {
             var order = await _uow.Orders.GetOrderByIdAsync(itemDto.CartId);
