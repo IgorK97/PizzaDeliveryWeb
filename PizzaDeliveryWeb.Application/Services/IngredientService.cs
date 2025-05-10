@@ -98,7 +98,8 @@ namespace PizzaDeliveryWeb.Application.Services
                 Medium = ingrDto.Medium,
                 Big = ingrDto.Big,
                 PricePerGram = ingrDto.PricePerGram,
-                Image=ingrDto.Image
+                Image=ingrDto.Image,
+                IsAvailable=ingrDto.IsAvailable
             };
             await _ingrRepository.AddIngredientAsync(t);
             return new IngredientDto
@@ -110,8 +111,9 @@ namespace PizzaDeliveryWeb.Application.Services
                 Medium = t.Medium,
                 Big = t.Big,
                 PricePerGram = t.PricePerGram,
-                Image = t.Image
-
+                Image = t.Image,
+                IsAvailable = t.IsAvailable
+                
             };
             //ingrDto.Id = t.Id;
         }
@@ -134,6 +136,7 @@ namespace PizzaDeliveryWeb.Application.Services
                 res.Big = ingrDto.Big;
                 res.PricePerGram = ingrDto.PricePerGram;
                 res.Image = ingrDto.Image;
+                res.IsAvailable = ingrDto.IsAvailable;
                 await _ingrRepository.UpdateIngredientAsync(res);
 
 

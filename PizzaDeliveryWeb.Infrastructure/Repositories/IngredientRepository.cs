@@ -26,7 +26,7 @@ namespace PizzaDeliveryWeb.Infrastructure.Repositories
 
         public async Task<IEnumerable<Ingredient>> GetIngredientsAsync()
         {
-            return await _context.Ingredients
+            return await _context.Ingredients.Where(i=>i.IsDeleted==false)
                 .ToListAsync();
         }
 

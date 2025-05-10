@@ -206,8 +206,8 @@ namespace PizzaDeliveryWeb.API.Controllers
         /// <returns>Результат обновления ингредиента.</returns>
         // PUT api/<IngredientsController>/5
         //[Authorize(Roles = "admin")]
-        [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "manager")]
+        [HttpPut("{id}")]
 
         public async Task<IActionResult> UpdateIngredient(int id, UpdateIngredientDto ingrDto)
         {
